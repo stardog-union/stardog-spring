@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+	<bean name="dataSource" class="com.clarkparsia.stardog.ext.spring.DataSourceFactoryBean">
+		<property name="to" value="testdb"/>
+		<property name="createIfNotPresent" value="true"/>
+	</bean>
+
+	<bean name="template" class="com.clarkparsia.stardog.ext.spring.SnarlTemplate">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+	<bean name="importer" class="com.clarkparsia.stardog.ext.spring.DataImporter">
+		<property name="snarlTemplate" ref="template"/>
+		<property name="inputFiles">
+			<map>
+				<entry key="N3" value="classpath:sp2b_10k.n3" />
+			</map>
+		</property>
+	</bean>
+	
+</beans>

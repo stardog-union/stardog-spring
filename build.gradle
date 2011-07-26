@@ -1,0 +1,54 @@
+apply plugin:"java"
+apply plugin:"eclipse"
+apply plugin:"maven"
+
+/**
+ * TODO:
+ *   Once there is a Stardog maven artifact, we will replace this
+ *   gradle file collection magic with a simple maven dependency
+ *   e.g. compile('com.clarkparsia.stardog:core:1.0')
+ *   
+ *   This means that users of the jar that gets produced by this build
+ *   will still have to manually add stardog dependencies to their projects
+ *   
+ *   Note that gradle install WILL install stardog-spring into a local
+ *   maven repository
+ */ 
+
+def stardogLocation = "/home/ajb/tools/stardog/stardog-0.6.5/lib"
+
+repositories {
+	mavenLocal()
+	mavenCentral()
+	mavenRepo urls:"http://repository.springsource.com/maven/bundles/release"
+	mavenRepo urls:"http://repository.springsource.com/maven/bundles/external"
+	mavenRepo urls:"http://maven.springframework.org/release"
+	mavenRepo urls:"http://maven.springframework.org/milestone"
+	mavenRepo urls:"http://maven.springframework.org/snapshot"
+	
+}
+
+dependencies {
+	compile ('org.springframework:spring-core:3.0.5.RELEASE')
+	compile ('org.springframework:spring-beans:3.0.5.RELEASE')
+	compile ('org.springframework:spring-context:3.0.5.RELEASE')
+	compile ('org.springframework:spring-tx:3.0.5.RELEASE')
+	// gremlin in stardog/lib comes with groovy, we don't want to pick that up for gradle
+	compile fileTree(dir: stardogLocation, include: '**/*.jar', exclude: '**/*gremlin*/*')
+	
+	testCompile group: 'junit', name: 'junit', version: '4.8.2'
+	testCompile group: 'org.springframework', name:'spring-test', version:'3.0.5.RELEASE'
+	
+}
+
+configure(install.repositories.mavenInstaller) {
+	pom.project {
+		version '0.0.1'
+		artifactId 'stardog-spring'
+		groupId 'com.clarkparsia.stardog'
+	}
+}
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '1.0-milestone-3'
+}
