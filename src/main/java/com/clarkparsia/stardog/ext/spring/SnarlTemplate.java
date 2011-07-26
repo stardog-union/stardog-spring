@@ -52,8 +52,6 @@ public class SnarlTemplate {
 
 	private DataSource dataSource;
 
-	private String stringFormat;
-	
 	/**
 	 * @return the dataSource
 	 */
@@ -161,6 +159,16 @@ public class SnarlTemplate {
 		}
 	}
 	
+	/**
+	 * <code>add</code>
+	 * 
+	 * Add's a Sesame graph to the graph URI
+	 * 
+	 * Other add methods delegate to this method
+	 * 
+	 * @param graph
+	 * @param graphUri
+	 */
 	public void add(Graph graph, String graphUri) { 
 		Resource context = null;
 		if (graphUri != null) { 
@@ -182,20 +190,42 @@ public class SnarlTemplate {
 		}
 	}
 	
+	/**
+	 * <code>add</code>
+	 * @param graph Sesame graph
+	 */
 	public void add(Graph graph) { 
 		add(graph, null);
 	}
 	
+	/**
+	 * <code>add</code>
+	 * @param subject String subject
+	 * @param predicate String predicate
+	 * @param object String object - always a plain literal
+	 */
 	public void add(String subject, String predicate, String object) { 
 		Graph graph = new GraphImpl();
 		graph.add(new URIImpl(subject), new URIImpl(predicate), new LiteralImpl(object));
 		add(graph);
 	}
 	
+	/**
+	 * <code>add</code>
+	 * @param subject URI subject
+	 * @param predicate URI predicate
+	 * @param object String object - always a plain literal
+	 */
 	public void add(java.net.URI subject, java.net.URI predicate, String object) { 
 		add(subject.toString(), predicate.toString(), object);
 	}
 	
+	/**
+	 * <code>add</code>
+	 * @param subject URI subject
+	 * @param predicate URI predicate
+	 * @param object URI object 
+	 */
 	public void add(java.net.URI subject, java.net.URI predicate, java.net.URI object) { 
 		Graph graph = new GraphImpl();
 		graph.add(new URIImpl(subject.toString()), new URIImpl(predicate.toString()), new URIImpl(object.toString()));
