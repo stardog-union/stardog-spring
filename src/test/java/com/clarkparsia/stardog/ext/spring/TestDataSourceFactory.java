@@ -15,7 +15,8 @@
 */
 package com.clarkparsia.stardog.ext.spring;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -31,7 +32,6 @@ import org.openrdf.rio.RDFFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.clarkparsia.stardog.api.Connection;
@@ -122,15 +122,31 @@ public class TestDataSourceFactory  {
 		String uriA = "urn:test:a";
 		String uriB = "urn:test:b";
 		String uriC = "urn:test:c";
-		String litA = "a";
+		String litA = "hello world";
 		
 		URI a = new URI(uriA);
 		URI b = new URI(uriB);
 		URI c = new URI(uriC);
 		
 		snarlTemplate.add(uriA, uriB, litA);
+		snarlTemplate.add(uriA, uriB, litA);
 		snarlTemplate.add(a,b,c);
 		
+		String sparql = "SELECT ?a ?b WHERE { ?a  <urn:test:b> ?b } LIMIT 5";
+		
+		List<Map<String,String>> results = snarlTemplate.query(sparql, new RowMapper<Map<String,String>>() {
+
+			@Override
+			public Map<String,String> mapRow(BindingSet bindingSet) {
+				Map<String,String> map = new HashMap<String,String>();
+				map.put("a", bindingSet.getValue("a").stringValue());
+				map.put("b", bindingSet.getValue("b").stringValue());
+				return map;
+			} 
+			
+		});
+		
+		assertEquals(results.size(), 2);
 		
 	}
 	
