@@ -2,3 +2,20 @@
 
 This is Spring integration for Stardog, the RDF database. See
 http://stardog.com/docs/spring for more information, when it's ready.
+
+Current build / install instructions:
+
+ - Edit build.gradle and change the stardogLocation variable (line 18) 
+   to a local Stardog release directory
+ - Run "gradlew", this will download gradle and fully bootstrap a gradle
+   build environment
+ - Run "gradlew build", which will resolve dependencies, compile, and
+   package everything up.  The resulting stardog-spring.jar is then in the
+   build/libs directory.
+ - Run "gradlew install", which will perform the build, generate a POM, and
+   install that POM in your local maven repo.  However, this POM will not contain
+   any of the stardog dependencies - only the Spring dependencies.  We can 
+   change this once a Stardog pom exists.
+ 
+
+
