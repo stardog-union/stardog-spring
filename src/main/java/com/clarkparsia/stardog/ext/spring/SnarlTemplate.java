@@ -36,7 +36,9 @@ import org.slf4j.LoggerFactory;
 
 import com.clarkparsia.stardog.StardogException;
 import com.clarkparsia.stardog.api.Connection;
+import com.clarkparsia.stardog.api.Getter;
 import com.clarkparsia.stardog.api.Query;
+import com.clarkparsia.stardog.util.Iteration;
 
 /**
  * SnarlTemplate
@@ -98,6 +100,50 @@ public class SnarlTemplate {
 		}
 	}
 	
+	/**
+	 * <code>doWithGetter</code>
+	 * @param subject - String representation of a subject URI
+	 * @param predicate - String representation of a predicate URI
+	 * @param action - callback that will be called
+	 * @return - list of return elements
+	 */
+	public <T> List<T> doWithGetter(String subject, String predicate, GetterCallback<T> action) { 
+		
+		ArrayList<T> list = new ArrayList<T>();
+		if (subject == null && predicate == null) { 
+			return list;
+		}
+		
+		Connection connection = dataSource.getConnection();
+		Getter getter = null;
+		try {
+			getter = connection.get();
+			
+			if (subject != null) { 
+				getter.subject(new URIImpl(subject));
+			}
+			
+			if (predicate != null) { 
+				getter.predicate(new URIImpl(predicate));
+			}
+			
+			Iteration<Statement, StardogException> iterator = getter.iterator();
+			
+			while (iterator.hasNext()) { 
+				list.add(action.processStatement(iterator.next()));
+			}
+			
+			return list;
+		} catch (StardogException e) {
+			log.error("Error with getter", e);
+			throw new RuntimeException(e);
+		} finally { 
+			getter = null;
+			dataSource.releaseConnection(connection);
+		}
+		
+	}
+ 	
 	/**
 	 * <code>query</code>
 	 * Simple query call for a SPARQL Query and a RowMapper to

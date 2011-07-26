@@ -15,7 +15,7 @@ apply plugin:"maven"
  *   maven repository
  */ 
 
-def stardogLocation = "/home/ajb/tools/stardog/stardog-0.6.5/lib"
+def stardogLocation = "/home/ajb/tools/stardog/stardog-0.6.6/lib"
 
 repositories {
 	mavenLocal()

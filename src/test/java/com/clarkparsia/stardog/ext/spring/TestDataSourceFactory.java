@@ -27,6 +27,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openrdf.model.Statement;
 import org.openrdf.query.BindingSet;
 import org.openrdf.rio.RDFFormat;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -147,6 +148,37 @@ public class TestDataSourceFactory  {
 		});
 		
 		assertEquals(results.size(), 2);
+		
+	}
+	
+	@Test
+	public void testDoWithGetter() { 
+		String uriA = "urn:test:x";
+		String uriB = "urn:test:y";
+		String uriC = "urn:test:z";
+		String litA = "hello world";
+		
+		
+		snarlTemplate.add(uriA, uriB, litA);
+		snarlTemplate.add(uriC, uriB, litA);
+		
+		List<String> results = snarlTemplate.doWithGetter(uriA, null, new GetterCallback<String>() {
+			@Override
+			public String processStatement(Statement statement) {
+				return statement.getObject().stringValue();
+			} 
+		});
+		
+		assertEquals(results.size(), 1);
+		
+		List<String> results2 = snarlTemplate.doWithGetter(null, uriB, new GetterCallback<String>() {
+			@Override
+			public String processStatement(Statement statement) {
+				return statement.getObject().stringValue();
+			} 
+		});
+		
+		assertEquals(results2.size(), 2);		
 		
 	}
 	
