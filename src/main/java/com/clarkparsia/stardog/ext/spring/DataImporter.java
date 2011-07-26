@@ -45,8 +45,26 @@ public class DataImporter implements InitializingBean {
 	
 	private SnarlTemplate snarlTemplate;
 
-	private Map<RDFFormat, Resource> inputFiles;
+	private List<Resource> inputFiles;
 	
+	private RDFFormat format;
+	
+	
+	
+	/**
+	 * @return the format
+	 */
+	public RDFFormat getFormat() {
+		return format;
+	}
+
+	/**
+	 * @param format the format to set
+	 */
+	public void setFormat(RDFFormat format) {
+		this.format = format;
+	}
+
 	/**
 	 * @return the snarlTemplate
 	 */
@@ -64,14 +82,14 @@ public class DataImporter implements InitializingBean {
 	/**
 	 * @return the inputFiles
 	 */
-	public Map<RDFFormat, Resource> getInputFiles() {
+	public List<Resource> getInputFiles() {
 		return inputFiles;
 	}
 
 	/**
 	 * @param inputFiles the inputFiles to set
 	 */
-	public void setInputFiles(Map<RDFFormat, Resource> inputFiles) {
+	public void setInputFiles(List<Resource> inputFiles) {
 		this.inputFiles = inputFiles;
 	}
 
@@ -118,8 +136,8 @@ public class DataImporter implements InitializingBean {
 			@Override
 			public Boolean doWithConnection(Connection connection) {
 				try {
-					for (Entry<RDFFormat, Resource> entry : inputFiles.entrySet()) { 
-						connection.add().io().format(entry.getKey()).stream(entry.getValue().getInputStream());
+					for (Resource entry : inputFiles) { 
+						connection.add().io().format(format).stream(entry.getInputStream());
 					}
 				} catch (StardogException e) {
 					log.error("Error with io adder to Stardog", e);

@@ -15,10 +15,11 @@
 	
 	<bean name="importer" class="com.clarkparsia.stardog.ext.spring.DataImporter">
 		<property name="snarlTemplate" ref="template"/>
+		<property name="format" value="N3"/>
 		<property name="inputFiles">
-			<map>
-				<entry key="N3" value="classpath:sp2b_10k.n3" />
-			</map>
+			<list>
+				<value>classpath:sp2b_10k.n3</value>
+			</list>
 		</property>
 	</bean>
 	
