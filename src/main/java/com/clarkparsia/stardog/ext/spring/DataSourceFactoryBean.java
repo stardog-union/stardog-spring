@@ -18,6 +18,8 @@ package com.clarkparsia.stardog.ext.spring;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -48,6 +50,8 @@ import com.clarkparsia.stardog.security.SecurityUtil;
  */
 public class DataSourceFactoryBean implements FactoryBean<DataSource>, InitializingBean, DisposableBean {
 
+	final Logger log = LoggerFactory.getLogger(DataSourceFactoryBean.class);
+	
 	/**
 	 * Properties used by the ConnectionConfig
 	 */
@@ -115,6 +119,7 @@ public class DataSourceFactoryBean implements FactoryBean<DataSource>, Initializ
 	 * Called by Spring 
 	 */
 	public void destroy() { 
+		log.debug("Destroying dataSourceFactory bean");
 		dataSource.destroy();
 		dataSource = null;
 	}
@@ -133,6 +138,7 @@ public class DataSourceFactoryBean implements FactoryBean<DataSource>, Initializ
 	 */
 	@Override
 	public void afterPropertiesSet() throws Exception {
+		log.debug("Initializing Stardog connection configuration");
 		SecurityUtil.setupSingletonSecurityManager();
 		
 		ConnectionPool pool;

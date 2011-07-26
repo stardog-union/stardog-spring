@@ -15,6 +15,9 @@
 */
 package com.clarkparsia.stardog.ext.spring;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.clarkparsia.stardog.StardogException;
 import com.clarkparsia.stardog.api.Connection;
 import com.clarkparsia.stardog.api.ConnectionConfiguration;
@@ -35,6 +38,8 @@ import com.clarkparsia.stardog.api.ConnectionPoolConfig;
  */
 public class DataSource {
 
+	final Logger log = LoggerFactory.getLogger(DataSource.class);
+	
 	private ConnectionPool pool;
 	
 	private ConnectionConfiguration connectionConfig;
@@ -49,6 +54,7 @@ public class DataSource {
 	}
 	
 	public void afterPropertiesSet() { 
+		log.debug("Creating Stardog connection pool");
 		pool = poolConfig.create();
 	}
 	
@@ -64,8 +70,7 @@ public class DataSource {
 		try {
 			return pool.obtain();
 		} catch (StardogException e) {
-			// TODO Add logging
-			e.printStackTrace();
+			log.error("Error obtaining connection from Stardog pool", e);
 			throw new RuntimeException(e);
 		}
 	}
@@ -78,6 +83,7 @@ public class DataSource {
 		try {
 			pool.release(connection);
 		} catch (StardogException e) {
+			log.error("Error releasing connection from Stardog pool", e);
 			throw new RuntimeException(e);
 		}
 	}
@@ -91,8 +97,7 @@ public class DataSource {
 		try {
 			pool.shutdown();
 		} catch (StardogException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("Error shutting down Stardog pool", e);
 		}
 		poolConfig = null;
 		connectionConfig = null;

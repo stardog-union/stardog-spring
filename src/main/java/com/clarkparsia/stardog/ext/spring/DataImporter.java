@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.openrdf.rio.RDFFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 
@@ -39,6 +41,8 @@ import com.clarkparsia.stardog.api.Connection;
  */
 public class DataImporter implements InitializingBean {
 
+	final Logger log = LoggerFactory.getLogger(DataImporter.class);
+	
 	private SnarlTemplate snarlTemplate;
 
 	private Map<RDFFormat, Resource> inputFiles;
@@ -87,12 +91,10 @@ public class DataImporter implements InitializingBean {
 				try {
 					connection.add().io().format(format).stream(resource.getInputStream());
 				} catch (StardogException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.error("Error with io adder to Stardog", e);
 					return false;
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.error("Error in IO to inputFile", e);
 					return false;
 				}		
 				return true;
@@ -120,12 +122,10 @@ public class DataImporter implements InitializingBean {
 						connection.add().io().format(entry.getKey()).stream(entry.getValue().getInputStream());
 					}
 				} catch (StardogException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.error("Error with io adder to Stardog", e);
 					return false;
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.error("Error reading files for DataImporter initialization", e);
 					return false;
 				}		
 				return true;

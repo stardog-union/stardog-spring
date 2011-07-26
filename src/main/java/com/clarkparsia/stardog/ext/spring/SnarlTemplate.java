@@ -31,6 +31,8 @@ import org.openrdf.model.Resource;
 import org.openrdf.model.URI;
 import org.openrdf.model.Statement;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.clarkparsia.stardog.StardogException;
 import com.clarkparsia.stardog.api.Connection;
@@ -49,6 +51,8 @@ import com.clarkparsia.stardog.api.Query;
  *
  */
 public class SnarlTemplate {
+
+	final Logger log = LoggerFactory.getLogger(SnarlTemplate.class);
 
 	private DataSource dataSource;
 
@@ -87,7 +91,7 @@ public class SnarlTemplate {
 			connection.commit();
 			return t;
 		} catch (StardogException e) {
-			// TODO Add debug logging
+			log.error("Error executing ConnectionCallback", e);
 			throw new RuntimeException(e);
 		} finally { 
 			dataSource.releaseConnection(connection);
@@ -149,10 +153,10 @@ public class SnarlTemplate {
 			
 			return list;
 		} catch (StardogException e) {
-			// TODO Add debug logging
+			log.error("Error sending query to Stardog", e);
 			throw new RuntimeException(e);
 		} catch (QueryEvaluationException e) {
-			// TODO Auto-generated catch block
+			log.error("Error evaluating SPARQL query", e);
 			throw new RuntimeException(e);
 		} finally { 
 			dataSource.releaseConnection(connection);
@@ -184,7 +188,8 @@ public class SnarlTemplate {
 			}
 			connection.commit();
 		} catch (StardogException e) {
-			e.printStackTrace();
+			log.error("Error adding graph to Stardog", e);
+			throw new RuntimeException(e);
 		} finally { 
 			dataSource.releaseConnection(connection);
 		}

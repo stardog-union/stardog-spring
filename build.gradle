@@ -33,6 +33,8 @@ dependencies {
 	compile ('org.springframework:spring-beans:3.0.5.RELEASE')
 	compile ('org.springframework:spring-context:3.0.5.RELEASE')
 	compile ('org.springframework:spring-tx:3.0.5.RELEASE')
+	compile ('org.slf4j:slf4j-api:1.6.1')
+	
 	// gremlin in stardog/lib comes with groovy, we don't want to pick that up for gradle
 	compile fileTree(dir: stardogLocation, include: '**/*.jar', exclude: '**/*gremlin*/*')
 	
