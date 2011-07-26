@@ -18,7 +18,13 @@ package com.clarkparsia.stardog.ext.spring;
 import com.clarkparsia.stardog.api.Connection;
 
 /**
- * @author ajb
+ * ConnectionCallback
+ * 
+ * Allows implementations a prepared, transactional access to a connection
+ * without any of the boilerplate.
+ * 
+ * @author Clark and Parsia, LLC
+ * @author Al Baker
  *
  */
 public interface ConnectionCallback<T> {
