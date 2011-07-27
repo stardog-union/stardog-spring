@@ -152,7 +152,7 @@ A sample applicationContext follows:
 		});
 
 
-4.3 construct()
+4.5 construct()
 
 		String sparql = "CONSTRUCT { ?a <urn:test:new> ?b } WHERE { ?a <urn:test:p> ?b }";
 		List<Map<String,String>>  results = snarlTemplate.construct(sparql, new GraphMapper<Map<String,String>>() {
