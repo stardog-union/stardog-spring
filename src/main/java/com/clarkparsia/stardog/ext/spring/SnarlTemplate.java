@@ -26,6 +26,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.openrdf.query.GraphQueryResult;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQueryResult;
 import org.openrdf.model.impl.CalendarLiteralImpl;
@@ -295,8 +296,49 @@ public class SnarlTemplate {
 		}
 	}
 	
+	public <T> List<T> construct(String sparql, GraphMapper<T> mapper) {
+		return construct(sparql, null, mapper);
+	}
 	
-	
+	public <T> List<T> construct(String sparql,  Map<String, String> args, GraphMapper<T> mapper) { 
+		Connection connection = dataSource.getConnection();
+		GraphQueryResult result = null;
+		try { 
+			Query query = connection.query(sparql);
+			
+			if (args != null) { 
+				for (Entry<String, String> arg : args.entrySet()) { 					
+					query.parameter(arg.getKey(), arg.getValue());
+				}
+			}
+			
+			ArrayList<T> list = new ArrayList<T>();
+			
+			result = query.executeGraph();
+			
+			// return empty lists for empty queries
+			if (result == null) { 
+				return list;
+			}
+			
+			while (result.hasNext()) { 
+				list.add(mapper.mapRow(result.next()));
+			}
+			
+			result.close();
+			
+			return list;
+		} catch (StardogException e) {
+			log.error("Error sending construct query to Stardog", e);
+			throw new RuntimeException(e);
+		} catch (QueryEvaluationException e) {
+			log.error("Error evaluating SPARQL construct query", e);
+			throw new RuntimeException(e);
+		} finally { 
+			dataSource.releaseConnection(connection);
+		}
+	}
+ 	
 	/**
 	 * <code>query</code>
 	 * Simple query call for a SPARQL Query and a RowMapper to

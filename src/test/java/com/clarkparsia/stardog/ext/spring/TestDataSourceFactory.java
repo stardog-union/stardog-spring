@@ -319,4 +319,25 @@ public class TestDataSourceFactory  {
 		
 	}
 	
+	@Test
+	public void testConstruct() { 
+		String uriA = "urn:test:o";
+		String uriB = "urn:test:p";
+		String litA = "hello world";
+		snarlTemplate.add(uriA, uriB, litA);
+		
+		String sparql = "CONSTRUCT { ?a <urn:test:new> ?b } WHERE { ?a <urn:test:p> ?b }";
+		List<Map<String,String>>  results = snarlTemplate.construct(sparql, new GraphMapper<Map<String,String>>() {
+			@Override
+			public Map<String, String> mapRow(Statement next) {
+				Map<String,String> map = new HashMap<String,String>();	
+				map.put(next.getSubject().stringValue(), next.getObject().stringValue());
+				return map;
+			} 
+		});
+		
+		assertEquals(results.size(), 1);
+		
+	}
+	
 }
