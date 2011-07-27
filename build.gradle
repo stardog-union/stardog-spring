@@ -45,7 +45,7 @@ dependencies {
 
 configure(install.repositories.mavenInstaller) {
 	pom.project {
-		version '0.0.1'
+		version '0.0.2'
 		artifactId 'stardog-spring'
 		groupId 'com.clarkparsia.stardog'
 	}

@@ -16,12 +16,19 @@
 package com.clarkparsia.stardog.ext.spring;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQueryResult;
+import org.openrdf.model.impl.CalendarLiteralImpl;
 import org.openrdf.model.impl.GraphImpl;
 import org.openrdf.model.impl.LiteralImpl;
 import org.openrdf.model.impl.URIImpl;
@@ -30,14 +37,18 @@ import org.openrdf.model.Graph;
 import org.openrdf.model.Resource;
 import org.openrdf.model.URI;
 import org.openrdf.model.Statement;
+import org.openrdf.model.Value;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.clarkparsia.stardog.StardogException;
+import com.clarkparsia.stardog.api.Adder;
 import com.clarkparsia.stardog.api.Connection;
 import com.clarkparsia.stardog.api.Getter;
 import com.clarkparsia.stardog.api.Query;
+import com.clarkparsia.stardog.api.Remover;
+import com.clarkparsia.stardog.ext.spring.utils.TypeConverter;
 import com.clarkparsia.stardog.util.Iteration;
 
 /**
@@ -101,6 +112,96 @@ public class SnarlTemplate {
 	}
 	
 	/**
+	 * <code>remove</code>
+	 * Remove a graph from the store using a CONSTRUCT query
+	 * 
+	 * @param constructSparql
+	 */
+	public void remove(String constructSparql) { 
+		Connection connection = dataSource.getConnection();
+		try {
+			connection.begin();
+			Query query = connection.query(constructSparql);
+			connection.remove().query(query);
+			connection.commit();
+		} catch (StardogException e) {
+			log.error("Error with remove construct query {}", constructSparql, e);
+			throw new RuntimeException(e);
+		} finally { 
+			dataSource.releaseConnection(connection);
+		}
+		
+	}
+	
+	public void remove(String subject, String predicate, Object object, String graphUri) { 
+		Connection connection = dataSource.getConnection();
+		URIImpl subjectResource = null;
+		URIImpl predicateResource = null;
+		Resource context = null;
+		
+		if (subject != null) { 
+			subjectResource = new URIImpl(subject);
+		}
+		if (predicate != null) {
+			predicateResource = new URIImpl(predicate);
+		}
+		
+		if (graphUri != null) { 
+			context = ValueFactoryImpl.getInstance().createURI(graphUri);
+		}
+		
+		Value objectValue = null;
+		if (object != null) {
+			objectValue = TypeConverter.asLiteral(object);
+		}
+		
+		try {
+			connection.begin();
+			connection.remove().statements(subjectResource, predicateResource, objectValue, context);
+			connection.commit();
+		} catch (StardogException e) {
+			log.error("Error with remove statement", e);
+			throw new RuntimeException(e);
+		} finally { 
+			dataSource.releaseConnection(connection);
+		}
+	}
+	
+	
+	public void singleton(String subject, String predicate, Object object, String graphUri) { 
+		Connection connection = dataSource.getConnection();
+		
+		URIImpl subjectResource = null;
+		URIImpl predicateResource = null;
+		Resource context = null;
+		
+		if (subject != null) { 
+			subjectResource = new URIImpl(subject);
+		}
+		if (predicate != null) {
+			predicateResource = new URIImpl(predicate);
+		}
+		
+		if (graphUri != null) { 
+			context = ValueFactoryImpl.getInstance().createURI(graphUri);
+		}
+		
+		Value objectValue = TypeConverter.asLiteral(object);
+		
+		try {
+			connection.begin();
+			connection.remove().statements(subjectResource, predicateResource, null, context);
+			connection.add().statement(subjectResource, predicateResource, objectValue, context);
+			connection.commit();
+		} catch (StardogException e) {
+			log.error("Error with remove statement", e);
+			throw new RuntimeException(e);
+		} finally { 
+			dataSource.releaseConnection(connection);
+		}
+	}
+	
+	/**
 	 * <code>doWithGetter</code>
 	 * @param subject - String representation of a subject URI
 	 * @param predicate - String representation of a predicate URI
@@ -144,6 +245,58 @@ public class SnarlTemplate {
 		
 	}
  	
+	/**
+	 * <code>doWithAdder</code>
+	 * Template's callback interface for working with an Adder, using
+	 * a Datasource and transaction safe environment
+	 * @param action AdderCallBack, generic type
+	 * @return generic type T
+	 */
+	public <T> T doWithAdder(AdderCallback<T> action) {
+		Connection connection = dataSource.getConnection();
+		Adder adder = null;
+		try {
+			connection.begin();
+			adder = connection.add();
+			T t = action.add(adder);
+			connection.commit();
+			return t;
+		} catch (StardogException e) {
+			log.error("Error with adder ", e);
+			throw new RuntimeException(e);
+		} finally { 
+			adder = null;
+			dataSource.releaseConnection(connection);
+		}
+	}
+	
+	/**
+	 * <code>doWithRemover</code>
+	 * Template's callback interface for working with a Remover, using
+	 * a Datasource and transaction safe environment
+	 * @param action RemoverCallback, generic type
+	 * @return generic type T
+	 */
+	public <T> T doWithRemover(RemoverCallback<T> action) {
+		Connection connection = dataSource.getConnection();
+		Remover remover = null;
+		try {
+			connection.begin();
+			remover = connection.remove();
+			T t = action.remove(remover);
+			connection.commit();
+			return t;
+		} catch (StardogException e) {
+			log.error("Error with remover ", e);
+			throw new RuntimeException(e);
+		} finally { 
+			remover = null;
+			dataSource.releaseConnection(connection);
+		}
+	}
+	
+	
+	
 	/**
 	 * <code>query</code>
 	 * Simple query call for a SPARQL Query and a RowMapper to
@@ -237,6 +390,7 @@ public class SnarlTemplate {
 			log.error("Error adding graph to Stardog", e);
 			throw new RuntimeException(e);
 		} finally { 
+			context = null;
 			dataSource.releaseConnection(connection);
 		}
 	}

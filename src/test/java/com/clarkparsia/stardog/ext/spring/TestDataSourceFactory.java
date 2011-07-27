@@ -28,6 +28,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openrdf.model.Statement;
+import org.openrdf.model.impl.LiteralImpl;
+import org.openrdf.model.impl.URIImpl;
 import org.openrdf.query.BindingSet;
 import org.openrdf.rio.RDFFormat;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +37,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.clarkparsia.stardog.StardogException;
+import com.clarkparsia.stardog.api.Adder;
 import com.clarkparsia.stardog.api.Connection;
+import com.clarkparsia.stardog.api.Remover;
 
 /**
  * Test cases for the StardogConnectionFactoryBean
@@ -179,6 +184,138 @@ public class TestDataSourceFactory  {
 		});
 		
 		assertEquals(results2.size(), 2);		
+		
+	}
+	
+	@Test
+	public void testRemoveConstruct() { 
+		String uriA = "urn:test:d";
+		String uriB = "urn:test:e";
+		String uriC = "urn:test:f";
+		String litA = "hello world";
+		snarlTemplate.add(uriA, uriB, litA);
+		snarlTemplate.add(uriC, uriB, litA);
+		
+		String constructQuery = "CONSTRUCT { ?a <urn:test:e> ?c } WHERE { ?a <urn:test:e> ?c } ";
+		snarlTemplate.remove(constructQuery);
+		
+		List<String> results2 = snarlTemplate.doWithGetter(null, uriB, new GetterCallback<String>() {
+			@Override
+			public String processStatement(Statement statement) {
+				return statement.getObject().stringValue();
+			} 
+		});
+		
+		assertEquals(results2.size(), 0);		
+	}
+	
+	@Test
+	public void testRemoveStatement() { 
+		String uriA = "urn:test:g";
+		String uriB = "urn:test:h";
+		String uriC = "urn:test:i";
+		String litA = "hello world";
+		snarlTemplate.add(uriA, uriB, litA);
+		snarlTemplate.add(uriC, uriB, litA);
+		
+		snarlTemplate.remove(uriA, uriB, litA, null);
+		
+		List<String> results2 = snarlTemplate.doWithGetter(null, uriB, new GetterCallback<String>() {
+			@Override
+			public String processStatement(Statement statement) {
+				return statement.getObject().stringValue();
+			} 
+		});
+		
+		assertEquals(results2.size(), 1);		
+		
+		snarlTemplate.remove(null, uriB, null, null);
+		
+		List<String> results = snarlTemplate.doWithGetter(null, uriB, new GetterCallback<String>() {
+			@Override
+			public String processStatement(Statement statement) {
+				return statement.getObject().stringValue();
+			} 
+		});
+		
+		assertEquals(results.size(), 0);	
+		
+	}
+	
+	@Test
+	public void testSingleton() { 
+		String uriA = "urn:test:j";
+		String uriB = "urn:test:k";
+		String uriC = "urn:test:l";
+		String litA = "hello world";
+		String litB = "a singleton";
+		snarlTemplate.add(uriA, uriB, litA);
+		snarlTemplate.singleton(uriA, uriB, litB, null);
+		
+		List<String> results = snarlTemplate.doWithGetter(null, uriB, new GetterCallback<String>() {
+			@Override
+			public String processStatement(Statement statement) {
+				return statement.getObject().stringValue();
+			} 
+		});
+		
+		assertEquals(results.size(), 1);	
+		assertEquals(results.get(0), "a singleton");
+	}
+	
+	@Test
+	public void testDoWithAdder() { 
+		
+		snarlTemplate.doWithAdder(new AdderCallback<Boolean>() {
+
+			@Override
+			public Boolean add(Adder adder) throws StardogException {
+				String uriA = "urn:test:j";
+				String uriB = "urn:test:k";
+				String litA = "hello world";
+				String litB = "a singleton";
+				
+				adder.statement(new URIImpl(uriA), new URIImpl(uriB), new LiteralImpl(litA));
+				adder.statement(new URIImpl(uriA), new URIImpl(uriB), new LiteralImpl(litB));
+				return true;
+			} 
+			
+		});
+		
+		List<String> results = snarlTemplate.doWithGetter(null, "urn:test:k", new GetterCallback<String>() {
+			@Override
+			public String processStatement(Statement statement) {
+				return statement.getObject().stringValue();
+			} 
+		});
+		
+		assertEquals(results.size(), 2);	
+		
+	}
+	
+	@Test
+	public void testDoWithRemover() { 
+		String uriA = "urn:test:m";
+		String uriB = "urn:test:n";
+		String litA = "hello world";
+		snarlTemplate.add(uriA, uriB, litA);
+		
+		snarlTemplate.doWithRemover(new RemoverCallback<Boolean>() {
+			@Override
+			public Boolean remove(Remover remover) throws StardogException {
+				remover.statements(new URIImpl("urn:test:m"), new URIImpl("urn:test:n"), null);
+				return true;
+			} 
+		});
+		
+		List<String> results = snarlTemplate.doWithGetter(null, "urn:test:n", new GetterCallback<String>() {
+			@Override
+			public String processStatement(Statement statement) {
+				return statement.getObject().stringValue();
+			} 
+		});
+		
+		assertEquals(results.size(), 0);	
 		
 	}
 	
