@@ -267,19 +267,17 @@ public class TestDataSourceFactory  {
 	public void testDoWithAdder() { 
 		
 		snarlTemplate.doWithAdder(new AdderCallback<Boolean>() {
-
 			@Override
 			public Boolean add(Adder adder) throws StardogException {
 				String uriA = "urn:test:j";
 				String uriB = "urn:test:k";
 				String litA = "hello world";
-				String litB = "a singleton";
+				String litB = "goodbye";
 				
 				adder.statement(new URIImpl(uriA), new URIImpl(uriB), new LiteralImpl(litA));
 				adder.statement(new URIImpl(uriA), new URIImpl(uriB), new LiteralImpl(litB));
 				return true;
-			} 
-			
+			} 		
 		});
 		
 		List<String> results = snarlTemplate.doWithGetter(null, "urn:test:k", new GetterCallback<String>() {
