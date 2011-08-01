@@ -16,6 +16,7 @@ Current build / install instructions:
    install that POM in your local maven repo.  However, this POM will not contain
    any of the stardog dependencies - only the Spring dependencies.  We can 
    change this once a Stardog pom exists.
- 
 
-
+If you aren't a Stardog tester (or user or customer), you won't be able to
+compile Spring for Stardog. Please see http://stardog.com/testing for access
+to the alpha/beta test program.
