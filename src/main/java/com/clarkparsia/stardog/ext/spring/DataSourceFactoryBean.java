@@ -24,6 +24,7 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 
+import com.clarkparsia.stardog.StardogDBMS;
 import com.clarkparsia.stardog.api.ConnectionConfiguration;
 import com.clarkparsia.stardog.api.ConnectionPool;
 import com.clarkparsia.stardog.api.ConnectionPoolConfig;
@@ -154,7 +155,7 @@ public class DataSourceFactoryBean implements FactoryBean<DataSource>, Initializ
 		}
 		
 		if (createIfNotPresent) { 
-			connectionConfig = connectionConfig.createIfNotPresent();
+			StardogDBMS.get().createMemory(to);
 		}
 		
 		if (connectionProperties != null) { 

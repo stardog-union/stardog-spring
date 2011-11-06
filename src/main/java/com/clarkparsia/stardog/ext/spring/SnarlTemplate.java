@@ -16,30 +16,21 @@
 package com.clarkparsia.stardog.ext.spring;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-
-import org.openrdf.query.GraphQueryResult;
-import org.openrdf.query.QueryEvaluationException;
-import org.openrdf.query.TupleQueryResult;
-import org.openrdf.model.impl.CalendarLiteralImpl;
+import org.openrdf.model.Graph;
+import org.openrdf.model.Resource;
+import org.openrdf.model.Statement;
+import org.openrdf.model.Value;
 import org.openrdf.model.impl.GraphImpl;
 import org.openrdf.model.impl.LiteralImpl;
 import org.openrdf.model.impl.URIImpl;
 import org.openrdf.model.impl.ValueFactoryImpl;
-import org.openrdf.model.Graph;
-import org.openrdf.model.Resource;
-import org.openrdf.model.URI;
-import org.openrdf.model.Statement;
-import org.openrdf.model.Value;
-
+import org.openrdf.query.GraphQueryResult;
+import org.openrdf.query.QueryEvaluationException;
+import org.openrdf.query.TupleQueryResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +41,6 @@ import com.clarkparsia.stardog.api.Getter;
 import com.clarkparsia.stardog.api.Query;
 import com.clarkparsia.stardog.api.Remover;
 import com.clarkparsia.stardog.ext.spring.utils.TypeConverter;
-import com.clarkparsia.stardog.util.Iteration;
 
 /**
  * SnarlTemplate
@@ -229,7 +219,7 @@ public class SnarlTemplate {
 				getter.predicate(new URIImpl(predicate));
 			}
 			
-			Iteration<Statement, StardogException> iterator = getter.iterator();
+			com.clarkparsia.common.iterations.Iteration<Statement, StardogException> iterator = getter.iterator();
 			
 			while (iterator.hasNext()) { 
 				list.add(action.processStatement(iterator.next()));
