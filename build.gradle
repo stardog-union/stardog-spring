@@ -15,7 +15,7 @@ apply plugin:"maven"
  *   maven repository
  */ 
 
-def stardogLocation = "/home/ajb/tools/stardog/stardog-0.7/lib"
+def stardogLocation = "/home/ajb/tools/stardog/stardog-0.7.2/lib"
 
 repositories {
 	mavenLocal()
@@ -29,11 +29,16 @@ repositories {
 }
 
 dependencies {
+	// Core Dependencies
 	compile ('org.springframework:spring-core:3.0.5.RELEASE')
 	compile ('org.springframework:spring-beans:3.0.5.RELEASE')
 	compile ('org.springframework:spring-context:3.0.5.RELEASE')
 	compile ('org.springframework:spring-tx:3.0.5.RELEASE')
 	compile ('org.slf4j:slf4j-api:1.6.1')
+	
+	// Spring Batch support
+	compile ('org.springframework.batch:spring-batch-core:2.1.8.RELEASE') 
+	compile ('org.springframework.batch:spring-batch-infrastructure:2.1.8.RELEASE') 
 	
 	// gremlin in stardog/lib comes with groovy, we don't want to pick that up for gradle
 	compile fileTree(dir: stardogLocation, include: '**/*.jar', exclude: '**/*gremlin*/*')
@@ -45,7 +50,7 @@ dependencies {
 
 configure(install.repositories.mavenInstaller) {
 	pom.project {
-		version '0.0.3'
+		version '0.0.4'
 		artifactId 'stardog-spring'
 		groupId 'com.clarkparsia.stardog'
 	}
