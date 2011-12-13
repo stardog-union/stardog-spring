@@ -19,9 +19,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Before;
@@ -31,18 +31,25 @@ import org.openrdf.model.Statement;
 import org.openrdf.model.impl.LiteralImpl;
 import org.openrdf.model.impl.URIImpl;
 import org.openrdf.query.BindingSet;
-import org.openrdf.rio.RDFFormat;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.clarkparsia.stardog.StardogException;
 import com.clarkparsia.stardog.api.Adder;
-import com.clarkparsia.stardog.ext.spring.DataImporter;
+import com.clarkparsia.stardog.ext.spring.AdderCallback;
 import com.clarkparsia.stardog.ext.spring.DataSource;
 import com.clarkparsia.stardog.ext.spring.GetterCallback;
 import com.clarkparsia.stardog.ext.spring.RowMapper;
@@ -54,30 +61,50 @@ import com.clarkparsia.stardog.ext.spring.SnarlTemplate;
  *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"/test-applicationContext.xml"})
+@ContextConfiguration(locations={"/batch-applicationContext.xml"})
 public class TestSpringBatch  {
 
 	@Autowired
 	DataSource dataSource;
-	
-	@Autowired
-    private ApplicationContext applicationContext;
 
 	@Autowired
 	private SnarlTemplate snarlTemplate;
 	
+	@Autowired
+	private JobLauncher jobLauncher;
+	
+	@Autowired
+	private Job simpleJob;
 
+	/**
+	 * We'll add 20 triples of the form:
+	 *   
+	 *   <urn:test:resource> <urn:test:predicate> "lit{0..20}"
+	 * 
+	 * @throws Exception
+	 */
 	@Before
 	public void setUp() throws Exception {
 		SnarlTemplate tmp = new SnarlTemplate();
 		tmp.setDataSource(dataSource);
-		DataImporter importer = new DataImporter();
-		importer.setSnarlTemplate(tmp);
-		importer.inputFile(RDFFormat.N3, applicationContext.getResource("classpath:sp2b_10k.n3"));
+		tmp.doWithAdder(new AdderCallback<Boolean>() {
+			@Override
+			public Boolean add(Adder adder) throws StardogException {
+				String uriA = "urn:test:resource";
+				String uriB = "urn:test:predicate";
+				
+				for (int i = 0; i < 20; i++) {
+					adder.statement(new URIImpl(uriA), new URIImpl(uriB), new LiteralImpl("lit" + i));
+				}
+				return true;
+			} 		
+		});
 		
 	}
 
 	/**
+	 * Unit test for SnarlREader
+	 * 
 	 * Note: The below code is not idiomatic for Stardog Spring Batch developer.  The SnarlItemReader
 	 * would be configured in a Spring bean definition file, and then orchestrated by Spring Batch
 	 * The below test validates the behavior of the ItemReader interface and integration of the 
@@ -87,7 +114,7 @@ public class TestSpringBatch  {
 	 */
 	@Test
 	public void testRead() {
-		String sparql = "SELECT ?a ?b WHERE { ?a  <http://purl.org/dc/elements/1.1/title> ?b } LIMIT 2";
+		String sparql = "SELECT ?a ?b WHERE { ?a ?predicate ?b } LIMIT 2";
 		SnarlItemReader<String> reader = new SnarlItemReader<String>();
 		reader.setDataSource(dataSource);
 		reader.setRowMapper(new RowMapper<String>() {
@@ -122,6 +149,11 @@ public class TestSpringBatch  {
 		}
 	}
 
+	/**
+	 * Unit test for SnarlWriter
+	 * 
+	 * @throws URISyntaxException
+	 */
 	@Test
 	public void testWrite() throws URISyntaxException {
 		
@@ -164,6 +196,38 @@ public class TestSpringBatch  {
 		});
 		
 		assertEquals(results.size(), 2);	
+		
+	}
+	
+	/**
+	 * This test provides a functional execution of a full batch run.  There are 20 records added to 
+	 * the embedded Stardog database in the Setup method of this test case
+	 * 
+	 * The batch hooks (TestBatchCallback and TestRowMapper) extract the data, marshal to the TestRecord
+	 * bean, and write it back in under a different predicate
+	 * 
+	 * @throws JobExecutionAlreadyRunningException
+	 * @throws JobRestartException
+	 * @throws JobInstanceAlreadyCompleteException
+	 * @throws JobParametersInvalidException
+	 */
+	@Test
+	public void integrationTest() throws JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
+		
+		// Run the batch job
+		JobParameters jobParameters = new JobParametersBuilder().addDate("startTime", new Date()).toJobParameters();
+		JobExecution jobEx = jobLauncher.run(simpleJob, jobParameters);
+		
+		// Validate we have created 20 new records with the new predicate
+		// this uses the basic functionality in SnarlTemplate
+		List<String> results = snarlTemplate.doWithGetter(null, "urn:test:propertyUpdate", new GetterCallback<String>() {
+			@Override
+			public String processStatement(Statement statement) {
+				return statement.getObject().stringValue();
+			} 
+		});
+		
+		assertEquals(results.size(), 20);	
 		
 	}
 }

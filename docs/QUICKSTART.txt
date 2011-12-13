@@ -35,6 +35,8 @@ mvn install:install-file
 In addition to the standard Stardog dependencies, stardog-spring pulls in 
 spring-core and spring-beans version 3.0.5.RELEASE.
 
+Note: the Spring batch dependencies are only needed if you use the beans in the batch sub-package.
+
 3. Usage
 
 There are three principal beans to add to a Spring application context:
@@ -97,7 +99,7 @@ A sample applicationContext follows:
 	</bean>
 
 
-4. Examples
+4. Basic SnarlTemplate Examples
 
 4.1 query() with SELECT queries
 
@@ -164,4 +166,113 @@ A sample applicationContext follows:
 			} 
 		});
 		
+
+5. Spring Batch Support
+
+Spring Batch provides a robust infrastructure for building complex batch processing applications. 
+Given that structured and unstructured data may not be in RDF form, Stardog Spring supports Spring Batch for
+building readers and writers that can participate in a larger batch set of transactions.  The DataSource and
+SnarlTemplate are leveraged in implementations of the ItemReader and ItemWriter interfaces, and the callbacks
+commonly used with SnarlTemplate can then be used in the batch transaction.  One new callback is added for using
+a list of templated objects with the Snarl Adder interface.
+
+5.1 Sample Batch Configuration File
+
+The following is a sample batch configuration file that uses a SnarlReader and SnarlWriter to read triples from
+an embedded Stardog and then write them back with new predicates.  While this only shows the very basics of Spring
+Batch, these building blocks can be used with any of the Spring Batch capabilities.
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:batch="http://www.springframework.org/schema/batch" 
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-2.1.xsd">
+
+    <!--  
+	//////////////////////   Basic Stardog-Spring configuration //////////////////////
+	-->
+    
+	<bean name="dataSource" class="com.clarkparsia.stardog.ext.spring.DataSourceFactoryBean">
+		<property name="to" value="testdb"/>
+		<property name="createIfNotPresent" value="true"/>
+	</bean>
+
+	<bean name="template" class="com.clarkparsia.stardog.ext.spring.SnarlTemplate">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+	<!--  
+	//////////////////////   Basic Spring Batch configuration //////////////////////
+	
+		- Synchronous task executor for simple JUnit Runners, can be easily swapped for AsyncTaskExecutor
+		- in memory batch management
+		- StepScope beans (SnarlReader and SnarlWriter) are created and destroyed with each batch run
+		
+	
+	-->
+	
+	<bean name="transactionManager" class="org.springframework.batch.support.transaction.ResourcelessTransactionManager">
+	</bean>
+
+	  <bean id="jobRepository" class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean">
+		<property name="transactionManager" ref="transactionManager"/>
+	  </bean>
+
+
+	<bean id="syncTaskExecutor" class="org.springframework.core.task.SyncTaskExecutor"/>
+
+	<bean id="jobLauncher"
+	      class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+	    <property name="jobRepository" ref="jobRepository" />
+	    <property name="taskExecutor" ref="syncTaskExecutor"/>
+	</bean>
+
+	<bean class="org.springframework.batch.core.scope.StepScope" />
+	
+	<bean id="testRowMapper" class="com.clarkparsia.stardog.ext.spring.batch.TestRowMapper"/>
+	
+	<bean id="testBatchCallback" class="com.clarkparsia.stardog.ext.spring.batch.TestBatchCallback"/>
+	
+	<!--  
+	//////////////////////   Batch job configuration for Stardog //////////////////////
+	-->
+	
+	<bean id="snarlReader" class="com.clarkparsia.stardog.ext.spring.batch.SnarlItemReader" scope="step">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="query" value="SELECT ?a ?b WHERE { ?a &lt;urn:test:predicate> ?b }"/>
+		<property name="rowMapper" ref="testRowMapper"/>
+	</bean>
+	
+	<bean id="snarlWriter" class="com.clarkparsia.stardog.ext.spring.batch.SnarlItemWriter" scope="step">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="callback" ref="testBatchCallback"/>
+	</bean>
+	
+	<batch:job id="simpleJob" >
+		<batch:step id="simpleStep">
+			<batch:tasklet task-executor="syncTaskExecutor" throttle-limit="5">
+				<batch:chunk reader="snarlReader" writer="snarlWriter" commit-interval="5"/>
+			</batch:tasklet>
+		</batch:step>
+	</batch:job>
+	
+</beans>
+
+
+5.2  Callbacks
+
+The new callback is the BatchAdderCallback which uses a list of <T> instead of just one:
+
+	public void write(Adder adder, List<? extends TestRecord> items)
+			throws StardogException {
+		
+		for (TestRecord item : items) {
+			adder.statement(new URIImpl(item.getName()), new URIImpl("urn:test:propertyUpdate"), new LiteralImpl((String) item.getValue() + "update"));
+		}
+		
+	}
+
+
+
+
 
