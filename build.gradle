@@ -15,7 +15,7 @@ apply plugin:"maven"
  *   maven repository
  */ 
 
-def stardogLocation = "/home/ajb/tools/stardog/stardog-0.7.2/lib"
+def stardogLocation = "/home/ajb/tools/stardog/stardog-0.9.1/lib"
 
 repositories {
 	mavenLocal()
@@ -30,10 +30,10 @@ repositories {
 
 dependencies {
 	// Core Dependencies
-	compile ('org.springframework:spring-core:3.0.5.RELEASE')
-	compile ('org.springframework:spring-beans:3.0.5.RELEASE')
-	compile ('org.springframework:spring-context:3.0.5.RELEASE')
-	compile ('org.springframework:spring-tx:3.0.5.RELEASE')
+	compile ('org.springframework:spring-core:3.1.1.RELEASE')
+	compile ('org.springframework:spring-beans:3.1.1.RELEASE')
+	compile ('org.springframework:spring-context:3.1.1.RELEASE')
+	compile ('org.springframework:spring-tx:3.1.1.RELEASE')
 	compile ('org.slf4j:slf4j-api:1.6.1')
 	
 	// Spring Batch support
@@ -50,7 +50,7 @@ dependencies {
 
 configure(install.repositories.mavenInstaller) {
 	pom.project {
-		version '0.0.4'
+		version '0.9.0'
 		artifactId 'stardog-spring'
 		groupId 'com.clarkparsia.stardog'
 	}

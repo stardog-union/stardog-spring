@@ -58,6 +58,10 @@ public class DataSourceFactoryBean implements FactoryBean<DataSource>, Initializ
 	 */
 	private String url;
 	
+	private String username;
+	
+	private String password;
+	
 	private boolean createIfNotPresent;
 	
 	private ReasoningType reasoningType;
@@ -91,6 +95,8 @@ public class DataSourceFactoryBean implements FactoryBean<DataSource>, Initializ
 	private int minPool = 10;
 	
 	private boolean noExpiration = false;
+	
+	private boolean embedded = false;
 	
 	
 	/**
@@ -140,9 +146,6 @@ public class DataSourceFactoryBean implements FactoryBean<DataSource>, Initializ
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		log.debug("Initializing Stardog connection configuration");
-		SecurityUtil.setupSingletonSecurityManager();
-		
-		ConnectionPool pool;
 		
 		ConnectionConfiguration connectionConfig;
 		
@@ -154,8 +157,17 @@ public class DataSourceFactoryBean implements FactoryBean<DataSource>, Initializ
 			connectionConfig = connectionConfig.url(url);
 		}
 		
+		if (embedded) {
+			StardogDBMS.startEmbeddedServer();
+		}
+		
 		if (createIfNotPresent) { 
-			StardogDBMS.get().createMemory(to);
+			StardogDBMS dbms = StardogDBMS.login(username, password.toCharArray());
+			if (dbms.list().contains(to)) {
+				dbms.drop(to);
+			}
+			dbms.createMemory(to);
+			dbms.logout();
 		}
 		
 		if (connectionProperties != null) { 
@@ -165,6 +177,8 @@ public class DataSourceFactoryBean implements FactoryBean<DataSource>, Initializ
 		if (reasoningType != null) { 
 			connectionConfig = connectionConfig.reasoning(reasoningType);
 		}
+		
+		connectionConfig = connectionConfig.credentials(username, password);
 		
 		poolConfig = ConnectionPoolConfig
 				.using(connectionConfig) 
@@ -391,5 +405,50 @@ public class DataSourceFactoryBean implements FactoryBean<DataSource>, Initializ
 	 */
 	public void setNoExpiration(boolean noExpiration) {
 		this.noExpiration = noExpiration;
+	}
+
+	/**
+	 * @return the username
+	 */
+	public String getUsername() {
+		return username;
+	}
+
+	/**
+	 * @param username the username to set
+	 */
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	/**
+	 * @return the password
+	 */
+	public String getPassword() {
+		return password;
+	}
+
+	/**
+	 * @param password the password to set
+	 */
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	/**
+	 * @return the embedded
+	 */
+	public boolean isEmbedded() {
+		return embedded;
+	}
+
+	/**
+	 * @param embedded the embedded to set
+	 */
+	public void setEmbedded(boolean embedded) {
+		this.embedded = embedded;
 	}	
+	
+	
+	
 }
