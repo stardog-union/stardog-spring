@@ -82,6 +82,9 @@ A sample applicationContext follows:
 	<bean name="dataSource" class="com.clarkparsia.stardog.ext.spring.DataSourceFactoryBean">
 		<property name="to" value="testdb"/>
 		<property name="createIfNotPresent" value="true"/>
+		<property name="username" value="admin"/>
+		<property name="password" value="admin"/>
+		<property name="embedded" value="true"/> <!-- starts the Stardog server in embedded mode -->
 	</bean>
 
 	<bean name="template" class="com.clarkparsia.stardog.ext.spring.SnarlTemplate">
