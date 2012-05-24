@@ -7,6 +7,8 @@ Current build / install instructions:
 
  - Edit build.gradle and change the stardogLocation variable (line 18) 
    to a local Stardog release directory
+ - Don't forget to set an environment variable or JVM parameter for stardog home
+ - As of Stardog 0.9.6, don't forget to get your license and drop it in stardog home
  - Run "gradlew", this will download gradle and fully bootstrap a gradle
    build environment
  - Run "gradlew build", which will resolve dependencies, compile, and
