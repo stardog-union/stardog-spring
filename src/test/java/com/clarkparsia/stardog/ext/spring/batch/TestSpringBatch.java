@@ -19,11 +19,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -76,6 +79,15 @@ public class TestSpringBatch  {
 	@Autowired
 	private Job simpleJob;
 
+	private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+	private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+
+	@After
+	public void cleanUpStreams() {
+	    System.setOut(null);
+	    System.setErr(null);
+	}
+	
 	/**
 	 * We'll add 20 triples of the form:
 	 *   
@@ -85,6 +97,8 @@ public class TestSpringBatch  {
 	 */
 	@Before
 	public void setUp() throws Exception {
+	    System.setOut(new PrintStream(outContent));
+	    System.setErr(new PrintStream(errContent));
 		SnarlTemplate tmp = new SnarlTemplate();
 		tmp.setDataSource(dataSource);
 		tmp.doWithAdder(new AdderCallback<Boolean>() {

@@ -18,12 +18,15 @@ package com.clarkparsia.stardog.ext.spring;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -64,12 +67,25 @@ public class TestDataSourceFactory  {
 	@Autowired
 	private SnarlTemplate snarlTemplate;
 	
+	private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+	private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+
+
+
+	@After
+	public void cleanUpStreams() {
+	    System.setOut(null);
+	    System.setErr(null);
+	}
+	
 	/**
 	 * TODO: perhaps not load 10k triples for each JUnit test
 	 * @throws java.lang.Exception
 	 */
 	@Before
 	public void setUp() throws Exception {
+	    System.setOut(new PrintStream(outContent));
+	    System.setErr(new PrintStream(errContent));
 		SnarlTemplate tmp = new SnarlTemplate();
 		tmp.setDataSource(dataSource);
 		DataImporter importer = new DataImporter();
