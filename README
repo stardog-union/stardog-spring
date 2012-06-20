@@ -5,6 +5,9 @@ http://stardog.com/docs/spring for more information, when it's ready.
 
 Current build / install instructions:
 
+Note: Gradle Eclipse plugin (e.g. in SpringSource Tool Suite does not honor JVM parameters.
+      Work around is to drop stardog license file in the stardog-spring workspace folder itself.
+
  - Edit build.gradle and change the stardogLocation variable (line 18) 
    to a local Stardog release directory
  - Don't forget to set an environment variable or JVM parameter for stardog home

@@ -15,7 +15,7 @@ apply plugin:"maven"
  *   maven repository
  */ 
 
-def stardogLocation = "/home/ajb/tools/stardog/stardog-0.9.6/lib"
+def stardogLocation = "/home/ajb/tools/stardog/stardog-1.0/lib"
 
 repositories {
 	mavenCentral()
@@ -50,12 +50,12 @@ dependencies {
 
 configure(install.repositories.mavenInstaller) {
 	pom.project {
-		version '0.9.6'
+		version '1.0.0'
 		artifactId 'stardog-spring'
 		groupId 'com.clarkparsia.stardog'
 	}
 }
 
 task wrapper(type: Wrapper) {
-	gradleVersion = '1.0-rc-2'
+	gradleVersion = '1.0'
 }
