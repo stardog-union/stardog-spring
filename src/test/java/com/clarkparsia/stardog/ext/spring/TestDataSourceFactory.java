@@ -208,8 +208,8 @@ public class TestDataSourceFactory  {
 		tmp.setDataSource(dataSource);
 		String sparql = "SELECT ?a ?b WHERE { ?a ?c ?b } LIMIT 5";
 		
-		HashMap<String, String> params = new HashMap<String, String>() {{ 
-			put("c", "test")); 
+		HashMap<String, Object> params = new HashMap<String, Object>() {{ 
+			put("c", new URIImpl("http://purl.org/dc/elements/1.1/title")); 
 		}};
 		
 		List<Map<String,String>> results = tmp.query(sparql, params, new RowMapper<Map<String,String>>() {
