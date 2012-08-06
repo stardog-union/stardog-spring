@@ -290,14 +290,14 @@ public class SnarlTemplate {
 		return construct(sparql, null, mapper);
 	}
 	
-	public <T> List<T> construct(String sparql,  Map<String, String> args, GraphMapper<T> mapper) { 
+	public <T> List<T> construct(String sparql,  Map<String, Object> args, GraphMapper<T> mapper) { 
 		Connection connection = dataSource.getConnection();
 		GraphQueryResult result = null;
 		try { 
 			Query query = connection.query(sparql);
 			
 			if (args != null) { 
-				for (Entry<String, String> arg : args.entrySet()) { 					
+				for (Entry<String, Object> arg : args.entrySet()) { 					
 					query.parameter(arg.getKey(), arg.getValue());
 				}
 			}
@@ -332,12 +332,10 @@ public class SnarlTemplate {
 	/**
 	 * <code>query</code>
 	 * Simple query call for a SPARQL Query and a RowMapper to
-	 * map the object to a domain class
+	 * map the object to a list of domain classses
 	 * 
-	 * Other methods will overload this for query parameters, limits, etc
-	 * 
-	 * @param sparql
-	 * @param mapper
+	 * @param sparql the SPARQL query to execute
+	 * @param mapper implementation of the RowMapper interface
 	 * @return List of results from the RowMapper calls
 	 */
 	public <T> List<T> query(String sparql, RowMapper<T> mapper) {
@@ -347,23 +345,22 @@ public class SnarlTemplate {
 	/**
 	 * <code>query</code>
 	 * Simple query call for a SPARQL Query and a RowMapper to
-	 * map the object to a domain class
+	 * map the object to a list of domain classes
 	 * 
-	 * Other methods will overload this for query parameters, limits, etc
-	 * 
-	 * @param sparql
-	 * @param mapper
+	 * @param sparql the SPARQL query to execute
+	 * @param args map of string and object to pass bind as input parameters
+	 * @param mapper implementation of the RowMapper interface
 	 * @return List of results from the RowMapper calls
 	 */
-	public <T> List<T> query(String sparql, Map<String, String> args, RowMapper<T> mapper) {
+	public <T> List<T> query(String sparql, Map<String, Object> args, RowMapper<T> mapper) {
 		Connection connection = dataSource.getConnection();
 		TupleQueryResult result = null;
 		try { 
 			Query query = connection.query(sparql);
 			
 			if (args != null) { 
-				for (Entry<String, String> arg : args.entrySet()) { 					
-					query.parameter(arg.getKey(), arg.getValue());
+				for (Entry<String, Object> arg : args.entrySet()) { 					
+					query.parameter(arg.getKey(),arg.getValue());
 				}
 			}
 			
@@ -393,6 +390,69 @@ public class SnarlTemplate {
 			dataSource.releaseConnection(connection);
 		}
 	}
+
+	/**
+	 * <code>queryForObject</code>
+	 * Simple query call for a SPARQL Query and a RowMapper to
+	 * map the object to a single domain class
+	 * 
+	 * @param sparql
+	 * @param mapper
+	 * @return single result of the RowMapper call
+	 */
+	public <T> T queryForObject(String sparql, RowMapper<T> mapper) {
+		return queryForObject(sparql, null, mapper);
+	}
+	
+	/**
+	 * <code>queryForObject</code>
+	 * Simple query call for a SPARQL Query and a RowMapper to
+	 * map the object to a domain class
+	 * 
+	 * @param sparql the SPARQL Query
+	 * @param args map of string and object
+	 * @param mapper implementation of RowMapper
+	 * @return single result of the RowMapper call
+	 */
+	public <T> T queryForObject(String sparql, Map<String, Object> args, RowMapper<T> mapper) {
+		Connection connection = dataSource.getConnection();
+		TupleQueryResult result = null;
+		try { 
+			Query query = connection.query(sparql);
+			
+			if (args != null) { 
+				for (Entry<String, Object> arg : args.entrySet()) { 		
+					query.parameter(arg.getKey(),arg.getValue());
+				}
+			}
+			
+			
+			
+			result = query.executeSelect();
+			T returnObject = null;
+			// return null; for empty queries
+			if (result == null) { 
+				return returnObject;
+			}
+			
+			if (result.hasNext()) { 
+				returnObject = mapper.mapRow(result.next());
+			}
+			
+			result.close();
+			
+			return returnObject;
+		} catch (StardogException e) {
+			log.error("Error sending query to Stardog", e);
+			throw new RuntimeException(e);
+		} catch (QueryEvaluationException e) {
+			log.error("Error evaluating SPARQL query", e);
+			throw new RuntimeException(e);
+		} finally { 
+			dataSource.releaseConnection(connection);
+		}
+	}
+	
 	
 	/**
 	 * <code>add</code>

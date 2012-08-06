@@ -17,6 +17,7 @@ package com.clarkparsia.stardog.ext.spring;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -137,6 +138,130 @@ public class TestDataSourceFactory  {
 		
 		assertNotNull(results);
 		assertEquals(results.size(), 5);
+	}
+	
+	@Test
+	public void testQueryForObject() throws URISyntaxException {
+		SnarlTemplate tmp = new SnarlTemplate();
+		tmp.setDataSource(dataSource);
+		
+		String uriA = "urn:test:a";
+		String uriB = "urn:test:b";
+		String litA = "hello world";
+		
+		URI a = new URI(uriA);
+		URI b = new URI(uriB);
+
+		tmp.add(uriA, uriB, litA);
+	
+		String sparql = "SELECT ?a ?b WHERE { ?a  <urn:test:b> ?b }";
+		
+		Map<String, String> result = tmp.queryForObject(sparql, new RowMapper<Map<String, String>>() {
+
+			@Override
+			public Map<String, String> mapRow(BindingSet bindingSet) {
+				Map<String,String> map = new HashMap<String,String>();
+				map.put("a", bindingSet.getValue("a").stringValue());
+				map.put("b", bindingSet.getValue("b").stringValue());
+				return map;
+			}
+			
+		});
+		assertNotNull(result);
+		assertEquals(result.size(), 2);
+		assertTrue(result.get("a").equals(uriA));
+		assertTrue(result.get("b").equals(litA));
+ 		
+	}
+	
+	@Test
+	public void testQueryWithParams() throws URISyntaxException {
+		
+		SnarlTemplate tmp = new SnarlTemplate();
+		tmp.setDataSource(dataSource);
+		String sparql = "SELECT ?a ?b WHERE { ?a ?c ?b } LIMIT 5";
+		
+		HashMap<String, Object> params = new HashMap<String, Object>() {{ 
+			put("c", new URIImpl("http://purl.org/dc/elements/1.1/title")); 
+		}};
+		
+		List<Map<String,String>> results = tmp.query(sparql, params, new RowMapper<Map<String,String>>() {
+
+			@Override
+			public Map<String,String> mapRow(BindingSet bindingSet) {
+				Map<String,String> map = new HashMap<String,String>();
+				map.put("a", bindingSet.getValue("a").stringValue());
+				map.put("b", bindingSet.getValue("b").stringValue());
+				return map;
+			} 
+			
+		});
+		
+		assertNotNull(results);
+		assertEquals(results.size(), 5);
+	}
+	
+	@Test
+	public void testLegacyQueryWithParams() throws URISyntaxException {
+		
+		SnarlTemplate tmp = new SnarlTemplate();
+		tmp.setDataSource(dataSource);
+		String sparql = "SELECT ?a ?b WHERE { ?a ?c ?b } LIMIT 5";
+		
+		HashMap<String, String> params = new HashMap<String, String>() {{ 
+			put("c", "test")); 
+		}};
+		
+		List<Map<String,String>> results = tmp.query(sparql, params, new RowMapper<Map<String,String>>() {
+
+			@Override
+			public Map<String,String> mapRow(BindingSet bindingSet) {
+				Map<String,String> map = new HashMap<String,String>();
+				map.put("a", bindingSet.getValue("a").stringValue());
+				map.put("b", bindingSet.getValue("b").stringValue());
+				return map;
+			} 
+			
+		});
+		
+		assertNotNull(results);
+		assertEquals(results.size(), 5);
+	}
+	
+	@Test
+	public void testQueryForObjectWithParams() throws URISyntaxException {
+		SnarlTemplate tmp = new SnarlTemplate();
+		tmp.setDataSource(dataSource);
+		
+		String uriA = "urn:test:a";
+		String uriB = "urn:test:b";
+		String litA = "hello world";
+		
+		URI a = new URI(uriA);
+		URI b = new URI(uriB);
+
+		tmp.add(uriA, uriB, litA);
+	
+		String sparql = "SELECT ?a ?b WHERE { ?a ?c ?b }";
+		HashMap<String, Object> params = new HashMap<String, Object>() {{ 
+			put("c", new URIImpl("urn:test:b")); 
+		}};
+		Map<String, String> result = tmp.queryForObject(sparql, params, new RowMapper<Map<String, String>>() {
+
+			@Override
+			public Map<String, String> mapRow(BindingSet bindingSet) {
+				Map<String,String> map = new HashMap<String,String>();
+				map.put("a", bindingSet.getValue("a").stringValue());
+				map.put("b", bindingSet.getValue("b").stringValue());
+				return map;
+			}
+			
+		});
+		assertNotNull(result);
+		assertEquals(result.size(), 2);
+		assertTrue(result.get("a").equals(uriA));
+		assertTrue(result.get("b").equals(litA));
+ 		
 	}
 	
 	@Test
