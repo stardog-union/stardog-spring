@@ -17,7 +17,9 @@ package com.clarkparsia.stardog.ext.spring;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -45,6 +47,10 @@ import com.clarkparsia.stardog.StardogException;
 import com.clarkparsia.stardog.api.Adder;
 import com.clarkparsia.stardog.api.Connection;
 import com.clarkparsia.stardog.api.Remover;
+import com.clarkparsia.stardog.ext.spring.mapper.SimpleRowMapper;
+import com.clarkparsia.stardog.ext.spring.mapper.SingleMapper;
+import com.clarkparsia.stardog.reasoning.ReasoningType;
+
 
 /**
  * Test cases for the StardogConnectionFactoryBean
@@ -138,6 +144,41 @@ public class TestDataSourceFactory  {
 		
 		assertNotNull(results);
 		assertEquals(results.size(), 5);
+	}
+
+	@Test
+	public void testSimpleRowMapper() { 
+		SnarlTemplate tmp = new SnarlTemplate();
+		tmp.setDataSource(dataSource);
+		String sparql = "SELECT ?a ?b WHERE { ?a  <http://purl.org/dc/elements/1.1/title> ?b } LIMIT 5";
+		
+		List<Map<String,String>> results = tmp.query(sparql, new SimpleRowMapper());
+		
+		assertNotNull(results);
+		assertEquals(results.size(), 5);
+	}
+	
+		
+	@Test
+	public void testSingleMapper() { 
+		SnarlTemplate tmp = new SnarlTemplate();
+		tmp.setDataSource(dataSource);
+		String sparql = "SELECT ?b WHERE { ?a  <http://purl.org/dc/elements/1.1/title> ?b } LIMIT 1";
+		
+		String result = tmp.queryForObject(sparql, new SingleMapper("b"));
+		
+		assertNotNull(result);
+	}
+	
+	@Test
+	public void testNullSingleMapper() { 
+		SnarlTemplate tmp = new SnarlTemplate();
+		tmp.setDataSource(dataSource);
+		String sparql = "SELECT ?b WHERE { ?a  <http://purl.org/dc/elements/1.1/title> ?b } LIMIT 1";
+		// unlike previous test, a is not bound, therefore should find null in Sesame API 
+		String result = tmp.queryForObject(sparql, new SingleMapper("a"));
+		
+		assertNull(result);
 	}
 	
 	@Test
@@ -479,6 +520,97 @@ public class TestDataSourceFactory  {
 		
 		assertEquals(results.size(), 1);
 		
+	}
+	
+	@Test
+	public void testSnarlGetDataSource() {
+		DataSource ds = snarlTemplate.getDataSource();
+		assertNotNull(ds);
+	}
+	
+	// @Test commented out, may be issue on remove w/ construct
+	public void testRemoveWithConstruct() {
+		String uriA = "urn:test:r";
+		String uriB = "urn:test:q";
+		String litA = "hello world";
+		snarlTemplate.add(uriA, uriB, litA);
+		
+		String sparql = "CONSTRUCT { ?a <urn:test:q> ?b } WHERE { ?a <urn:test:q> ?b }";
+		
+		snarlTemplate.remove(sparql);
+		
+		List<Map<String,String>>  results = snarlTemplate.construct(sparql, new GraphMapper<Map<String,String>>() {
+			@Override
+			public Map<String, String> mapRow(Statement next) {
+				Map<String,String> map = new HashMap<String,String>();	
+				map.put(next.getSubject().stringValue(), next.getObject().stringValue());
+				return map;
+			} 
+		});
+		
+		assertEquals(results.size(), 0);
+	}
+	
+	@Test
+	public void testAddUriUriString() {
+		try { 
+			URI a = new URI("urn:test:s");
+			URI b = new URI("urn:test:t");
+			String c = "Hello World";
+			snarlTemplate.add(a, b, c);
+			
+			String sparql = "SELECT ?a ?c WHERE { ?a  <urn:test:t> ?b } LIMIT 1";
+			
+			List<Map<String,String>> results = snarlTemplate.query(sparql, new SimpleRowMapper());
+			
+			assertNotNull(results);
+			assertEquals(results.size(), 1);
+			
+		} catch (Exception e) {
+			fail("Caught exception");
+		}
+	}
+	
+	@Test
+	public void testLifecycle() {
+		// run through the getter/setters
+		DataSourceFactoryBean dfb = new DataSourceFactoryBean();
+		dfb.setBlockCapacityTime(0L);
+		dfb.setCreateIfNotPresent(true);
+		dfb.setEmbedded(true);
+		dfb.setExpirationTime(0L);
+		dfb.setFailAtCapacity(true);
+		dfb.setMaxIdle(100);
+		dfb.setGrowAtCapacity(true);
+		dfb.setNoExpiration(false);
+		dfb.setMaxPool(1);
+		dfb.setMinPool(1);
+		dfb.setPassword("test");
+		dfb.setUsername("test");
+		dfb.setUrl("http://test.com");
+		dfb.setReasoningType(ReasoningType.NONE);
+		dfb.setTo("testdb");
+		
+		dfb.getUsername();
+		dfb.getBlockCapacityTime();
+		dfb.isCreateIfNotPresent();
+		dfb.isEmbedded();
+		dfb.getExpirationTime();
+		dfb.isFailAtCapacity();
+		dfb.getMaxIdle();
+		dfb.isGrowAtCapacity();
+		dfb.isNoExpiration();
+		dfb.getMaxPool();
+		dfb.getMinPool();
+		dfb.getPassword();
+		dfb.getUsername();
+		dfb.getUrl();
+		assertEquals(dfb.getReasoningType(), ReasoningType.NONE);
+		dfb.getTo();
+		dfb.getUsername();
+		
+		DataSource ds = new DataSource();
+		dataSource.destroy();
 	}
 	
 }

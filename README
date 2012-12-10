@@ -1,17 +1,26 @@
 *Spring for Stardog*
 
-This is Spring integration for Stardog, the RDF database. See
-http://stardog.com/docs/spring for more information, when it's ready.
+This is Spring integration for Stardog, the RDF database. These bindings
+provide Spring aware beans to provide an analogous feature set to Spring's
+jdbcTemplate.  Spring Bach reader/writers are also included.
+
+Official Docs:
+  http://stardog.com/docs/spring/
+
+Recent Changes:
+  1.1: 
+    * Validated compatibility with Stardog 1.1
+    * Upgraded Spring dependencies to 3.1.2 RELEASE
+    * Added some common RowMappers to ext.spring.mapper package
+    * Increased test coverage, adding Emma to build
 
 Current build / install instructions:
 
-Note: Gradle Eclipse plugin (e.g. in SpringSource Tool Suite does not honor JVM parameters.
+  - Note: Gradle Eclipse plugin (e.g. in SpringSource Tool Suite does not honor JVM parameters.
       Work around is to drop stardog license file in the stardog-spring workspace folder itself.
-
  - Edit build.gradle and change the stardogLocation variable (line 18) 
    to a local Stardog release directory
  - Don't forget to set an environment variable or JVM parameter for stardog home
- - As of Stardog 0.9.6, don't forget to get your license and drop it in stardog home
  - Run "gradlew", this will download gradle and fully bootstrap a gradle
    build environment
  - Run "gradlew build", which will resolve dependencies, compile, and

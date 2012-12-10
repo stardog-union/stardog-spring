@@ -2,6 +2,8 @@ apply plugin:"java"
 apply plugin:"eclipse"
 apply plugin:"maven"
 
+apply from:'https://raw.github.com/breskeby/gradleplugins/master/emmaPlugin/emma.gradle'
+
 /**
  * TODO:
  *   Once there is a Stardog maven artifact, we will replace this
@@ -15,7 +17,7 @@ apply plugin:"maven"
  *   maven repository
  */ 
 
-def stardogLocation = "/home/ajb/tools/stardog/stardog-1.0/lib"
+def stardogLocation = "../tools/stardog/stardog-1.1/lib"
 
 repositories {
 	mavenCentral()
@@ -28,12 +30,17 @@ repositories {
 	
 }
 
+configurations { 
+	
+	emma
+}
+
 dependencies {
 	// Core Dependencies
-	compile ('org.springframework:spring-core:3.1.1.RELEASE') 
-	compile ('org.springframework:spring-beans:3.1.1.RELEASE') 
-	compile ('org.springframework:spring-context:3.1.1.RELEASE') 
-	compile ('org.springframework:spring-tx:3.1.1.RELEASE')
+	compile ('org.springframework:spring-core:3.1.2.RELEASE') 
+	compile ('org.springframework:spring-beans:3.1.2.RELEASE') 
+	compile ('org.springframework:spring-context:3.1.2.RELEASE') 
+	compile ('org.springframework:spring-tx:3.1.2.RELEASE')
 	compile ('org.slf4j:slf4j-api:1.6.1')
 	
 	// Spring Batch support
@@ -46,11 +53,18 @@ dependencies {
 	testCompile group: 'junit', name: 'junit', version: '4.8.2'
 	testCompile group: 'org.springframework', name:'spring-test', version:'3.0.5.RELEASE'
 	
+	emma "emma:emma:2.0.5312"
+	emma "emma:emma_ant:2.0.5312"
+	
+}
+
+emma{
+	reportPath = "reports/emma"
 }
 
 configure(install.repositories.mavenInstaller) {
 	pom.project {
-		version '1.0.0'
+		version '1.1'
 		artifactId 'stardog-spring'
 		groupId 'com.clarkparsia.stardog'
 	}
