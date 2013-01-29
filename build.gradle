@@ -18,8 +18,8 @@ apply from:'https://raw.github.com/breskeby/gradleplugins/master/emmaPlugin/emma
  */ 
 
 // UPDATE TO YOUR STARDOG LOCATION
-def localStardogLocation = (System.getenv('STARDOG') + '/lib') ?: localStardogLocation
-def stardogLocation = localStardogLocation
+def localStardogLocation = null
+def stardogLocation = (System.getenv('STARDOG') + '/lib') ?: localStardogLocation
 
 repositories {
 	mavenCentral()
