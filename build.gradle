@@ -17,9 +17,8 @@ apply from:'https://raw.github.com/breskeby/gradleplugins/master/emmaPlugin/emma
  *   maven repository
  */ 
 
-// UPDATE TO YOUR STARDOG LOCATION
-def localStardogLocation = null
-def stardogLocation = (System.getenv('STARDOG') + '/lib') ?: localStardogLocation
+def stardogLocation= "CHANGE"
+System.setProperty('STARDOG_HOME', "CHANGE")
 
 repositories {
 	mavenCentral()
@@ -50,8 +49,8 @@ dependencies {
 	
 	// gremlin in stardog/lib comes with groovy, we don't want to pick that up for gradle
 	// remove springframework
-	compile fileTree(dir: stardogLocation, include: '**/*.jar', exclude: '**/????springframework*/*')
-	
+	compile fileTree(dir: stardogLocation, include: '**/*.jar', exclude:"**/spring*.jar")
+		
 	testCompile group: 'junit', name: 'junit', version: '4.8.2'
 	testCompile group: 'org.springframework', name:'spring-test', version:'3.0.5.RELEASE'
 	
@@ -61,7 +60,7 @@ dependencies {
 }
 
 emma{
-	reportPath = "reports/emma"
+	reportPath = "reports"
 }
 
 configure(install.repositories.mavenInstaller) {

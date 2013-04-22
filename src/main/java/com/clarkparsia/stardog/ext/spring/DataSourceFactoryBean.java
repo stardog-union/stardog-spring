@@ -26,10 +26,8 @@ import org.springframework.beans.factory.InitializingBean;
 
 import com.clarkparsia.stardog.StardogDBMS;
 import com.clarkparsia.stardog.api.ConnectionConfiguration;
-import com.clarkparsia.stardog.api.ConnectionPool;
 import com.clarkparsia.stardog.api.ConnectionPoolConfig;
 import com.clarkparsia.stardog.reasoning.ReasoningType;
-import com.clarkparsia.stardog.security.SecurityUtil;
 
 /**
  * StardogConnectionFactoryBean
@@ -162,11 +160,13 @@ public class DataSourceFactoryBean implements FactoryBean<DataSource>, Initializ
 		}
 		
 		if (createIfNotPresent) { 
-			StardogDBMS dbms = StardogDBMS.login(username, password.toCharArray());
+			StardogDBMS dbms = StardogDBMS.toEmbeddedServer().credentials(username, password.toCharArray()).login();
 			if (dbms.list().contains(to)) {
 				dbms.drop(to);
+				dbms.createMemory(to);
+			} else { 
+				dbms.createMemory(to);
 			}
-			dbms.createMemory(to);
 			dbms.logout();
 		}
 		
