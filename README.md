@@ -8,7 +8,7 @@ This is [Spring Framework](http://springsource.org) integration for [Stardog RDF
 provide Spring aware beans to provide an analogous feature set to Spring's 
 jdbcTemplate.  
 
-Applications requiring a batch framework can also take advantage of Spring Batch.  The appropriate Spring Bach reader/writers for Stardog are also included.
+Applications requiring a batch framework can also take advantage of Spring Batch.  The appropriate Spring Batch reader/writers for Stardog are also included.
   
 Future Spring project integration is likely, and we welcome contributions on Github.
 
@@ -37,6 +37,18 @@ To use Stardog Spring, we recommend:
 2. Use Gradle with fileTree filter to Stardog lib folder
 3. In your Spring application context, create a DataSourceFactoryBean as your datasource, and reference it in a SnarlTemplate bean
 4. Inject your SnarlTemplate bean appropriately in your application.  It is thread safe.
+
+If desired, you can create a SnarlTemplate programmatically outside of Spring by using a ConnectionConfiguration object from the Stardog API like so:
+
+```groovy
+ConnectionConfiguration cc = ConnectionConfiguration
+	.to("myDB")
+	.credentials("admin", "admin")
+	.url("snarl://localhost/")
+
+SnarlTemplate snarlTemplate = new SnarlTemplate()
+snarlTemplate.setDataSource(new DataSource(cc))
+```
 
 
 ## Development ##

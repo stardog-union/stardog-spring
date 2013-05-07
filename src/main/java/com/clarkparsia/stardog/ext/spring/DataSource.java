@@ -48,6 +48,11 @@ public class DataSource {
 	
 	public DataSource() { }
 	
+	public DataSource(ConnectionConfiguration configuration) { 
+		connectionConfig = configuration;
+		poolConfig = ConnectionPoolConfig.using(configuration);
+	}
+	
 	public DataSource(ConnectionConfiguration configuration, ConnectionPoolConfig poolConfiguration) { 
 		connectionConfig = configuration;
 		poolConfig = poolConfiguration;
@@ -68,6 +73,8 @@ public class DataSource {
 	 */
 	public Connection getConnection() { 
 		try {
+			if (pool == null)
+				afterPropertiesSet();
 			return pool.obtain();
 		} catch (StardogException e) {
 			log.error("Error obtaining connection from Stardog pool", e);
@@ -81,6 +88,8 @@ public class DataSource {
 	 */
 	public void releaseConnection(Connection connection) { 
 		try {
+			if (pool == null)
+				afterPropertiesSet();
 			pool.release(connection);
 		} catch (StardogException e) {
 			log.error("Error releasing connection from Stardog pool", e);
@@ -95,6 +104,8 @@ public class DataSource {
 	 */
 	public void destroy() { 
 		try {
+			if (pool == null)
+				afterPropertiesSet();
 			pool.shutdown();
 		} catch (StardogException e) {
 			log.error("Error shutting down Stardog pool", e);
