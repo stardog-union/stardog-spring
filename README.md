@@ -57,11 +57,13 @@ This project is built with Gradle, and can be easily imported into SpringSource 
 
 
 1. Clone the git repository
-2. Edit build.gradle to point to Stardog/lib folder OR set the STARDOG environment variable
-3. Run gradle build
-4. Pick up the latest jar in build/libs
+2. Edit build.gradle to point to Stardog/lib folder 
+3. Remove the folder, stardog-<version>/lib/org.springframework, as the Gradle "fileTree" will pick it up and cause a conflict
+4. Run gradle build
+5. Pick up the latest jar in build/libs
 
 All tests should pass.  If you do not wish to run Emma code coverage tool, remove it from the Gradle configuration
+
 
 ## NOTE ##
 
