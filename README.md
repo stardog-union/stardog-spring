@@ -67,4 +67,4 @@ All tests should pass.  If you do not wish to run Emma code coverage tool, remov
 
 ## NOTE ##
 
-This framework is in continuous development, please check the [issues](https://github.com/clarkparsia/stardog-spring/issues) page. You're welcome to contribute.
+This framework is in continuous development, please check the [issues](https://github.com/complexible/stardog-spring/issues) page. You're welcome to contribute.

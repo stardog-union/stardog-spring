@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 
-	<bean name="dataSource" class="com.clarkparsia.stardog.ext.spring.DataSourceFactoryBean">
+	<bean name="dataSource" class="com.complexible.stardog.ext.spring.DataSourceFactoryBean">
 		<property name="to" value="testdb"/>
 		<property name="createIfNotPresent" value="true"/>
 		<property name="embedded" value="true"/>
@@ -12,11 +12,11 @@
 		<property name="password" value="admin"/>
 	</bean>
 
-	<bean name="template" class="com.clarkparsia.stardog.ext.spring.SnarlTemplate">
+	<bean name="template" class="com.complexible.stardog.ext.spring.SnarlTemplate">
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
 	
-	<bean name="importer" class="com.clarkparsia.stardog.ext.spring.DataImporter">
+	<bean name="importer" class="com.complexible.stardog.ext.spring.DataImporter">
 		<property name="snarlTemplate" ref="template"/>
 		<property name="format" value="N3"/>
 		<property name="inputFiles">

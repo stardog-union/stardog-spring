@@ -25,7 +25,7 @@ the stardog-spring jar with "gradlew install".
 If installing the jar manually into Maven, you can use mvn install:
 
 mvn install:install-file
-      -DgroupId=com.clarkparsia.stardog
+      -DgroupId=com.complexible.stardog
       -DartifactId=stardog-spring
       -Dversion=0.0.2
       -Dfile=stardog-spring.jar
@@ -41,9 +41,9 @@ Note: the Spring batch dependencies are only needed if you use the beans in the 
 
 There are three principal beans to add to a Spring application context:
 
-  - DataSourceFactoryBean: com.clarkparsia.stardog.ext.spring.DataSourceFactoryBean
-  - SnarlTemplate: com.clarkparsia.stardog.ext.spring.SnarlTemplate
-  - DataImporter: com.clarkparsia.stardog.ext.spring.DataImporter
+  - DataSourceFactoryBean: com.complexible.stardog.ext.spring.DataSourceFactoryBean
+  - SnarlTemplate: com.complexible.stardog.ext.spring.SnarlTemplate
+  - DataImporter: com.complexible.stardog.ext.spring.DataImporter
   
 
 DataSourceFactoryBean is a Spring FactoryBean that configures and produces a DataSource. 
@@ -79,7 +79,7 @@ there would be different DataImporter beans configured in Spring
 
 A sample applicationContext follows:
 
-	<bean name="dataSource" class="com.clarkparsia.stardog.ext.spring.DataSourceFactoryBean">
+	<bean name="dataSource" class="com.complexible.stardog.ext.spring.DataSourceFactoryBean">
 		<property name="to" value="testdb"/>
 		<property name="createIfNotPresent" value="true"/>
 		<property name="username" value="admin"/>
@@ -87,11 +87,11 @@ A sample applicationContext follows:
 		<property name="embedded" value="true"/> <!-- starts the Stardog server in embedded mode -->
 	</bean>
 
-	<bean name="template" class="com.clarkparsia.stardog.ext.spring.SnarlTemplate">
+	<bean name="template" class="com.complexible.stardog.ext.spring.SnarlTemplate">
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
 	
-	<bean name="importer" class="com.clarkparsia.stardog.ext.spring.DataImporter">
+	<bean name="importer" class="com.complexible.stardog.ext.spring.DataImporter">
 		<property name="snarlTemplate" ref="template"/>
 		<property name="format" value="N3"/>
 		<property name="inputFiles">
@@ -195,12 +195,12 @@ Batch, these building blocks can be used with any of the Spring Batch capabiliti
 	//////////////////////   Basic Stardog-Spring configuration //////////////////////
 	-->
     
-	<bean name="dataSource" class="com.clarkparsia.stardog.ext.spring.DataSourceFactoryBean">
+	<bean name="dataSource" class="com.complexible.stardog.ext.spring.DataSourceFactoryBean">
 		<property name="to" value="testdb"/>
 		<property name="createIfNotPresent" value="true"/>
 	</bean>
 
-	<bean name="template" class="com.clarkparsia.stardog.ext.spring.SnarlTemplate">
+	<bean name="template" class="com.complexible.stardog.ext.spring.SnarlTemplate">
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
 	
@@ -232,21 +232,21 @@ Batch, these building blocks can be used with any of the Spring Batch capabiliti
 
 	<bean class="org.springframework.batch.core.scope.StepScope" />
 	
-	<bean id="testRowMapper" class="com.clarkparsia.stardog.ext.spring.batch.TestRowMapper"/>
+	<bean id="testRowMapper" class="com.complexible.stardog.ext.spring.batch.TestRowMapper"/>
 	
-	<bean id="testBatchCallback" class="com.clarkparsia.stardog.ext.spring.batch.TestBatchCallback"/>
+	<bean id="testBatchCallback" class="com.complexible.stardog.ext.spring.batch.TestBatchCallback"/>
 	
 	<!--  
 	//////////////////////   Batch job configuration for Stardog //////////////////////
 	-->
 	
-	<bean id="snarlReader" class="com.clarkparsia.stardog.ext.spring.batch.SnarlItemReader" scope="step">
+	<bean id="snarlReader" class="com.complexible.stardog.ext.spring.batch.SnarlItemReader" scope="step">
 		<property name="dataSource" ref="dataSource"/>
 		<property name="query" value="SELECT ?a ?b WHERE { ?a &lt;urn:test:predicate> ?b }"/>
 		<property name="rowMapper" ref="testRowMapper"/>
 	</bean>
 	
-	<bean id="snarlWriter" class="com.clarkparsia.stardog.ext.spring.batch.SnarlItemWriter" scope="step">
+	<bean id="snarlWriter" class="com.complexible.stardog.ext.spring.batch.SnarlItemWriter" scope="step">
 		<property name="dataSource" ref="dataSource"/>
 		<property name="callback" ref="testBatchCallback"/>
 	</bean>
