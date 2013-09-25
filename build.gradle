@@ -65,7 +65,7 @@ emma{
 
 configure(install.repositories.mavenInstaller) {
 	pom.project {
-		version '1.1'
+		version '2.0.0'
 		artifactId 'stardog-spring'
 		groupId 'com.complexible.stardog'
 	}
