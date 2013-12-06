@@ -13,7 +13,7 @@ Applications requiring a batch framework can also take advantage of Spring Batch
 Future Spring project integration is likely, and we welcome contributions on Github.
 
 
-![Stardog](http://stardog.com/_/img/sdog.png)   
+![Stardog](http://docs.stardog.com/img/sd.png)    
 
 ## What is it? ##
 
