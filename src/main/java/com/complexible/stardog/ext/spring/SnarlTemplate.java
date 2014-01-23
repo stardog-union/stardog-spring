@@ -34,7 +34,7 @@ import org.openrdf.query.TupleQueryResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.complexible.common.openrdf.Graphs;
+import com.complexible.common.openrdf.model.Graphs;
 import com.complexible.stardog.Contexts;
 import com.complexible.stardog.StardogException;
 import com.complexible.stardog.api.Adder;
