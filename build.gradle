@@ -59,13 +59,14 @@ dependencies {
 	
 }
 
-emma{
+emma {
 	reportPath = "reports"
 }
 
+
 configure(install.repositories.mavenInstaller) {
 	pom.project {
-		version '2.0.0'
+		version '2.1'
 		artifactId 'stardog-spring'
 		groupId 'com.complexible.stardog'
 	}

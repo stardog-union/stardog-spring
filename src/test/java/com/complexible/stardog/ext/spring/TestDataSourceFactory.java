@@ -45,7 +45,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.complexible.common.openrdf.Graphs;
+import com.complexible.common.openrdf.model.Graphs;
 import com.complexible.stardog.Contexts;
 import com.complexible.stardog.StardogException;
 import com.complexible.stardog.api.Adder;
