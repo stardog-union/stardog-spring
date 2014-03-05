@@ -681,8 +681,6 @@ public class TestDataSourceFactory  {
 		// run through the getter/setters
 		DataSourceFactoryBean dfb = new DataSourceFactoryBean();
 		dfb.setBlockCapacityTime(0L);
-		dfb.setCreateIfNotPresent(true);
-		dfb.setEmbedded(true);
 		dfb.setExpirationTime(0L);
 		dfb.setFailAtCapacity(true);
 		dfb.setMaxIdle(100);
@@ -698,8 +696,6 @@ public class TestDataSourceFactory  {
 		
 		dfb.getUsername();
 		dfb.getBlockCapacityTime();
-		dfb.isCreateIfNotPresent();
-		dfb.isEmbedded();
 		dfb.getExpirationTime();
 		dfb.isFailAtCapacity();
 		dfb.getMaxIdle();

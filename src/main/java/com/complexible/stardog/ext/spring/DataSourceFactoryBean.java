@@ -65,9 +65,7 @@ public class DataSourceFactoryBean implements FactoryBean<DataSource>, Initializ
 	private String username;
 	
 	private String password;
-	
-	private boolean createIfNotPresent;
-	
+
 	private ReasoningType reasoningType;
 	
 	private String to;
@@ -99,8 +97,8 @@ public class DataSourceFactoryBean implements FactoryBean<DataSource>, Initializ
 	private int minPool = 10;
 	
 	private boolean noExpiration = false;
-	
-	private boolean embedded = false;
+
+    private Provider provider;
 	
 	
 	/**
@@ -160,23 +158,12 @@ public class DataSourceFactoryBean implements FactoryBean<DataSource>, Initializ
 		if (url != null) { 
 			connectionConfig = connectionConfig.server(url);
 		}
-		
-		if (embedded) {
-	        Stardog.buildServer()
-	                .bind(SNARLProtocolConstants.EMBEDDED_ADDRESS)
-	                .start();
-		}
-		
-		if (createIfNotPresent) { 
-	        AdminConnection dbms = AdminConnectionConfiguration.toEmbeddedServer().credentials(username, password).connect();
-			if (dbms.list().contains(to)) {
-				dbms.drop(to);
-				dbms.createMemory(to);
-			} else { 
-				dbms.createMemory(to);
-			}
-			dbms.close();
-		}
+
+
+        if (provider != null) {
+            provider.execute(to, url, username, password);
+        }
+
 		
 		if (connectionProperties != null) {
 			List<Pair<String, String>> aOptionsList = new ArrayList<Pair<String, String>>();
@@ -221,20 +208,6 @@ public class DataSourceFactoryBean implements FactoryBean<DataSource>, Initializ
 	 */
 	public void setUrl(String url) {
 		this.url = url;
-	}
-
-	/**
-	 * @return the createIfNotPresent
-	 */
-	public boolean isCreateIfNotPresent() {
-		return createIfNotPresent;
-	}
-
-	/**
-	 * @param createIfNotPresent the createIfNotPresent to set
-	 */
-	public void setCreateIfNotPresent(boolean createIfNotPresent) {
-		this.createIfNotPresent = createIfNotPresent;
 	}
 
 	/**
@@ -447,20 +420,12 @@ public class DataSourceFactoryBean implements FactoryBean<DataSource>, Initializ
 		this.password = password;
 	}
 
-	/**
-	 * @return the embedded
-	 */
-	public boolean isEmbedded() {
-		return embedded;
-	}
 
-	/**
-	 * @param embedded the embedded to set
-	 */
-	public void setEmbedded(boolean embedded) {
-		this.embedded = embedded;
-	}	
-	
-	
-	
+    public Provider getProvider() {
+        return provider;
+    }
+
+    public void setProvider(Provider provider) {
+        this.provider = provider;
+    }
 }

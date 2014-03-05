@@ -17,8 +17,8 @@ apply from:'https://raw.github.com/breskeby/gradleplugins/master/emmaPlugin/emma
  *   maven repository
  */ 
 
-def stardogLocation= "CHANGE"
-System.setProperty('STARDOG_HOME', "CHANGE")
+def stardogLocation= "/Users/albaker/tools/stardog/stardog-2.1.1"
+System.setProperty('STARDOG_HOME', "/Users/albaker/opt/stardog7")
 
 repositories {
 	mavenCentral()
@@ -42,6 +42,8 @@ dependencies {
 	compile ('org.springframework:spring-context:3.1.2.RELEASE') 
 	compile ('org.springframework:spring-tx:3.1.2.RELEASE')
 	compile ('org.slf4j:slf4j-api:1.6.1')
+
+	compile ('com.complexible.stardog.protocols.snarl:client:2.1')
 	
 	// Spring Batch support
 	compile ('org.springframework.batch:spring-batch-core:2.1.8.RELEASE') 
@@ -50,7 +52,7 @@ dependencies {
 	// gremlin in stardog/lib comes with groovy, we don't want to pick that up for gradle
 	// remove springframework
 	compile fileTree(dir: stardogLocation, include: '**/*.jar', exclude:"**/spring*.jar")
-		
+	
 	testCompile group: 'junit', name: 'junit', version: '4.8.2'
 	testCompile group: 'org.springframework', name:'spring-test', version:'3.0.5.RELEASE'
 	

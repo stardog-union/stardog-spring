@@ -4,10 +4,11 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 
+    <bean name="embeddedProvider" class="com.complexible.stardog.ext.spring.EmbeddedProvider"></bean>
+
 	<bean name="dataSource" class="com.complexible.stardog.ext.spring.DataSourceFactoryBean">
 		<property name="to" value="testdb"/>
-		<property name="createIfNotPresent" value="true"/>
-		<property name="embedded" value="true"/>
+		<property name="provider" ref="embeddedProvider"/>
 		<property name="username" value="admin"/>
 		<property name="password" value="admin"/>
 	</bean>
