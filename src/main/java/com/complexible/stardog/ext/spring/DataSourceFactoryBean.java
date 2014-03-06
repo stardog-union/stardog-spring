@@ -15,25 +15,20 @@
 */
 package com.complexible.stardog.ext.spring;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.concurrent.TimeUnit;
-
+import com.complexible.common.base.Pair;
+import com.complexible.stardog.api.ConnectionConfiguration;
+import com.complexible.stardog.api.ConnectionPoolConfig;
+import com.complexible.stardog.reasoning.api.ReasoningType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 
-import com.complexible.common.base.Pair;
-import com.complexible.stardog.Stardog;
-import com.complexible.stardog.api.ConnectionConfiguration;
-import com.complexible.stardog.api.ConnectionPoolConfig;
-import com.complexible.stardog.api.admin.AdminConnection;
-import com.complexible.stardog.api.admin.AdminConnectionConfiguration;
-import com.complexible.stardog.protocols.snarl.SNARLProtocolConstants;
-import com.complexible.stardog.reasoning.api.ReasoningType;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 /**
  * StardogConnectionFactoryBean
