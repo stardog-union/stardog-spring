@@ -17,8 +17,9 @@ apply from:'https://raw.github.com/breskeby/gradleplugins/master/emmaPlugin/emma
  *   maven repository
  */ 
 
-def stardogLocation= "/Users/albaker/tools/stardog/stardog-2.0.1"
-System.setProperty('STARDOG_HOME', "/Users/albaker/opt/stardog7")
+// Used for testing with the embedded server
+def stardogLocation= "CHANGE"
+System.setProperty('STARDOG_HOME', "CHANGE")
 
 repositories {
     mavenLocal()
@@ -45,15 +46,15 @@ dependencies {
 
 	compile ('com.complexible.stardog.protocols.snarl:client:2.1')
 	compile ('com.complexible.common:openrdf:2.0')
-    compile ('com.complexible.stardog:common-rdf:2.1')
-    compile ('com.complexible.stardog:openrdf-utils:2.1')
-    compile ('com.complexible.stardog:shared:2.1')
-    compile ('org.openrdf.sesame:sesame:2.7.7')
-    compile ('org.openrdf.sesame:sesame-rio:2.7.7')
-    compile ('com.complexible.stardog.protocols.snarl:client:2.1')
-    compile ('com.complexible.stardog:api:2.1')
+	compile ('com.complexible.stardog:common-rdf:2.1')
+	compile ('com.complexible.stardog:openrdf-utils:2.1')
+	compile ('com.complexible.stardog:shared:2.1')
+	compile ('org.openrdf.sesame:sesame:2.7.7')
+	compile ('org.openrdf.sesame:sesame-rio:2.7.7')
+	compile ('com.complexible.stardog.protocols.snarl:client:2.1')
+	compile ('com.complexible.stardog:api:2.1')
 
-    // Spring Batch support
+	// Spring Batch support
 	compile ('org.springframework.batch:spring-batch-core:2.1.8.RELEASE') 
 	compile ('org.springframework.batch:spring-batch-infrastructure:2.1.8.RELEASE') 
 	
@@ -76,7 +77,7 @@ emma {
 
 configure(install.repositories.mavenInstaller) {
 	pom.project {
-		version '2.1'
+		version '2.1.1'
 		artifactId 'stardog-spring'
 		groupId 'com.complexible.stardog'
 	}
