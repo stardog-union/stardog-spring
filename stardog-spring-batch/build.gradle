@@ -1,0 +1,87 @@
+apply plugin:"java"
+apply plugin:"eclipse"
+apply plugin:"maven"
+
+apply from:'https://raw.github.com/breskeby/gradleplugins/master/emmaPlugin/emma.gradle'
+
+/**
+ * TODO:
+ *   Once there is a Stardog maven artifact, we will replace this
+ *   gradle file collection magic with a simple maven dependency
+ *   e.g. compile('com.complexible.stardog:core:1.0')
+ *   
+ *   This means that users of the jar that gets produced by this build
+ *   will still have to manually add stardog dependencies to their projects
+ *   
+ *   Note that gradle install WILL install stardog-spring into a local
+ *   maven repository
+ */ 
+
+// Used for testing with the embedded server
+def stardogLocation= "CHANGE"
+System.setProperty('STARDOG_HOME', "CHANGE")
+
+repositories {
+    mavenLocal()
+	mavenCentral()
+	mavenRepo urls:"http://repository.springsource.com/maven/bundles/release"
+	mavenRepo urls:"http://repository.springsource.com/maven/bundles/external"
+	mavenRepo urls:"http://maven.springframework.org/release"
+	mavenRepo urls:"http://maven.springframework.org/milestone"
+	mavenRepo urls:"http://maven.springframework.org/snapshot"
+	
+}
+
+configurations { 
+	emma
+}
+
+dependencies {
+	// Core Dependencies
+	compile ('com.complexible.stardog:stardog-spring:2.1.2')
+
+	compile ('org.springframework:spring-core:3.1.2.RELEASE') 
+	compile ('org.springframework:spring-beans:3.1.2.RELEASE') 
+	compile ('org.springframework:spring-context:3.1.2.RELEASE') 
+	compile ('org.springframework:spring-tx:3.1.2.RELEASE')
+	compile ('org.slf4j:slf4j-api:1.6.1')
+
+	compile ('com.complexible.stardog.protocols.snarl:client:2.1.2')
+	compile ('com.complexible.stardog:common-rdf:2.1.2')
+	compile ('com.complexible.stardog:openrdf-utils:2.1.2')
+	compile ('com.complexible.stardog:shared:2.1.2')
+	compile ('org.openrdf.sesame:sesame:2.7.7')
+	compile ('com.complexible.stardog:api:2.1.2')
+
+	// Spring Batch support
+	compile ('org.springframework.batch:spring-batch-core:2.1.8.RELEASE') 
+	compile ('org.springframework.batch:spring-batch-infrastructure:2.1.8.RELEASE') 
+	
+	// gremlin in stardog/lib comes with groovy, we don't want to pick that up for gradle
+	// remove springframework
+	testCompile fileTree(dir: stardogLocation, include: '**/*.jar', exclude:"**/spring*.jar")
+	
+	testCompile group: 'junit', name: 'junit', version: '4.8.2'
+	testCompile group: 'org.springframework', name:'spring-test', version:'3.0.5.RELEASE'
+	
+	emma "emma:emma:2.0.5312"
+	emma "emma:emma_ant:2.0.5312"
+	
+}
+
+emma {
+	reportPath = "reports"
+}
+
+
+configure(install.repositories.mavenInstaller) {
+	pom.project {
+		version '2.1.2'
+		artifactId 'stardog-spring-batch'
+		groupId 'com.complexible.stardog'
+	}
+}
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '1.7'
+}
