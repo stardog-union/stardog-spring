@@ -4,19 +4,6 @@ apply plugin:"maven"
 
 //apply from:'https://raw.github.com/breskeby/gradleplugins/master/emmaPlugin/emma.gradle'
 
-/**
- * TODO:
- *   Once there is a Stardog maven artifact, we will replace this
- *   gradle file collection magic with a simple maven dependency
- *   e.g. compile('com.complexible.stardog:core:1.0')
- *   
- *   This means that users of the jar that gets produced by this build
- *   will still have to manually add stardog dependencies to their projects
- *   
- *   Note that gradle install WILL install stardog-spring into a local
- *   maven repository
- */ 
-
 // Used for testing with the embedded server
 def stardogLocation= "CHANGE"
 System.setProperty('STARDOG_HOME', "CHANGE")
