@@ -31,7 +31,7 @@ import org.openrdf.query.BindingSet;
  * Useful for easily retrieving maps of String data
  * 
  * @author Al Baker
- * @author Clark & Parsia
+ * @author Clark and Parsia
  *
  */
 public class SimpleRowMapper implements RowMapper<Map<String, String>> {

@@ -86,10 +86,9 @@ public class SnarlTemplate {
 	 * context of a connection that has been fully setup,
 	 * backed by a connection pool, and uses a tx.
 	 * 
-	 * TODO: investigate Spring-tx here
-	 * 
-	 * @param action
-	 * @return T - generic type
+	 * @param action callback to run
+	 * @param <T> type of callback to run
+	 * @return generic type
 	 */
 	public <T> T execute(ConnectionCallback<T> action) { 
 		Connection connection = dataSource.getConnection();
@@ -199,6 +198,7 @@ public class SnarlTemplate {
 	 * @param subject - String representation of a subject URI
 	 * @param predicate - String representation of a predicate URI
 	 * @param action - callback that will be called
+	 * @param <T> - generic type for GetterCallback
 	 * @return - list of return elements
 	 */
 	public <T> List<T> doWithGetter(String subject, String predicate, GetterCallback<T> action) { 
@@ -243,6 +243,7 @@ public class SnarlTemplate {
 	 * Template's callback interface for working with an Adder, using
 	 * a Datasource and transaction safe environment
 	 * @param action AdderCallBack, generic type
+	 * @param <T> generic type of AdderCallback
 	 * @return generic type T
 	 */
 	public <T> T doWithAdder(AdderCallback<T> action) {
@@ -268,6 +269,7 @@ public class SnarlTemplate {
 	 * Template's callback interface for working with a Remover, using
 	 * a Datasource and transaction safe environment
 	 * @param action RemoverCallback, generic type
+	 * @param <T> Generic type of RemoverCallback
 	 * @return generic type T
 	 */
 	public <T> T doWithRemover(RemoverCallback<T> action) {
@@ -342,6 +344,7 @@ public class SnarlTemplate {
 	 * 
 	 * @param sparql the SPARQL query to execute
 	 * @param mapper implementation of the RowMapper interface
+	 * @param <T> generic type of RowMapper
 	 * @return List of results from the RowMapper calls
 	 */
 	public <T> List<T> query(String sparql, RowMapper<T> mapper) {
@@ -356,6 +359,7 @@ public class SnarlTemplate {
 	 * @param sparql the SPARQL query to execute
 	 * @param args map of string and object to pass bind as input parameters
 	 * @param mapper implementation of the RowMapper interface
+	 * @param <T> generic type of RowMapper
 	 * @return List of results from the RowMapper calls
 	 */
 	public <T> List<T> query(String sparql, Map<String, Object> args, RowMapper<T> mapper) {
@@ -406,8 +410,9 @@ public class SnarlTemplate {
 	 * Simple query call for a SPARQL Query and a RowMapper to
 	 * map the object to a single domain class
 	 * 
-	 * @param sparql
-	 * @param mapper
+	 * @param sparql query string
+	 * @param mapper rowmapper to use
+	 * @param <T> generic type of RowMapper
 	 * @return single result of the RowMapper call
 	 */
 	public <T> T queryForObject(String sparql, RowMapper<T> mapper) {
@@ -422,6 +427,7 @@ public class SnarlTemplate {
 	 * @param sparql the SPARQL Query
 	 * @param args map of string and object
 	 * @param mapper implementation of RowMapper
+	 * @param <T> generic type of RowMapper
 	 * @return single result of the RowMapper call
 	 */
 	public <T> T queryForObject(String sparql, Map<String, Object> args, RowMapper<T> mapper) {
@@ -471,6 +477,7 @@ public class SnarlTemplate {
 	 * 
 	 * @param sparql the SPARQL ask query to execute
 	 * @param args map of string and object to pass bind as input parameters
+	 * @return boolean if the query matches in the database
 	 */
 	public boolean ask(String sparql, Map<String, Object> args) {
 		Connection connection = dataSource.getConnection();
@@ -499,6 +506,7 @@ public class SnarlTemplate {
 	 * Simple ask call for a SPARQL Query
 	 * 
 	 * @param sparql the SPARQL ask query to execute
+	 * @return boolean if the query matches in the database
 	 */
 	public boolean ask(String sparql) {
 		return ask(sparql, null);
@@ -520,6 +528,7 @@ public class SnarlTemplate {
 	 * 
 	 * @param sparql the SPARQL update to execute
 	 * @param args map of string and object to pass bind as input parameters
+	 *
 	 */
 	public void update(String sparql, Map<String, Object> args) {
 		Connection connection = dataSource.getConnection();
@@ -549,8 +558,8 @@ public class SnarlTemplate {
 	 * 
 	 * Other add methods delegate to this method
 	 * 
-	 * @param graph
-	 * @param graphUri
+	 * @param graph Graph to use for the adder
+	 * @param graphUri graph URi to use
 	 */
 	public void add(Graph graph, String graphUri) { 
 		Resource context = (graphUri == null ? null : ValueFactoryImpl.getInstance().createURI(graphUri));
@@ -585,6 +594,7 @@ public class SnarlTemplate {
 	 * @param subject String subject
 	 * @param predicate String predicate
 	 * @param object String object - always a plain literal
+	 *
 	 */
 	public void add(String subject, String predicate, String object) { 
 		add(Graphs.newGraph(new StatementImpl(

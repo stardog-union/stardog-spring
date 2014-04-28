@@ -18,7 +18,7 @@ package com.complexible.stardog.ext.spring;
 import org.openrdf.query.BindingSet;
 
 /**
- * RowMapper<T>
+ * RowMapper
  * 
  * Generic interface for users of the SnarlTemplate
  * 

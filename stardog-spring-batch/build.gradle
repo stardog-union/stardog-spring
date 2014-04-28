@@ -1,12 +1,16 @@
 apply plugin:"java"
 apply plugin:"eclipse"
 apply plugin:"maven"
+apply plugin:"signing"
 
 apply from:'https://raw.github.com/breskeby/gradleplugins/master/emmaPlugin/emma.gradle'
 
+group = 'com.complexible.stardog'
+version = '2.1.3'
+
 // Used for testing with the embedded server
-def stardogLocation= "CHANGE"
-System.setProperty('STARDOG_HOME', "CHANGE")
+def stardogLocation= "/Users/albaker/tools/stardog/stardog-2.1.3/server"
+System.setProperty('STARDOG_HOME', "/Users/albaker/opt/stardog-213")
 
 repositories {
     mavenLocal()
@@ -25,24 +29,23 @@ configurations {
 
 dependencies {
 	// Core Dependencies
-	compile ('com.complexible.stardog:stardog-spring:2.1.2')
-
-	compile ('org.springframework:spring-core:3.1.2.RELEASE') 
-	compile ('org.springframework:spring-beans:3.1.2.RELEASE') 
-	compile ('org.springframework:spring-context:3.1.2.RELEASE') 
+	compile ('org.springframework:spring-core:4.0.1.RELEASE')
+	compile ('org.springframework:spring-beans:4.0.1.RELEASE')
+	compile ('org.springframework:spring-context:4.0.1.RELEASE')
 	compile ('org.springframework:spring-tx:3.1.2.RELEASE')
 	compile ('org.slf4j:slf4j-api:1.6.1')
 
-	compile ('com.complexible.stardog.protocols.snarl:client:2.1.2')
-	compile ('com.complexible.stardog:common-rdf:2.1.2')
-	compile ('com.complexible.stardog:openrdf-utils:2.1.2')
-	compile ('com.complexible.stardog:shared:2.1.2')
+	compile ('com.complexible.stardog.protocols.snarl:client:2.1.3')
+	compile ('com.complexible.stardog:common-rdf:2.1.3')
+	compile ('com.complexible.stardog:openrdf-utils:2.1.3')
+	compile ('com.complexible.stardog:shared:2.1.3')
 	compile ('org.openrdf.sesame:sesame:2.7.7')
-	compile ('com.complexible.stardog:api:2.1.2')
+	compile ('com.complexible.stardog:api:2.1.3')
 
-	// Spring Batch support
-	compile ('org.springframework.batch:spring-batch-core:2.1.8.RELEASE') 
-	compile ('org.springframework.batch:spring-batch-infrastructure:2.1.8.RELEASE') 
+	compile ('com.complexible.stardog:stardog-spring:2.1.3')
+
+	compile ('org.springframework.batch:spring-batch-core:2.2.6.RELEASE') 
+	compile ('org.springframework.batch:spring-batch-infrastructure:2.2.6.RELEASE') 
 	
 	// gremlin in stardog/lib comes with groovy, we don't want to pick that up for gradle
 	// remove springframework
@@ -55,15 +58,76 @@ dependencies {
 	emma "emma:emma_ant:2.0.5312"
 	
 }
-
+/*
 emma {
 	reportPath = "reports"
 }
+*/
 
+task sourceJar(type: Jar) {
+	description 'An archive of the source code for Maven Central'
+	classifier 'sources'
+	from sourceSets.main.java
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+	classifier = 'javadoc'
+	from 'build/docs/javadoc'
+}
+
+
+artifacts {
+	archives javadocJar, sourceJar
+}
+
+signing {
+	sign configurations.archives
+	required { gradle.taskGraph.hasTask(uploadArchives) }
+}
+
+uploadArchives {
+	repositories {
+		mavenDeployer {
+			beforeDeployment { MavenDeployment deployment -> signPom(deployment) }
+
+			repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+				authentication(userName: sonatypeUsername, password: sonatypePassword)
+			}
+
+			pom.project {
+				name 'stardog-spring-batch'
+				packaging 'jar'
+				description 'Stardog Spring bindings for using Stardog with the Springframework Batch subproject'
+				url 'https://github.com/clarkparsia/stardog-spring/stardog-spring-batch'
+
+				scm {
+					url 'scm:git://github.com/clarkparsia/stardog-spring.git'
+					connection 'scm:git://github.com/clarkparsia/stardog-spring.git'
+					developerConnection 'scm:git://github.com/clarkparsia/stardog-spring.git'
+				}
+
+				licenses {
+					license {
+						name 'The Apache Software License, Version 2.0'
+						url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+						distribution 'repo'
+					}
+				}
+
+				developers {
+					developer {
+						id 'albakercp'
+						name 'Al Baker'
+					}
+				}
+			}
+		}
+	}
+}
 
 configure(install.repositories.mavenInstaller) {
 	pom.project {
-		version '2.1.2'
+		version '2.1.3'
 		artifactId 'stardog-spring-batch'
 		groupId 'com.complexible.stardog'
 	}

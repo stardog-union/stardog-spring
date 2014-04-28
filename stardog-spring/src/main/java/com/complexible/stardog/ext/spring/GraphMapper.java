@@ -18,7 +18,7 @@ package com.complexible.stardog.ext.spring;
 import org.openrdf.model.Statement;
 
 /**
- * GraphMapper<T>
+ * GraphMapper
  * 
  * Generic interface for users of the SnarlTemplate
  * 

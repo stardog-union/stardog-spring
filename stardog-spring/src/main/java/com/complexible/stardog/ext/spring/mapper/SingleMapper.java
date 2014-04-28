@@ -27,7 +27,7 @@ import com.complexible.stardog.ext.spring.RowMapper;
  * Used for simplified callbacks in SnarlTemplate
  * 
  * @author Al Baker
- * @author Clark & Parsia
+ * @author Clark and Parsia
  * 
  *
  */

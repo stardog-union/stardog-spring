@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * StardogConnectionFactoryBean
  * 
- * This class implements the Spring interfaces for FactoryBean<Connection>,
+ * This class implements the Spring interfaces for FactoryBean for a DataSource,
  * InitializingBean, and DisposableBean, so it is a fully Spring-aware factory
  * 
  * The objective is to configure one of these per Spring application context, and be
@@ -138,7 +138,7 @@ public class DataSourceFactoryBean implements FactoryBean<DataSource>, Initializ
 	 * 
 	 * Alternative method would be to declare a separate init method, and tell Spring about it
 	 * 
-	 * @throws Exception
+	 * @throws Exception on Stardog create, e.g. database down
 	 */
 	@Override
 	public void afterPropertiesSet() throws Exception {
