@@ -2,7 +2,7 @@ Stardog-Spring-Batch
 ==========
 
 Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
-_Current Version **2.1.1**_
+_Current Version **2.1.3**_
 
 This is [Spring Framework](http://springsource.org) integration for [Stardog RDF Database](http://stardog.com). This API provides Spring Batch readers/writers for building batch applications with Stardog.
 
@@ -17,20 +17,22 @@ For more information, go to the Stardog's [Spring Programming](http://stardog.co
 
 ## Usage ##
 
-To use Stardog Spring, we recommend:
+To use Stardog Spring, we recommend, simply add: "com.complexible.stardog:stardog-spring-batch:2.1.3" to your build dependency.
+
+This does depend on installing the Stardog dependencies:
 
 1. Download Stardog from [Stardog](http://stardog.com)
 2. Run the bin/mavenInstall script
-3. Add "com.complexible.stardog:stardog-spring:2.1.2" as a dependency in your Gradle, Maven, Ivy file etc
-4. In your Spring application context, create a DataSourceFactoryBean as your datasource, and reference it in a SnarlTemplate bean
-5. Inject your SnarlTemplate bean appropriately in your application.  It is thread safe.
 
+Once this is in place, you can create applications using a Spring application context.
+
+4. In your Spring application context, create a DataSourceFactoryBean as your datasource, and reference it in a SnarlTemplate bean
+5. Inject your SnarlTemplate bean appropriately, e.g. within the ItemReader/Writers
 
 
 ## Development ##
 
 This project is built with Gradle, and can be easily imported into SpringSource Tool Suite or any other Eclipse based IDE.
-
 
 1. Clone the git repository
 2. Edit build.gradle to point to Stardog/lib folder, this is used for running the embedded server for testing
@@ -45,7 +47,9 @@ This framework is in continuous development, please check the [issues](https://g
 
 ## License
 
-Copyright 2012-2014 Clark & Parsia, Al Baker
+Copyright 2012-2014 Clark & Parsia
+
+Copyright 2012-2014 Al Baker
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

@@ -2,15 +2,18 @@ Stardog-Spring
 ==========
 
 Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
-_Current Version **2.1.1**_
+_Current Version **2.1.3**_
 
 This is [Spring Framework](http://springsource.org) integration for [Stardog RDF Database](http://stardog.com). These bindings
 provide Spring aware beans to provide an analogous feature set to Spring's
-jdbcTemplate.
+jdbcTemplate.  To support enterprise applications, integration is done with different Spring projects. 
 
-Spring support sub-projects:
+Current Stardog Spring support includes:
+
 * stardog-spring : Core Spring framework
 * stardog-spring-batch: Spring Batch support
+
+These projects are available in Maven central under the 'com.complexible.stardog' group id.
 
 
 ![Stardog](http://docs.stardog.com/img/sd.png)
@@ -22,7 +25,9 @@ This framework is in continuous development, please check the [issues](https://g
 
 ## License
 
-Copyright 2012-2014 Clark & Parsia, Al Baker
+Copyright 2012-2014 Clark & Parsia
+
+Copyright 2012-2014 Al Baker
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

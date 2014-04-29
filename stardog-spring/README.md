@@ -2,12 +2,11 @@ Stardog-Spring
 ==========
 
 Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
-_Current Version **2.1.1**_
+_Current Version **2.1.3**_
 
-This is [Spring Framework](http://springsource.org) integration for [Stardog RDF Database](http://stardog.com). These bindings
-provide Spring aware beans to provide an analogous feature set to Spring's
-jdbcTemplate.
-
+This is [Spring Framework](http://springsource.org) integration for [Stardog RDF Database](http://stardog.com). This project
+provides the core Spring integration, with the SnarlTemplate and DataSource classes.  Other projects build on this as the basis for
+communicating with the Stardog database server.
 
 ![Stardog](http://docs.stardog.com/img/sd.png)
 
@@ -27,13 +26,17 @@ The framework is currently targeted to the core Spring Framework (Spring 3.1.2 a
 
 ## Usage ##
 
-To use Stardog Spring, we recommend:
+To use Stardog Spring, simply add: com.complexible.stardog:stardog-spring:2.1.3 to your build dependencies.
+
+This does require the Stardog dependencies to be installed, e.g.:
 
 1. Download Stardog from [Stardog](http://stardog.com)
 2. Run the bin/mavenInstall script
-3. Add "com.complexible.stardog:stardog-spring:2.1.2" as a dependency in your Gradle, Maven, Ivy file etc
-4. In your Spring application context, create a DataSourceFactoryBean as your datasource, and reference it in a SnarlTemplate bean
-5. Inject your SnarlTemplate bean appropriately in your application.  It is thread safe.
+
+Once this is done, then a Spring application context can be constructed:
+
+1. In your Spring application context, create a DataSourceFactoryBean as your datasource, and reference it in a SnarlTemplate bean
+2. Inject your SnarlTemplate bean appropriately in your application.  It is thread safe.
 
 If desired, you can create a SnarlTemplate programmatically outside of Spring by using a ConnectionConfiguration object from the Stardog API like so:
 
@@ -67,7 +70,9 @@ This framework is in continuous development, please check the [issues](https://g
 
 ## License
 
-Copyright 2012-2014 Clark & Parsia, Al Baker
+Copyright 2012-2014 Clark & Parsia
+
+Copyright 2012-2014 Al Baker
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
