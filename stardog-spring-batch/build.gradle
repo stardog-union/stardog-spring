@@ -6,11 +6,11 @@ apply plugin:"signing"
 apply from:'https://raw.github.com/breskeby/gradleplugins/master/emmaPlugin/emma.gradle'
 
 group = 'com.complexible.stardog'
-version = '2.1.3'
+version = '2.2.1'
 
 // Used for testing with the embedded server
-def stardogLocation= "/Users/albaker/tools/stardog/stardog-2.1.3/server"
-System.setProperty('STARDOG_HOME', "/Users/albaker/opt/stardog-213")
+def stardogLocation= "/Users/albaker/tools/stardog/stardog-2.2.1/server"
+System.setProperty('STARDOG_HOME', "/Users/albaker/opt/stardog-221")
 
 repositories {
     mavenLocal()
@@ -35,14 +35,14 @@ dependencies {
 	compile ('org.springframework:spring-tx:3.1.2.RELEASE')
 	compile ('org.slf4j:slf4j-api:1.6.1')
 
-	compile ('com.complexible.stardog.protocols.snarl:client:2.1.3')
-	compile ('com.complexible.stardog:common-rdf:2.1.3')
-	compile ('com.complexible.stardog:openrdf-utils:2.1.3')
-	compile ('com.complexible.stardog:shared:2.1.3')
-	compile ('org.openrdf.sesame:sesame:2.7.7')
-	compile ('com.complexible.stardog:api:2.1.3')
+	compile ('com.complexible.stardog.protocols.snarl:client:2.2.1')
+	compile ('com.complexible.stardog:common-rdf:2.2.1')
+	compile ('com.complexible.stardog:openrdf-utils:2.2.1')
+	compile ('com.complexible.stardog:shared:2.2.1')
+	compile ('org.openrdf.sesame:sesame:2.7.12')
+	compile ('com.complexible.stardog:api:2.2.1')
 
-	compile ('com.complexible.stardog:stardog-spring:2.1.3')
+	compile ('com.complexible.stardog:stardog-spring:2.2.1')
 
 	compile ('org.springframework.batch:spring-batch-core:2.2.6.RELEASE') 
 	compile ('org.springframework.batch:spring-batch-infrastructure:2.2.6.RELEASE') 
