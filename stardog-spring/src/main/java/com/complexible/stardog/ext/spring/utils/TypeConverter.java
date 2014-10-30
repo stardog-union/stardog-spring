@@ -24,6 +24,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.openrdf.model.Value;
+import org.openrdf.model.impl.BooleanLiteralImpl;
 import org.openrdf.model.impl.CalendarLiteralImpl;
 import org.openrdf.model.impl.IntegerLiteralImpl;
 import org.openrdf.model.impl.LiteralImpl;
@@ -50,7 +51,9 @@ public class TypeConverter {
 		} else if (o instanceof Date) {
 			return asLiteral((Date)o);
 		} else if (o instanceof Integer) {
-			return asLiteral((Integer) o);
+			return asLiteral((Integer)o);
+		} else if (o instanceof Boolean) {
+			return asLiteral((Boolean)o);
 		} else {
 			return null;
 		}
@@ -85,4 +88,7 @@ public class TypeConverter {
 		return new LiteralImpl(s);
 	}
 	
+	public static Value asLiteral(Boolean b) {
+		return new BooleanLiteralImpl(b);
+	}
 }
