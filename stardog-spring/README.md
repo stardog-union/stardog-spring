@@ -61,10 +61,10 @@ This project is built with Gradle, and can be easily imported into SpringSource 
 3. Run gradle build
 4. Pick up the latest jar in build/libs, or alternatively run "gradle install" to install the built jar into your local M2 folder
 
-All tests should pass with a working Stardog download, including a license.  Common issues can be seen with "gradle build --debug", where Stardog does exit on invalid licenses.  The exit of the embedded server does cause the Gradle build to exit not so gracefully, so running with --debug for unexpected errors will show what happened.  Likewise, you can take a look at the stardog.log file to see if a license error occured.  If you do not wish to run Emma code coverage tool, remove it from the Gradle configuration
+All tests should pass with a working Stardog download, including a license.  Common issues can be seen with "gradle build --debug", where Stardog does exit on invalid licenses.  When this happens, you will see a `buffer underflow` error that, where the JVM running the embedded Stardog has halted.  The exit of the embedded server does cause the Gradle build to exit not so gracefully, so running with --debug for unexpected errors will show what happened.  Likewise, you can take a look at the stardog.log file to see if a license error occured.  If you do not wish to run Emma code coverage tool, remove it from the Gradle configuration
 
 
-## NOTE ##
+## Contributing ##
 
 This framework is in continuous development, please check the [issues](https://github.com/complexible/stardog-spring/issues) page. You're welcome to contribute.
 
