@@ -55,11 +55,12 @@ snarlTemplate.setDataSource(new DataSource(cc))
 
 This project is built with Gradle, and can be easily imported into SpringSource Tool Suite or any other Eclipse based IDE.
 
+Before beginning, make sure you have a Stardog release downloaded, and the `mavenInstall` script run. 
 
 1. Clone the git repository
-2. Edit build.gradle to point to Stardog/lib folder, this is used for running the embedded server for testing
-3. Run gradle build
-4. Pick up the latest jar in build/libs, or alternatively run "gradle install" to install the built jar into your local M2 folder
+2. Edit build.gradle to point to Stardog/lib folder, this is used for running the embedded server for testing, make sure you have a license installed and the Stardog server is stopped.  Also the STARDOG_HOME environment must be set.
+3. Run `gradle build`
+4. Run `gradle install` to install the new build into your `.m2/repository/...` M2 cache for use in the stardog-spring-batch build
 
 All tests should pass with a working Stardog download, including a license.  Common issues can be seen with "gradle build --debug", where Stardog does exit on invalid licenses.  When this happens, you will see a `buffer underflow` error that, where the JVM running the embedded Stardog has halted.  The exit of the embedded server does cause the Gradle build to exit not so gracefully, so running with --debug for unexpected errors will show what happened.  Likewise, you can take a look at the stardog.log file to see if a license error occured.  If you do not wish to run Emma code coverage tool, remove it from the Gradle configuration
 

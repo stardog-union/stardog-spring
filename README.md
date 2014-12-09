@@ -19,9 +19,18 @@ These projects are available in Maven central under the 'com.complexible.stardog
 ![Stardog](http://docs.stardog.com/img/sd.png)
 
 
-## NOTE ##
+## Contributing ##
 
 This framework is in continuous development, please check the [issues](https://github.com/complexible/stardog-spring/issues) page. You're welcome to contribute.
+
+## Building 
+
+The general build workflow for Stardog Spring is as follows:
+
+1. Update the core stardog-spring folder, build and run `gradle install`.  
+2. Update stardog-spring-batch
+3. Once all are updated, and the according Stardog release is available, the projects are published to Maven Central
+
 
 ## License
 

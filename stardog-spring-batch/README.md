@@ -32,7 +32,7 @@ Once this is in place, you can create applications using a Spring application co
 
 ## Development ##
 
-This project is built with Gradle, and can be easily imported into SpringSource Tool Suite or any other Eclipse based IDE.
+This project is built with Gradle, and can be easily imported into SpringSource Tool Suite or any other Eclipse based IDE.  If you are updating to a new Stardog version, the core stardog-spring batch instructions should be followed first.
 
 1. Clone the git repository
 2. Edit build.gradle to point to Stardog/lib folder, this is used for running the embedded server for testing
