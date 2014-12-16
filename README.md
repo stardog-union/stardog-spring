@@ -16,7 +16,7 @@ Current Stardog Spring support includes:
 These projects are available in Maven central under the 'com.complexible.stardog' group id.
 
 
-![Stardog](http://docs.stardog.com/img/sd.png)
+![Stardog](http://stardog.com/img/stardog.png)
 
 
 ## Contributing ##

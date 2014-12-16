@@ -8,7 +8,7 @@ This is [Spring Framework](http://springsource.org) integration for [Stardog RDF
 provides the core Spring integration, with the SnarlTemplate and DataSource classes.  Other projects build on this as the basis for
 communicating with the Stardog database server.
 
-![Stardog](http://docs.stardog.com/img/sd.png)
+![Stardog](http://stardog.com/img/stardog.png)
 
 ## What is it? ##
 

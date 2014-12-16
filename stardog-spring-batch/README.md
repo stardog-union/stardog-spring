@@ -6,13 +6,11 @@ _Current Version **2.1.3**_
 
 This is [Spring Framework](http://springsource.org) integration for [Stardog RDF Database](http://stardog.com). This API provides Spring Batch readers/writers for building batch applications with Stardog.
 
-![Stardog](http://docs.stardog.com/img/sd.png)
+![Stardog](http://stardog.com/img/stardog.png)
 
 ## What is it? ##
 
 This API uses the SnarlTemplate and implements the ItemReader and ItemWriter interfaces from the Spring Batch API.  These can be composed with other readers, writers, and processors to create batch pipelines.
-
-For more information, go to the Stardog's [Spring Programming](http://stardog.com/docs/spring/) documentation.
 
 
 ## Usage ##
