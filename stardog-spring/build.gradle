@@ -6,11 +6,11 @@ apply plugin:"signing"
 apply from:'https://raw.github.com/breskeby/gradleplugins/master/emmaPlugin/emma.gradle'
 
 group = 'com.complexible.stardog'
-version = '2.2.3'
+version = '2.2.4'
 
 // Used for testing with the embedded server
-def stardogLocation= "/Users/albaker/tools/stardog/stardog-2.2.3/server"
-System.setProperty('STARDOG_HOME', "/Users/albaker/opt/stardog-223")
+def stardogLocation= "/Users/albaker/tools/stardog/stardog-2.2.4/server"
+System.setProperty('STARDOG_HOME', "/Users/albaker/opt/stardog-224")
 
 repositories {
     mavenLocal()
@@ -35,14 +35,14 @@ dependencies {
 	compile ('org.springframework:spring-tx:4.1.2.RELEASE')
 	compile ('org.slf4j:slf4j-api:1.6.1')
 
-	compile ('com.complexible.stardog.protocols.snarl:client:2.2.3')
-	//compile ('com.complexible.stardog:common-rdf:2.2.3')
-	compile ('com.complexible.stardog:openrdf-utils:2.2.3')
-	compile ('com.complexible.stardog:shared:2.2.3')
+	compile ('com.complexible.stardog.protocols.snarl:client:2.2.4')
+	//compile ('com.complexible.stardog:common-rdf:2.2.4')
+	compile ('com.complexible.stardog:openrdf-utils:2.2.4')
+	compile ('com.complexible.stardog:shared:2.2.4')
 	compile ('org.openrdf.sesame:sesame:2.7.14') { 
 		exclude group:'org.slf4j'
 	}
-	compile ('com.complexible.stardog:api:2.2.3')
+	compile ('com.complexible.stardog:api:2.2.4')
 	
 	// gremlin in stardog/lib comes with groovy, we don't want to pick that up for gradle
 	// remove springframework
@@ -125,7 +125,7 @@ uploadArchives {
 // Used for "gradle install"
 configure(install.repositories.mavenInstaller) {
 	pom.project {
-		version '2.2.3'
+		version '2.2.4'
 		artifactId 'stardog-spring'
 		groupId 'com.complexible.stardog'
 	}
