@@ -2,7 +2,7 @@ Stardog-Spring-Batch
 ==========
 
 Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
-_Current Version **2.1.3**_
+_Current Version **2.2.4**_
 
 This is [Spring Framework](http://springsource.org) integration for [Stardog RDF Database](http://stardog.com). This API provides Spring Batch readers/writers for building batch applications with Stardog.
 
