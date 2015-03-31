@@ -51,7 +51,6 @@ import com.complexible.stardog.StardogException;
 import com.complexible.stardog.api.Adder;
 import com.complexible.stardog.api.Connection;
 import com.complexible.stardog.api.Remover;
-import com.complexible.stardog.reasoning.api.ReasoningType;
 import com.complexible.stardog.ext.spring.mapper.SimpleRowMapper;
 import com.complexible.stardog.ext.spring.mapper.SingleMapper;
 
@@ -97,6 +96,7 @@ public class TestDataSourceFactory  {
 	public void setUp() throws Exception {
 	    System.setOut(new PrintStream(outContent));
 	    System.setErr(new PrintStream(errContent));
+		assertNotNull(dataSource);
 		SnarlTemplate tmp = new SnarlTemplate();
 		tmp.setDataSource(dataSource);
 		DataImporter importer = new DataImporter();
@@ -691,7 +691,7 @@ public class TestDataSourceFactory  {
 		dfb.setPassword("test");
 		dfb.setUsername("test");
 		dfb.setUrl("http://test.com");
-		dfb.setReasoningType(ReasoningType.NONE);
+		dfb.setReasoningType(false);
 		dfb.setTo("testdb");
 		
 		dfb.getUsername();
@@ -706,7 +706,7 @@ public class TestDataSourceFactory  {
 		dfb.getPassword();
 		dfb.getUsername();
 		dfb.getUrl();
-		assertEquals(dfb.getReasoningType(), ReasoningType.NONE);
+		assertEquals(dfb.getReasoningType(), false);
 		dfb.getTo();
 		dfb.getUsername();
 		

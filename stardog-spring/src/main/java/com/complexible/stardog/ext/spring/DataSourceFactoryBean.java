@@ -61,7 +61,7 @@ public class DataSourceFactoryBean implements FactoryBean<DataSource>, Initializ
 	
 	private String password;
 
-	private ReasoningType reasoningType;
+	private boolean reasoningType = false;
 	
 	private String to;
 	
@@ -168,9 +168,9 @@ public class DataSourceFactoryBean implements FactoryBean<DataSource>, Initializ
 			connectionConfig = connectionConfig.with((new OptionParser()).getOptions(aOptionsList));
 		}
 		
-		if (reasoningType != null) { 
-			connectionConfig = connectionConfig.reasoning(reasoningType);
-		}
+
+		connectionConfig = connectionConfig.reasoning(reasoningType);
+
 		
 		connectionConfig = connectionConfig.credentials(username, password);
 		
@@ -208,14 +208,14 @@ public class DataSourceFactoryBean implements FactoryBean<DataSource>, Initializ
 	/**
 	 * @return the reasoningType
 	 */
-	public ReasoningType getReasoningType() {
+	public boolean getReasoningType() {
 		return reasoningType;
 	}
 
 	/**
 	 * @param reasoningType the reasoningType to set
 	 */
-	public void setReasoningType(ReasoningType reasoningType) {
+	public void setReasoningType(boolean reasoningType) {
 		this.reasoningType = reasoningType;
 	}
 
