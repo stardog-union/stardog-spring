@@ -6,7 +6,7 @@ apply plugin:"signing"
 apply from:'https://raw.github.com/breskeby/gradleplugins/master/emmaPlugin/emma.gradle'
 
 group = 'com.complexible.stardog'
-version = '3.0.0'
+version = '3.1.4'
 
 repositories {
     	maven { url "http://maven.stardog.com" } 
@@ -32,9 +32,9 @@ dependencies {
 	compile ('org.springframework:spring-tx:4.1.2.RELEASE')
 	compile ('org.slf4j:slf4j-api:1.6.1')
 
-	compile ('com.complexible.stardog:client-http:3.0')
-	compile ('com.complexible.stardog:client-snarl:3.0')
- 	testCompile ('com.complexible.stardog:server:3.0')
+	compile ('com.complexible.stardog:client-http:3.1.4')
+	compile ('com.complexible.stardog:client-snarl:3.1.4')
+ 	testCompile ('com.complexible.stardog:server:3.1.4')
 
 	/*
 	compile ('org.openrdf.sesame:sesame:2.7.14') { 
@@ -121,7 +121,7 @@ uploadArchives {
 // Used for "gradle install"
 configure(install.repositories.mavenInstaller) {
 	pom.project {
-		version '3.0.0'
+		version '3.1.4'
 		artifactId 'stardog-spring'
 		groupId 'com.complexible.stardog'
 	}
