@@ -2,7 +2,7 @@ Stardog-Spring
 ==========
 
 Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
-_Current Version **3.0.0**_
+_Current Version **3.1.0**_
 
 This is [Spring Framework](http://springsource.org) integration for [Stardog RDF Database](http://stardog.com). This project
 provides the core Spring integration, with the SnarlTemplate and DataSource classes.  Other projects build on this as the basis for
