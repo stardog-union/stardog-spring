@@ -16,7 +16,9 @@ public class EmbeddedProvider implements Provider {
     public void execute(String to, String url, String user, String pass) {
 
         try {
-            Stardog.buildServer()
+            Stardog.builder()
+		    .create()
+		    .newServer()
                     .bind(SNARLProtocolConstants.EMBEDDED_ADDRESS)
                     .start();
             AdminConnection dbms = AdminConnectionConfiguration.toEmbeddedServer().credentials(user, pass).connect();

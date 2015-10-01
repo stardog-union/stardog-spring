@@ -45,7 +45,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.complexible.common.openrdf.model.Graphs;
+import com.complexible.common.openrdf.model.Models2;
 import com.complexible.stardog.Contexts;
 import com.complexible.stardog.StardogException;
 import com.complexible.stardog.api.Adder;
@@ -191,7 +191,7 @@ public class TestDataSourceFactory  {
 		tmp.setDataSource(dataSource);
 		
 		// Test remove of named graph
-		tmp.add(Graphs.newGraph(new StatementImpl(
+		tmp.add(Models2.newModel(new StatementImpl(
 				new URIImpl("urn:test:a"), 
 				new URIImpl("urn:test:b"), 
 				new LiteralImpl("hello world"))), "http://example.org/aGraph");

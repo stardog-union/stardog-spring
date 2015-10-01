@@ -62,9 +62,8 @@ public class TestTypeConverter {
 		assertNotNull(vb);
 		assertNotNull(vc);
 		assertNotNull(vd);
-		
-		assertEquals(va.toString(), "\"stardog\"");
-		assertEquals(vb.toString(), "\"http://stardog.com\"");
+		assertTrue(va.toString().contains("stardog"));
+		assertTrue(vb.toString().contains("\"http://stardog.com\""));
 		assertTrue(vc.toString().contains("http://www.w3.org/2001/XMLSchema#dateTime"));
 		assertEquals(vd.toString(), "\"5\"^^<http://www.w3.org/2001/XMLSchema#int>");
 

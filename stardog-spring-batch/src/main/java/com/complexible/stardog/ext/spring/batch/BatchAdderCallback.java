@@ -22,7 +22,7 @@ import com.complexible.stardog.api.Adder;
 
 /**
  * @author Al Baker
- * @author Clark & Parsia
+ * @author Clark &amp; Parsia
  *
  */
 public interface BatchAdderCallback<T> {

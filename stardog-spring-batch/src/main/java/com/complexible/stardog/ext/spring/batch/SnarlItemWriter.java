@@ -30,7 +30,7 @@ import com.complexible.stardog.ext.spring.DataSource;
  * Implementation of the Spring Batch ItemWriter interface that supports the SNARL API
  * 
  * @author Al Baker
- * @author Clark & Parsia
+ * @author Clark &amp; Parsia
  *
  */
 public class SnarlItemWriter<T> implements ItemWriter<T> {

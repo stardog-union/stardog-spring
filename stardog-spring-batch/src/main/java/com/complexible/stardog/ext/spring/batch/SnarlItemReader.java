@@ -34,7 +34,7 @@ import com.complexible.stardog.ext.spring.SnarlTemplate;
  * Implementation of a Spring Batch ItemReader that supports the SNARL API
  * 
  * @author Al Baker
- * @author Clark & Parsia 
+ * @author Clark &amp; Parsia 
  * 
  * @param <T>
  *

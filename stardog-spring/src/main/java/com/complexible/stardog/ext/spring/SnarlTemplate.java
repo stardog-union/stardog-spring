@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 import org.openrdf.model.Graph;
 import org.openrdf.model.Resource;
@@ -34,7 +36,7 @@ import org.openrdf.query.TupleQueryResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.complexible.common.openrdf.model.Graphs;
+import com.complexible.common.openrdf.model.Models2;
 import com.complexible.stardog.Contexts;
 import com.complexible.stardog.StardogException;
 import com.complexible.stardog.api.Adder;
@@ -221,12 +223,12 @@ public class SnarlTemplate {
 				getter.predicate(new URIImpl(predicate));
 			}
 			
-			com.complexible.common.iterations.Iteration<Statement, StardogException> iterator = getter.iterator();
+			Stream<Statement> iterator = getter.statements();
 			
-			while (iterator.hasNext()) { 
-				list.add(action.processStatement(iterator.next()));
-			}
-			
+			list = iterator.map( s -> action.processStatement(s) ).collect(Collectors.toCollection(ArrayList::new));
+
+			//iterator.forEach( s -> list.add(action.processStatement s) );
+
 			return list;
 		} catch (StardogException e) {
 			log.error("Error with getter", e);
@@ -597,7 +599,7 @@ public class SnarlTemplate {
 	 *
 	 */
 	public void add(String subject, String predicate, String object) { 
-		add(Graphs.newGraph(new StatementImpl(
+		add(Models2.newModel(new StatementImpl(
 				new URIImpl(subject.toString()), 
 				new URIImpl(predicate.toString()), 
 				new LiteralImpl(object.toString()))));
@@ -620,7 +622,7 @@ public class SnarlTemplate {
 	 * @param object URI object 
 	 */
 	public void add(java.net.URI subject, java.net.URI predicate, java.net.URI object) { 
-		add(Graphs.newGraph(new StatementImpl(
+		add(Models2.newModel(new StatementImpl(
 				new URIImpl(subject.toString()), 
 				new URIImpl(predicate.toString()), 
 				new URIImpl(object.toString()))));
