@@ -6,7 +6,7 @@ apply plugin:"signing"
 //apply from:'https://raw.github.com/breskeby/gradleplugins/master/emmaPlugin/emma.gradle'
 
 group = 'com.complexible.stardog'
-version = '4.0.0'
+version = '4.0-RC1'
 
 repositories {
     	maven { url "http://maven.stardog.com" } 
