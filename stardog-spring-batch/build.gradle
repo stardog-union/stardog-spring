@@ -6,18 +6,18 @@ apply plugin:"signing"
 //apply from:'https://raw.github.com/breskeby/gradleplugins/master/emmaPlugin/emma.gradle'
 
 group = 'com.complexible.stardog'
-version = '4.0-RC1'
+version = '4.0-RC2'
 
 repositories {
 	maven { url "http://maven.stardog.com" } 
 	mavenLocal()
 	mavenCentral()
 	
-	mavenRepo urls:"http://repository.springsource.com/maven/bundles/release"
-	mavenRepo urls:"http://repository.springsource.com/maven/bundles/external"
-	mavenRepo urls:"http://maven.springframework.org/release"
-	mavenRepo urls:"http://maven.springframework.org/milestone"
-	mavenRepo urls:"http://maven.springframework.org/snapshot"
+	maven { url "http://repository.springsource.com/maven/bundles/release" }
+	maven { url "http://repository.springsource.com/maven/bundles/external" } 
+	maven { url "http://maven.springframework.org/release" } 
+	maven { url "http://maven.springframework.org/milestone" }
+	maven { url "http://maven.springframework.org/snapshot" } 
 	
 }
 
@@ -36,10 +36,10 @@ dependencies {
 	compile ('org.springframework.batch:spring-batch-core:3.0.5.RELEASE') 
 	compile ('org.springframework.batch:spring-batch-infrastructure:3.0.5.RELEASE') 
 
-	compile ('com.complexible.stardog:client-http:4.0-RC1')
-	compile ('com.complexible.stardog:client-snarl:4.0-RC1')
-	compile ('com.complexible.stardog:stardog-spring:4.0-RC1')
-	testCompile ('com.complexible.stardog:server:4.0-RC1')
+	compile ('com.complexible.stardog:client-http:4.0-RC2')
+	compile ('com.complexible.stardog:client-snarl:4.0-RC2')
+	compile ('com.complexible.stardog:stardog-spring:4.0-RC2')
+	testCompile ('com.complexible.stardog:server:4.0-RC2')
 	
 	testCompile group: 'junit', name: 'junit', version: '4.8.2'
 	testCompile group: 'org.springframework', name:'spring-test', version:'3.0.5.RELEASE'
@@ -78,7 +78,7 @@ signing {
 uploadArchives {
 	repositories {
 		mavenDeployer {
-			beforeDeployment { MavenDeployment deployment -> signPom(deployment) }
+			// beforeDeployment { MavenDeployment deployment -> signPom(deployment) }
 
 			repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
 				authentication(userName: sonatypeUsername, password: sonatypePassword)
@@ -117,7 +117,7 @@ uploadArchives {
 
 configure(install.repositories.mavenInstaller) {
 	pom.project {
-		version '4.0-RC1'
+		version '4.0-RC2'
 		artifactId 'stardog-spring-batch'
 		groupId 'com.complexible.stardog'
 	}
