@@ -23,6 +23,8 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import com.complexible.common.rdf.model.Values;
+
 import org.openrdf.model.Value;
 import org.openrdf.model.impl.CalendarLiteral;
 import org.openrdf.model.impl.IntegerLiteral;
@@ -65,24 +67,24 @@ public class TypeConverter {
 		} catch (DatatypeConfigurationException e) {
 			throw new RuntimeException(e);
 		}
-		CalendarLiteral objectValue = new CalendarLiteral(date2);
-		return objectValue;
+		return Values.literal(c);
+
 	}
 	
 	public static Value asResource(java.net.URI uri) {
-		return new URIImpl(((java.net.URI)uri).toString());
+		return Values.literal(uri.toString());
 	}
 	
 	public static Value asLiteral(java.net.URI uri) {
-		return new LiteralImpl(((java.net.URI)uri).toString());
+		return Values.literal(((java.net.URI)uri).toString());
 	}
 	
 	public static Value asLiteral(Integer i) {
-		return new NumericLiteral(i);
+		return Values.literal(Integer.valueOf(i));
 	}
 	
 	public static Value asLiteral(String s) { 
-		return new LiteralImpl(s);
+		return Values.literal(s);
 	}
 	
 }
