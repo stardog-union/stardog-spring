@@ -26,9 +26,17 @@ import org.openrdf.model.Graph;
 import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
 import org.openrdf.model.Value;
+
+import com.complexible.common.openrdf.model.ModelIO;
+import com.complexible.common.openrdf.model.Models2;
+import com.complexible.common.rdf.model.Values;
+import com.complexible.stardog.protocols.snarl.SNARLProtocolConstants;
+import org.openrdf.model.IRI;
+import org.openrdf.model.Model;
+import org.openrdf.model.Resource;
+
 import org.openrdf.model.impl.LiteralImpl;
 import org.openrdf.model.impl.StatementImpl;
-import org.openrdf.model.impl.URIImpl;
 import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.query.GraphQueryResult;
 import org.openrdf.query.QueryEvaluationException;
@@ -36,7 +44,6 @@ import org.openrdf.query.TupleQueryResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.complexible.common.openrdf.model.Models2;
 import com.complexible.stardog.Contexts;
 import com.complexible.stardog.StardogException;
 import com.complexible.stardog.api.Adder;
@@ -110,19 +117,19 @@ public class SnarlTemplate {
 	
 	public void remove(String subject, String predicate, Object object, String graphUri) { 
 		Connection connection = dataSource.getConnection();
-		URIImpl subjectResource = null;
-		URIImpl predicateResource = null;
+		IRI subjectResource = null;
+		IRI predicateResource = null;
 		Resource context = null;
 		
 		if (subject != null) { 
-			subjectResource = new URIImpl(subject);
+			subjectResource = Values.iri(subject);
 		}
 		if (predicate != null) {
-			predicateResource = new URIImpl(predicate);
+			predicateResource = Values.iri(predicate);
 		}
 		
 		if (graphUri != null) { 
-			context = ValueFactoryImpl.getInstance().createURI(graphUri);
+			context = Values.iri(graphUri);
 		}
 		
 		Value objectValue = null;
@@ -152,7 +159,7 @@ public class SnarlTemplate {
 		
 		try {
 			connection.begin();
-			connection.remove().context(ValueFactoryImpl.getInstance().createURI(graphUri));
+			connection.remove().context(Values.iri(graphUri));
 			connection.commit();
 		} catch (StardogException e) {
 			log.error("Error removing graph from Stardog", e);
@@ -165,19 +172,19 @@ public class SnarlTemplate {
 	public void singleton(String subject, String predicate, Object object, String graphUri) { 
 		Connection connection = dataSource.getConnection();
 		
-		URIImpl subjectResource = null;
-		URIImpl predicateResource = null;
+		IRI subjectResource = null;
+		IRI predicateResource = null;
 		Resource context = null;
 		
 		if (subject != null) { 
-			subjectResource = new URIImpl(subject);
+			subjectResource = Values.iri(subject);
 		}
 		if (predicate != null) {
-			predicateResource = new URIImpl(predicate);
+			predicateResource = Values.iri(predicate);
 		}
 		
 		if (graphUri != null) { 
-			context = ValueFactoryImpl.getInstance().createURI(graphUri);
+			context = Values.iri(graphUri);
 		}
 		
 		Value objectValue = TypeConverter.asLiteral(object);
@@ -216,11 +223,11 @@ public class SnarlTemplate {
 			getter = connection.get();
 			
 			if (subject != null) { 
-				getter.subject(new URIImpl(subject));
+				getter.subject(Values.iri(subject));
 			}
 			
 			if (predicate != null) { 
-				getter.predicate(new URIImpl(predicate));
+				getter.predicate(Values.iri(predicate));
 			}
 			
 			Stream<Statement> iterator = getter.statements();
@@ -563,8 +570,9 @@ public class SnarlTemplate {
 	 * @param graph Graph to use for the adder
 	 * @param graphUri graph URi to use
 	 */
+	@Deprecated
 	public void add(Graph graph, String graphUri) { 
-		Resource context = (graphUri == null ? null : ValueFactoryImpl.getInstance().createURI(graphUri));
+		Resource context = (graphUri == null ? null : Values.iri(graphUri));
 		Connection connection = dataSource.getConnection();
 		try {
 			connection.begin();
@@ -587,6 +595,7 @@ public class SnarlTemplate {
 	 * <code>add</code>
 	 * @param graph Sesame graph
 	 */
+	@Deprecated
 	public void add(Graph graph) { 
 		add(graph, null);
 	}
@@ -599,10 +608,10 @@ public class SnarlTemplate {
 	 *
 	 */
 	public void add(String subject, String predicate, String object) { 
-		add(Models2.newModel(new StatementImpl(
-				new URIImpl(subject.toString()), 
-				new URIImpl(predicate.toString()), 
-				new LiteralImpl(object.toString()))));
+		add(Models2.newModel(Values.statement(
+				Values.iri(subject.toString()),
+				Values.iri(predicate.toString()),
+				Values.literal(object.toString()))));
 	}
 	
 	/**
@@ -622,10 +631,10 @@ public class SnarlTemplate {
 	 * @param object URI object 
 	 */
 	public void add(java.net.URI subject, java.net.URI predicate, java.net.URI object) { 
-		add(Models2.newModel(new StatementImpl(
-				new URIImpl(subject.toString()), 
-				new URIImpl(predicate.toString()), 
-				new URIImpl(object.toString()))));
+		add(Models2.newModel(Values.statement(
+				Values.iri(subject.toString()),
+				Values.iri(predicate.toString()),
+				Values.literal(object.toString()))));
 	}
 	
 	

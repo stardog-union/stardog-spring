@@ -2,7 +2,7 @@ Stardog-Spring-Batch
 ==========
 
 Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
-_Current Version **4.1**_
+_Current Version **4.2.1**_
 
 This is [Spring Framework](http://springsource.org) integration for [Stardog RDF Database](http://stardog.com). This API provides Spring Batch readers/writers for building batch applications with Stardog.
 
@@ -20,7 +20,6 @@ To use Stardog Spring, we recommend, simply add: "com.complexible.stardog:stardo
 This does depend on installing the Stardog dependencies:
 
 1. Download Stardog from [Stardog](http://stardog.com)
-2. Run the bin/mavenInstall script
 
 Once this is in place, you can create applications using a Spring application context.
 

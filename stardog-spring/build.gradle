@@ -6,7 +6,7 @@ apply plugin:"signing"
 //apply from:'https://raw.github.com/breskeby/gradleplugins/master/emmaPlugin/emma.gradle'
 
 group = 'com.complexible.stardog'
-version = '4.1'
+version = '4.2.1'
 
 repositories {
     	maven { url "http://maven.stardog.com" } 
@@ -32,9 +32,9 @@ dependencies {
 	compile ('org.springframework:spring-tx:4.1.2.RELEASE')
 	compile ('org.slf4j:slf4j-api:1.6.1')
 
-	compile ('com.complexible.stardog:client-http:4.1')
-	compile ('com.complexible.stardog:client-snarl:4.1')
- 	testCompile ('com.complexible.stardog:server:4.1')
+	compile ('com.complexible.stardog:client-http:4.2.1')
+	compile ('com.complexible.stardog:client-snarl:4.2.1')
+ 	testCompile ('com.complexible.stardog:server:4.2.1')
 
 	testCompile group: 'junit', name: 'junit', version: '4.8.2'
 	testCompile group: 'org.springframework', name:'spring-test', version:'3.0.5.RELEASE'
@@ -113,7 +113,7 @@ uploadArchives {
 // Used for "gradle install"
 configure(install.repositories.mavenInstaller) {
 	pom.project {
-		version '4.1'
+		version '4.2.1'
 		artifactId 'stardog-spring'
 		groupId 'com.complexible.stardog'
 	}

@@ -39,9 +39,7 @@ public class SimpleRowMapper implements RowMapper<Map<String, String>> {
 	@Override
 	public Map<String, String> mapRow(BindingSet bindingSet) {
 		Map<String, String> result = new HashMap<String, String>();
-		Iterator<Binding> it = bindingSet.iterator();
-		while (it.hasNext()) {
-			Binding b = it.next();
+		for (Binding b : bindingSet) {
 			result.put(b.getName(), b.getValue().stringValue());
 		}
 		return result;

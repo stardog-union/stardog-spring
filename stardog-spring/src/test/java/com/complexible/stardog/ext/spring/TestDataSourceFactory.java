@@ -37,7 +37,10 @@ import org.junit.runner.RunWith;
 import org.openrdf.model.Statement;
 import org.openrdf.model.impl.LiteralImpl;
 import org.openrdf.model.impl.StatementImpl;
-import org.openrdf.model.impl.URIImpl;
+import com.complexible.common.openrdf.model.Models2;
+import com.complexible.common.rdf.model.Values;
+import org.openrdf.model.IRI;
+
 import org.openrdf.query.BindingSet;
 import org.openrdf.rio.RDFFormat;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -191,10 +194,10 @@ public class TestDataSourceFactory  {
 		tmp.setDataSource(dataSource);
 		
 		// Test remove of named graph
-		tmp.add(Models2.newModel(new StatementImpl(
-				new URIImpl("urn:test:a"), 
-				new URIImpl("urn:test:b"), 
-				new LiteralImpl("hello world"))), "http://example.org/aGraph");
+		tmp.add(Models2.newModel(Values.statement(
+				Values.iri("urn:test:a"),
+				Values.iri("urn:test:b"),
+				Values.literal("hello world"))), "http://example.org/aGraph");
 		
 		String sparql = "SELECT ?a WHERE { GRAPH <http://example.org/aGraph> { ?a ?b ?c } }";
 		List<Map<String,String>> results = tmp.query(sparql, new RowMapper<Map<String,String>>() {
@@ -293,7 +296,7 @@ public class TestDataSourceFactory  {
 		String sparql = "SELECT ?a ?b WHERE { ?a ?c ?b } LIMIT 5";
 		
 		Map<String, Object> params = new HashMap<String, Object>() {{ 
-			put("c", new URIImpl("http://purl.org/dc/elements/1.1/title")); 
+			put("c", Values.iri("http://purl.org/dc/elements/1.1/title"));
 		}};
 		
 		List<Map<String,String>> results = tmp.query(sparql, params, new RowMapper<Map<String,String>>() {
@@ -320,7 +323,7 @@ public class TestDataSourceFactory  {
 		String sparql = "SELECT ?a ?b WHERE { ?a ?c ?b } LIMIT 5";
 		
 		Map<String, Object> params = new HashMap<String, Object>() {{ 
-			put("c", new URIImpl("http://purl.org/dc/elements/1.1/title")); 
+			put("c", Values.iri("http://purl.org/dc/elements/1.1/title"));
 		}};
 		
 		List<Map<String,String>> results = tmp.query(sparql, params, new RowMapper<Map<String,String>>() {
@@ -352,7 +355,7 @@ public class TestDataSourceFactory  {
 	
 		String sparql = "SELECT ?a ?b WHERE { ?a ?c ?b }";
 		Map<String, Object> params = new HashMap<String, Object>() {{ 
-			put("c", new URIImpl("urn:test:b")); 
+			put("c", Values.iri("urn:test:b"));
 		}};
 		Map<String, String> result = tmp.queryForObject(sparql, params, new RowMapper<Map<String, String>>() {
 
@@ -391,7 +394,7 @@ public class TestDataSourceFactory  {
 		String sparql = "DELETE { ?a ?b \"aloha world\" } INSERT { ?a ?b \"shalom world\" } WHERE { ?a ?b \"aloha world\" }";
 		
 		Map<String, Object> params = new HashMap<String, Object>() {{ 
-			put("b", new URIImpl(uriB)); 
+			put("b", Values.iri(uriB));
 		}};
 		
 		tmp.update(sparql, params);
@@ -438,7 +441,7 @@ public class TestDataSourceFactory  {
 		String sparql = "ASK { ?a ?b \"aloha world\" }";
 		
 		Map<String, Object> params = new HashMap<String, Object>() {{ 
-			put("b", new URIImpl(uriB)); 
+			put("b", Values.iri(uriB));
 		}};
 		
 		boolean result = tmp.ask(sparql, params);
@@ -586,8 +589,8 @@ public class TestDataSourceFactory  {
 				String litA = "hello world";
 				String litB = "goodbye";
 				
-				adder.statement(new URIImpl(uriA), new URIImpl(uriB), new LiteralImpl(litA));
-				adder.statement(new URIImpl(uriA), new URIImpl(uriB), new LiteralImpl(litB));
+				adder.statement(Values.iri(uriA), Values.iri(uriB), Values.literal(litA));
+				adder.statement(Values.iri(uriA), Values.iri(uriB), Values.literal(litB));
 				return true;
 			} 		
 		});
@@ -613,7 +616,7 @@ public class TestDataSourceFactory  {
 		snarlTemplate.doWithRemover(new RemoverCallback<Boolean>() {
 			@Override
 			public Boolean remove(Remover remover) throws StardogException {
-				remover.statements(new URIImpl("urn:test:m"), new URIImpl("urn:test:n"), null);
+				remover.statements(Values.iri("urn:test:m"), Values.iri("urn:test:n"), null);
 				return true;
 			} 
 		});
