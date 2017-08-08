@@ -112,7 +112,7 @@ uploadArchives {
 // Used for "gradle install"
 configure(install.repositories.mavenInstaller) {
 	pom.project {
-		version '4.2.1'
+		version '5.0.1'
 		artifactId 'stardog-spring'
 		groupId 'com.complexible.stardog'
 	}
