@@ -15,46 +15,25 @@
 */
 package com.complexible.stardog.ext.spring;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Stream;
-import java.util.stream.Collectors;
-
-import org.openrdf.model.Graph;
-import org.openrdf.model.Resource;
-import org.openrdf.model.Statement;
-import org.openrdf.model.Value;
-
-import com.complexible.common.openrdf.model.ModelIO;
 import com.complexible.common.openrdf.model.Models2;
 import com.complexible.common.rdf.model.Values;
-import com.complexible.stardog.protocols.snarl.SNARLProtocolConstants;
-import org.openrdf.model.IRI;
-import org.openrdf.model.Model;
-import org.openrdf.model.Resource;
-
-import org.openrdf.model.impl.LiteralImpl;
-import org.openrdf.model.impl.StatementImpl;
-import org.openrdf.model.impl.ValueFactoryImpl;
+import com.complexible.stardog.Contexts;
+import com.complexible.stardog.StardogException;
+import com.complexible.stardog.api.*;
+import com.complexible.stardog.ext.spring.utils.TypeConverter;
+import org.openrdf.model.*;
 import org.openrdf.query.GraphQueryResult;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQueryResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.complexible.stardog.Contexts;
-import com.complexible.stardog.StardogException;
-import com.complexible.stardog.api.Adder;
-import com.complexible.stardog.api.BooleanQuery;
-import com.complexible.stardog.api.Connection;
-import com.complexible.stardog.api.Getter;
-import com.complexible.stardog.api.GraphQuery;
-import com.complexible.stardog.api.Remover;
-import com.complexible.stardog.api.SelectQuery;
-import com.complexible.stardog.api.UpdateQuery;
-import com.complexible.stardog.ext.spring.utils.TypeConverter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * SnarlTemplate

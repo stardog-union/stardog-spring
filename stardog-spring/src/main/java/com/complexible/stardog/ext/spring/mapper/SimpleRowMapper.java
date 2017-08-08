@@ -18,7 +18,6 @@ package com.complexible.stardog.ext.spring.mapper;
 import com.complexible.stardog.ext.spring.RowMapper;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.openrdf.query.Binding;

@@ -18,7 +18,6 @@ package com.complexible.stardog.ext.spring;
 import com.complexible.common.base.Pair;
 import com.complexible.stardog.api.ConnectionConfiguration;
 import com.complexible.stardog.api.ConnectionPoolConfig;
-import com.complexible.stardog.reasoning.api.ReasoningType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;

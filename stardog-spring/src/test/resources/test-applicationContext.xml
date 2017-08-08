@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 
-    <bean name="embeddedProvider" class="com.complexible.stardog.ext.spring.EmbeddedProvider"></bean>
+    <bean name="embeddedProvider" class="com.complexible.stardog.ext.spring.EmbeddedProvider" />
 
 	<bean name="dataSource" class="com.complexible.stardog.ext.spring.DataSourceFactoryBean">
 		<property name="to" value="testdb"/>

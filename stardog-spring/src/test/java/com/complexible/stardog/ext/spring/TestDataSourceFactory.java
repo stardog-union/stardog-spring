@@ -15,11 +15,26 @@
 */
 package com.complexible.stardog.ext.spring;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import com.complexible.common.openrdf.model.Models2;
+import com.complexible.common.rdf.model.Values;
+import com.complexible.stardog.Contexts;
+import com.complexible.stardog.StardogException;
+import com.complexible.stardog.api.Adder;
+import com.complexible.stardog.api.Connection;
+import com.complexible.stardog.api.Remover;
+import com.complexible.stardog.ext.spring.mapper.SimpleRowMapper;
+import com.complexible.stardog.ext.spring.mapper.SingleMapper;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.openrdf.model.Statement;
+import org.openrdf.query.BindingSet;
+import org.openrdf.rio.RDFFormat;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -30,32 +45,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.openrdf.model.Statement;
-import org.openrdf.model.impl.LiteralImpl;
-import org.openrdf.model.impl.StatementImpl;
-import com.complexible.common.openrdf.model.Models2;
-import com.complexible.common.rdf.model.Values;
-import org.openrdf.model.IRI;
-
-import org.openrdf.query.BindingSet;
-import org.openrdf.rio.RDFFormat;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import com.complexible.common.openrdf.model.Models2;
-import com.complexible.stardog.Contexts;
-import com.complexible.stardog.StardogException;
-import com.complexible.stardog.api.Adder;
-import com.complexible.stardog.api.Connection;
-import com.complexible.stardog.api.Remover;
-import com.complexible.stardog.ext.spring.mapper.SimpleRowMapper;
-import com.complexible.stardog.ext.spring.mapper.SingleMapper;
+import static org.junit.Assert.*;
 
 
 /**
