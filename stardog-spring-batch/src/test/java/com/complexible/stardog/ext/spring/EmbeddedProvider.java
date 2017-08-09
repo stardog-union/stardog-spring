@@ -32,9 +32,4 @@ public class EmbeddedProvider implements Provider {
         }
 
     }
-
-    @Override
-    public void destroy() {
-        stardog.shutdown();
-    }
 }

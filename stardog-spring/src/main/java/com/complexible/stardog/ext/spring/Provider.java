@@ -27,5 +27,4 @@ package com.complexible.stardog.ext.spring;
 public interface Provider {
 
     public void execute (String to, String url, String user, String pass);
-    public void destroy ();
 }

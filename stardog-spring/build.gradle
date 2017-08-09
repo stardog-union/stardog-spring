@@ -103,6 +103,10 @@ uploadArchives {
 						id 'albakercp'
 						name 'Al Baker'
 					}
+					developer {
+						id 'gcoluni'
+						name 'Gregory Coluni'
+					}
 				}
 			}
 		}
