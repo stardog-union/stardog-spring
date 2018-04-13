@@ -613,7 +613,7 @@ public class SnarlTemplate {
 		add(Models2.newModel(Values.statement(
 				Values.iri(subject.toString()),
 				Values.iri(predicate.toString()),
-				Values.literal(object.toString()))));
+				Values.iri(object.toString()))));
 	}
 	
 	
