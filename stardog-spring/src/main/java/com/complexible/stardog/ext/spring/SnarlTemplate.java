@@ -324,6 +324,34 @@ public class SnarlTemplate {
 			dataSource.releaseConnection(connection);
 		}
 	}
+
+	/**
+	 * <code>as</code>
+	 * Return the connection viewed as a different type of connection.
+	 * @param theClass
+	 * @return specified Stardog Connection type
+	 */
+	public <T extends Connection> T as(Class<T> theClass){
+		return dataSource.getConnection().as(theClass);
+	}
+
+	/**
+	 * <code>get</code>
+	 * Gets a Stardog connection
+	 * @return Stardog Connection
+	 */
+	public Getter get(){
+		return dataSource.getConnection().get();
+	}
+
+	/**
+	 * <code>get</code>
+	 * Gets a Stardog connection with reasoning either enabled or disabled.
+	 * @return Stardog Connection
+	 */
+	public Getter reasoning(boolean reasoningBool) {
+		return dataSource.getConnection().get().reasoning(reasoningBool);
+	}
  	
 	/**
 	 * <code>query</code>
