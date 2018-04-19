@@ -345,7 +345,7 @@ public class SnarlTemplate {
 	}
 
 	/**
-	 * <code>get</code>
+	 * <code>reasoning</code>
 	 * Gets a Stardog connection with reasoning either enabled or disabled.
 	 * @return Stardog Connection
 	 */
