@@ -21,6 +21,7 @@ import com.complexible.stardog.Contexts;
 import com.complexible.stardog.StardogException;
 import com.complexible.stardog.api.Adder;
 import com.complexible.stardog.api.Connection;
+import com.complexible.stardog.api.Getter;
 import com.complexible.stardog.api.Remover;
 import com.complexible.stardog.ext.spring.mapper.SimpleRowMapper;
 import com.complexible.stardog.ext.spring.mapper.SingleMapper;
@@ -642,7 +643,19 @@ public class TestDataSourceFactory  {
 		assertEquals(results.size(), 1);
 		
 	}
-	
+
+	@Test
+	public void testSnarlGetReasoningConnection() {
+		Getter getter = snarlTemplate.reasoning(true);
+		assertNotNull(getter);
+	}
+
+	@Test
+	public void testSnarlGetConnection() {
+		Getter getter = snarlTemplate.get();
+		assertNotNull(getter);
+	}
+
 	@Test
 	public void testSnarlGetDataSource() {
 		DataSource ds = snarlTemplate.getDataSource();
