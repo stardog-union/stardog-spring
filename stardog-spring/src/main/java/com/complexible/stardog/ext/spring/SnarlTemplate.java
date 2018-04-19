@@ -328,7 +328,8 @@ public class SnarlTemplate {
 	/**
 	 * <code>as</code>
 	 * Return the connection viewed as a different type of connection.
-	 * @param theClass
+	 * @param <T> generic type of Connection
+	 * @param theClass the class of the different type of connection
 	 * @return specified Stardog Connection type
 	 */
 	public <T extends Connection> T as(Class<T> theClass){
@@ -347,6 +348,7 @@ public class SnarlTemplate {
 	/**
 	 * <code>reasoning</code>
 	 * Gets a Stardog connection with reasoning either enabled or disabled.
+	 * @param reasoningBool the value if reasoning will be enabled or disabled
 	 * @return Stardog Connection
 	 */
 	public Getter reasoning(boolean reasoningBool) {
