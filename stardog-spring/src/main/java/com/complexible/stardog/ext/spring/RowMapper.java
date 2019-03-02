@@ -15,7 +15,7 @@
 */
 package com.complexible.stardog.ext.spring;
 
-import org.openrdf.query.BindingSet;
+import com.stardog.stark.query.BindingSet;
 
 /**
  * RowMapper

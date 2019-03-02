@@ -15,10 +15,7 @@
 */
 package com.complexible.stardog.ext.spring.batch;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.openrdf.query.BindingSet;
+import com.stardog.stark.query.BindingSet;
 
 import com.complexible.stardog.ext.spring.RowMapper;
 
@@ -36,7 +33,7 @@ public class TestRowMapper implements RowMapper<TestRecord> {
 
 	@Override
 	public TestRecord mapRow(BindingSet bindingSet) {
-		TestRecord record = new TestRecord(bindingSet.getValue("a").stringValue(), bindingSet.getValue("b").stringValue());
+		TestRecord record = new TestRecord(bindingSet.value("a").toString(), bindingSet.value("b").toString());
 		return record;
 	}
 

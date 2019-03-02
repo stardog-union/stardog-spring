@@ -15,8 +15,6 @@
 */
 package com.complexible.stardog.ext.spring;
 
-import com.complexible.common.openrdf.model.Models2;
-import com.complexible.common.rdf.model.Values;
 import com.complexible.stardog.Contexts;
 import com.complexible.stardog.StardogException;
 import com.complexible.stardog.api.Adder;
@@ -25,13 +23,14 @@ import com.complexible.stardog.api.Getter;
 import com.complexible.stardog.api.Remover;
 import com.complexible.stardog.ext.spring.mapper.SimpleRowMapper;
 import com.complexible.stardog.ext.spring.mapper.SingleMapper;
+import com.google.common.collect.ImmutableSet;
+import com.stardog.stark.*;
+import com.stardog.stark.io.RDFFormats;
+import com.stardog.stark.query.BindingSet;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openrdf.model.Statement;
-import org.openrdf.query.BindingSet;
-import org.openrdf.rio.RDFFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
@@ -41,12 +40,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import java.util.*;
 import static org.junit.Assert.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -61,6 +59,8 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/test-applicationContext.xml"})
 public class TestDataSourceFactory  {
+
+	private static Logger log = LoggerFactory.getLogger("TestDataSourceFactory.class");
 
 	@Autowired
 	DataSource dataSource;
@@ -95,7 +95,7 @@ public class TestDataSourceFactory  {
 		tmp.setDataSource(dataSource);
 		DataImporter importer = new DataImporter();
 		importer.setSnarlTemplate(tmp);
-		importer.inputFile(RDFFormat.N3, applicationContext.getResource("classpath:sp2b_10k.n3"));
+		importer.inputFile(RDFFormats.N3, applicationContext.getResource("classpath:sp2b_10k.n3"));
 		
 	}
 
@@ -133,8 +133,8 @@ public class TestDataSourceFactory  {
 			@Override
 			public Map<String,String> mapRow(BindingSet bindingSet) {
 				Map<String,String> map = new HashMap<String,String>();
-				map.put("a", bindingSet.getValue("a").stringValue());
-				map.put("b", bindingSet.getValue("b").stringValue());
+				map.put("a", bindingSet.value("a").toString());
+				map.put("b", bindingSet.value("b").toString());
 				return map;
 			} 
 			
@@ -183,20 +183,21 @@ public class TestDataSourceFactory  {
 	public void testRemoveGraph() {
 		SnarlTemplate tmp = new SnarlTemplate();
 		tmp.setDataSource(dataSource);
-		
-		// Test remove of named graph
-		tmp.add(Models2.newModel(Values.statement(
-				Values.iri("urn:test:a"),
-				Values.iri("urn:test:b"),
-				Values.literal("hello world"))), "http://example.org/aGraph");
+
+		Set<Statement> g2 = ImmutableSet.of(Values.statement(Values.iri("urn:s2"),
+				Values.iri("urn:p2"),
+				Values.iri("urn:o2")));
+
+		tmp.add(g2, "http://example.org/aGraph");
+
 		
 		String sparql = "SELECT ?a WHERE { GRAPH <http://example.org/aGraph> { ?a ?b ?c } }";
-		List<Map<String,String>> results = tmp.query(sparql, new RowMapper<Map<String,String>>() {
+		List<Map<String,String>> results = tmp.query(sparql, new RowMapper<Map<String,String>>()  {
 
 			@Override
 			public Map<String,String> mapRow(BindingSet bindingSet) {
 				Map<String,String> map = new HashMap<String,String>();
-				map.put("a", bindingSet.getValue("a").stringValue());
+				map.put("a", bindingSet.value("a").toString());
 				return map;
 			} 
 			
@@ -211,7 +212,7 @@ public class TestDataSourceFactory  {
 			@Override
 			public Map<String,String> mapRow(BindingSet bindingSet) {
 				Map<String,String> map = new HashMap<String,String>();
-				map.put("a", bindingSet.getValue("a").stringValue());
+				map.put("a", bindingSet.value("a").toString());
 				return map;
 			} 
 			
@@ -225,7 +226,7 @@ public class TestDataSourceFactory  {
 			@Override
 			public Map<String,String> mapRow(BindingSet bindingSet) {
 				Map<String,String> map = new HashMap<String,String>();
-				map.put("a", bindingSet.getValue("a").stringValue());
+				map.put("a", bindingSet.value("a").toString());
 				return map;
 			} 
 			
@@ -240,7 +241,7 @@ public class TestDataSourceFactory  {
 			@Override
 			public Map<String,String> mapRow(BindingSet bindingSet) {
 				Map<String,String> map = new HashMap<String,String>();
-				map.put("a", bindingSet.getValue("a").stringValue());
+				map.put("a", bindingSet.value("a").toString());
 				return map;
 			} 
 			
@@ -252,31 +253,31 @@ public class TestDataSourceFactory  {
 	public void testQueryForObject() throws URISyntaxException {
 		SnarlTemplate tmp = new SnarlTemplate();
 		tmp.setDataSource(dataSource);
-		
+
 		String uriA = "urn:test:a";
 		String uriB = "urn:test:b";
 		String litA = "hello world";
 
 		tmp.add(uriA, uriB, litA);
-	
+
 		String sparql = "SELECT ?a ?b WHERE { ?a  <urn:test:b> ?b }";
-		
-		Map<String, String> result = tmp.queryForObject(sparql, new RowMapper<Map<String, String>>() {
+
+		Map<String, Value> result = tmp.queryForObject(sparql, new RowMapper<Map<String, Value>>() {
 
 			@Override
-			public Map<String, String> mapRow(BindingSet bindingSet) {
-				Map<String,String> map = new HashMap<String,String>();
-				map.put("a", bindingSet.getValue("a").stringValue());
-				map.put("b", bindingSet.getValue("b").stringValue());
+			public Map<String, Value> mapRow(BindingSet bindingSet) {
+				Map<String, Value> map = new HashMap<String, Value>();
+				map.put("a", bindingSet.iri("a").orElse(null));
+				map.put("b", bindingSet.literal("b").orElse(null));
 				return map;
 			}
-			
+
 		});
+
 		assertNotNull(result);
 		assertEquals(result.size(), 2);
-		assertTrue(result.get("a").equals(uriA));
-		assertTrue(result.get("b").equals(litA));
- 		
+		assertEquals(result.get("a").toString(), uriA);
+		assertEquals(((Literal)result.get("b")).label(), litA);
 	}
 	
 	@Test
@@ -295,10 +296,10 @@ public class TestDataSourceFactory  {
 			@Override
 			public Map<String,String> mapRow(BindingSet bindingSet) {
 				Map<String,String> map = new HashMap<String,String>();
-				map.put("a", bindingSet.getValue("a").stringValue());
-				map.put("b", bindingSet.getValue("b").stringValue());
+				map.put("a", bindingSet.value("a").toString());
+				map.put("b", bindingSet.value("b").toString());
 				return map;
-			} 
+			}
 			
 		});
 		
@@ -322,8 +323,8 @@ public class TestDataSourceFactory  {
 			@Override
 			public Map<String,String> mapRow(BindingSet bindingSet) {
 				Map<String,String> map = new HashMap<String,String>();
-				map.put("a", bindingSet.getValue("a").stringValue());
-				map.put("b", bindingSet.getValue("b").stringValue());
+				map.put("a", bindingSet.value("a").toString());
+				map.put("b", bindingSet.value("b").toString());
 				return map;
 			} 
 			
@@ -345,24 +346,24 @@ public class TestDataSourceFactory  {
 		tmp.add(uriA, uriB, litA);
 	
 		String sparql = "SELECT ?a ?b WHERE { ?a ?c ?b }";
-		Map<String, Object> params = new HashMap<String, Object>() {{ 
+		Map<String, Object> params = new HashMap<String, Object>() {{
 			put("c", Values.iri("urn:test:b"));
 		}};
-		Map<String, String> result = tmp.queryForObject(sparql, params, new RowMapper<Map<String, String>>() {
+		Map<String, Value> result = tmp.queryForObject(sparql, params, new RowMapper<Map<String, Value>>() {
 
 			@Override
-			public Map<String, String> mapRow(BindingSet bindingSet) {
-				Map<String,String> map = new HashMap<String,String>();
-				map.put("a", bindingSet.getValue("a").stringValue());
-				map.put("b", bindingSet.getValue("b").stringValue());
+			public Map<String, Value> mapRow(BindingSet bindingSet) {
+				Map<String,Value> map = new HashMap<String,Value>();
+				map.put("a", bindingSet.iri("a").orElse(null));
+				map.put("b", bindingSet.literal("b").orElse(null));
 				return map;
 			}
-			
+
 		});
 		assertNotNull(result);
 		assertEquals(result.size(), 2);
-		assertTrue(result.get("a").equals(uriA));
-		assertTrue(result.get("b").equals(litA));
+		assertEquals(result.get("a").toString(), uriA);
+		assertEquals(((Literal)result.get("b")).label(), litA);
  		
 	}
 	
@@ -392,12 +393,12 @@ public class TestDataSourceFactory  {
 		
 		sparql = "SELECT ?a WHERE { ?a ?b \"shalom world\" }";
 
-		List<Map<String, String>> results = tmp.query(sparql, params, new RowMapper<Map<String, String>>() {
+		List<Map<String, Value>> results = tmp.query(sparql, params, new RowMapper<Map<String, Value>>() {
 
 			@Override
-			public Map<String, String> mapRow(BindingSet bindingSet) {
-				Map<String,String> map = new HashMap<String,String>();
-				map.put("a", bindingSet.getValue("a").stringValue());
+			public Map<String, Value> mapRow(BindingSet bindingSet) {
+				Map<String,Value> map = new HashMap<String,Value>();
+				map.put("a", bindingSet.iri("a").orElse(null));
 				return map;
 			}
 		});
@@ -406,8 +407,8 @@ public class TestDataSourceFactory  {
 		assertEquals(results.size(), 2);
 		
 		List<String> resultList = new ArrayList<String>();
-		for (Map<String, String> m : results) {
-			resultList.add(m.get("a"));
+		for (Map<String, Value> m : results) {
+			resultList.add(m.get("a").toString());
 		}
 		
 		assertTrue(resultList.contains(uriA1));
@@ -453,36 +454,36 @@ public class TestDataSourceFactory  {
 	}
 	
 	@Test
-	public void testAdd() throws URISyntaxException { 
+	public void testAdd() throws URISyntaxException {
 		String uriA = "urn:test:a";
 		String uriB = "urn:test:b";
 		String uriC = "urn:test:c";
 		String litA = "hello world";
-		
+
 		URI a = new URI(uriA);
 		URI b = new URI(uriB);
 		URI c = new URI(uriC);
-		
+
 		snarlTemplate.add(uriA, uriB, litA);
 		snarlTemplate.add(uriA, uriB, litA);
 		snarlTemplate.add(a,b,c);
-		
+
 		String sparql = "SELECT ?a ?b WHERE { ?a  <urn:test:b> ?b } LIMIT 5";
-		
+
 		List<Map<String,String>> results = snarlTemplate.query(sparql, new RowMapper<Map<String,String>>() {
 
 			@Override
 			public Map<String,String> mapRow(BindingSet bindingSet) {
 				Map<String,String> map = new HashMap<String,String>();
-				map.put("a", bindingSet.getValue("a").stringValue());
-				map.put("b", bindingSet.getValue("b").stringValue());
+				map.put("a", bindingSet.value("a").toString());
+				map.put("b", bindingSet.value("b").toString());
 				return map;
-			} 
-			
+			}
+
 		});
-		
+
 		assertEquals(results.size(), 2);
-		
+
 	}
 	
 	@Test
@@ -499,7 +500,7 @@ public class TestDataSourceFactory  {
 		List<String> results = snarlTemplate.doWithGetter(uriA, null, new GetterCallback<String>() {
 			@Override
 			public String processStatement(Statement statement) {
-				return statement.getObject().stringValue();
+				return statement.object().toString();
 			} 
 		});
 		
@@ -508,7 +509,7 @@ public class TestDataSourceFactory  {
 		List<String> results2 = snarlTemplate.doWithGetter(null, uriB, new GetterCallback<String>() {
 			@Override
 			public String processStatement(Statement statement) {
-				return statement.getObject().stringValue();
+				return statement.object().toString();
 			} 
 		});
 		
@@ -530,7 +531,7 @@ public class TestDataSourceFactory  {
 		List<String> results2 = snarlTemplate.doWithGetter(null, uriB, new GetterCallback<String>() {
 			@Override
 			public String processStatement(Statement statement) {
-				return statement.getObject().stringValue();
+				return statement.object().toString();
 			} 
 		});
 		
@@ -541,7 +542,7 @@ public class TestDataSourceFactory  {
 		List<String> results = snarlTemplate.doWithGetter(null, uriB, new GetterCallback<String>() {
 			@Override
 			public String processStatement(Statement statement) {
-				return statement.getObject().stringValue();
+				return statement.object().toString();
 			} 
 		});
 		
@@ -558,15 +559,15 @@ public class TestDataSourceFactory  {
 		snarlTemplate.add(uriA, uriB, litA);
 		snarlTemplate.singleton(uriA, uriB, litB, null);
 		
-		List<String> results = snarlTemplate.doWithGetter(null, uriB, new GetterCallback<String>() {
+		List<Value> results = snarlTemplate.doWithGetter(null, uriB, new GetterCallback<Value>() {
 			@Override
-			public String processStatement(Statement statement) {
-				return statement.getObject().stringValue();
+			public Value processStatement(Statement statement) {
+				return statement.object();
 			} 
 		});
 		
 		assertEquals(results.size(), 1);	
-		assertEquals(results.get(0), "a singleton");
+		assertEquals(((Literal)results.get(0)).label(), "a singleton");
 	}
 	
 	@Test
@@ -589,7 +590,7 @@ public class TestDataSourceFactory  {
 		List<String> results = snarlTemplate.doWithGetter(null, "urn:test:u", new GetterCallback<String>() {
 			@Override
 			public String processStatement(Statement statement) {
-				return statement.getObject().stringValue();
+				return statement.object().toString();
 			} 
 		});
 		
@@ -615,7 +616,7 @@ public class TestDataSourceFactory  {
 		List<String> results = snarlTemplate.doWithGetter(null, "urn:test:n", new GetterCallback<String>() {
 			@Override
 			public String processStatement(Statement statement) {
-				return statement.getObject().stringValue();
+				return statement.object().toString();
 			} 
 		});
 		
@@ -635,7 +636,7 @@ public class TestDataSourceFactory  {
 			@Override
 			public Map<String, String> mapRow(Statement next) {
 				Map<String,String> map = new HashMap<String,String>();	
-				map.put(next.getSubject().stringValue(), next.getObject().stringValue());
+				map.put(next.subject().toString(), next.object().toString());
 				return map;
 			} 
 		});

@@ -15,20 +15,21 @@
 */
 package com.complexible.stardog.ext.spring;
 
-import com.complexible.common.openrdf.model.Models2;
-import com.complexible.common.rdf.model.Values;
+
 import com.complexible.stardog.Contexts;
 import com.complexible.stardog.StardogException;
 import com.complexible.stardog.api.*;
 import com.complexible.stardog.ext.spring.utils.TypeConverter;
-import org.openrdf.model.*;
-import org.openrdf.query.GraphQueryResult;
-import org.openrdf.query.QueryEvaluationException;
-import org.openrdf.query.TupleQueryResult;
+import com.google.common.collect.ImmutableSet;
+import com.stardog.stark.*;
+import com.stardog.stark.query.QueryExecutionFailure;
+import com.stardog.stark.query.GraphQueryResult;
+import com.stardog.stark.query.SelectQueryResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -311,7 +312,7 @@ public class SnarlTemplate {
 		} catch (StardogException e) {
 			log.error("Error sending construct query to Stardog", e);
 			throw new RuntimeException(e);
-		} catch (QueryEvaluationException e) {
+		} catch (QueryExecutionFailure e) {
 			log.error("Error evaluating SPARQL construct query", e);
 			throw new RuntimeException(e);
 		} finally { 
@@ -319,7 +320,7 @@ public class SnarlTemplate {
 				try {
 					result.close();
 				}
-				catch (QueryEvaluationException e) { }
+				catch (QueryExecutionFailure e) { }
 			}
 			dataSource.releaseConnection(connection);
 		}
@@ -382,7 +383,7 @@ public class SnarlTemplate {
 	 */
 	public <T> List<T> query(String sparql, Map<String, Object> args, RowMapper<T> mapper) {
 		Connection connection = dataSource.getConnection();
-		TupleQueryResult result = null;
+		SelectQueryResult result = null;
 		try { 
 			SelectQuery query = connection.select(sparql);
 			
@@ -409,7 +410,7 @@ public class SnarlTemplate {
 		} catch (StardogException e) {
 			log.error("Error sending query to Stardog", e);
 			throw new RuntimeException(e);
-		} catch (QueryEvaluationException e) {
+		} catch (QueryExecutionFailure e) {
 			log.error("Error evaluating SPARQL query", e);
 			throw new RuntimeException(e);
 		} finally { 
@@ -417,7 +418,7 @@ public class SnarlTemplate {
 				try {
 					result.close();
 				}
-				catch (QueryEvaluationException e) { }
+				catch (QueryExecutionFailure e) { }
 			}
 			dataSource.releaseConnection(connection);
 		}
@@ -450,7 +451,7 @@ public class SnarlTemplate {
 	 */
 	public <T> T queryForObject(String sparql, Map<String, Object> args, RowMapper<T> mapper) {
 		Connection connection = dataSource.getConnection();
-		TupleQueryResult result = null;
+		SelectQueryResult result = null;
 		try { 
 			SelectQuery query = connection.select(sparql);
 			
@@ -475,15 +476,15 @@ public class SnarlTemplate {
 		} catch (StardogException e) {
 			log.error("Error sending query to Stardog", e);
 			throw new RuntimeException(e);
-		} catch (QueryEvaluationException e) {
+		} catch (QueryExecutionFailure e) {
 			log.error("Error evaluating SPARQL query", e);
 			throw new RuntimeException(e);
-		} finally { 
+		} finally {
 			if (result != null) {
 				try {
 					result.close();
 				}
-				catch (QueryEvaluationException e) { }
+				catch (QueryExecutionFailure e) { }
 			}
 			dataSource.releaseConnection(connection);
 		}
@@ -580,7 +581,7 @@ public class SnarlTemplate {
 	 * @param graphUri graph URi to use
 	 */
 	@Deprecated
-	public void add(Graph graph, String graphUri) { 
+	public void add(Collection<Statement> graph, String graphUri) {
 		Resource context = (graphUri == null ? null : Values.iri(graphUri));
 		Connection connection = dataSource.getConnection();
 		try {
@@ -605,10 +606,10 @@ public class SnarlTemplate {
 	 * @param graph Sesame graph
 	 */
 	@Deprecated
-	public void add(Graph graph) { 
+	public void add(Collection<Statement> graph) {
 		add(graph, null);
 	}
-	
+
 	/**
 	 * <code>add</code>
 	 * @param subject String subject
@@ -616,11 +617,14 @@ public class SnarlTemplate {
 	 * @param object String object - always a plain literal
 	 *
 	 */
-	public void add(String subject, String predicate, String object) { 
-		add(Models2.newModel(Values.statement(
-				Values.iri(subject.toString()),
-				Values.iri(predicate.toString()),
-				Values.literal(object.toString()))));
+	public void add(String subject, String predicate, String object) {
+
+
+		add(ImmutableSet.of(Values.statement(
+				Values.iri(subject),
+				Values.iri(predicate),
+				Values.literal(object)
+		)));
 	}
 	
 	/**
@@ -632,19 +636,19 @@ public class SnarlTemplate {
 	public void add(java.net.URI subject, java.net.URI predicate, String object) { 
 		add(subject.toString(), predicate.toString(), object);
 	}
-	
+
 	/**
 	 * <code>add</code>
 	 * @param subject URI subject
 	 * @param predicate URI predicate
-	 * @param object URI object 
+	 * @param object URI object
 	 */
-	public void add(java.net.URI subject, java.net.URI predicate, java.net.URI object) { 
-		add(Models2.newModel(Values.statement(
+	public void add(java.net.URI subject, java.net.URI predicate, java.net.URI object) {
+
+		add(ImmutableSet.of(Values.statement(
 				Values.iri(subject.toString()),
 				Values.iri(predicate.toString()),
-				Values.iri(object.toString()))));
+				Values.iri(object.toString())
+		)));
 	}
-	
-	
 }

@@ -15,8 +15,8 @@
 */
 package com.complexible.stardog.ext.spring.mapper;
 
-import org.openrdf.model.Value;
-import org.openrdf.query.BindingSet;
+import com.stardog.stark.Value;
+import com.stardog.stark.query.BindingSet;
 
 import com.complexible.stardog.ext.spring.RowMapper;
 
@@ -47,11 +47,11 @@ public class SingleMapper implements RowMapper<String> {
 	
 	@Override
 	public String mapRow(BindingSet bindingSet) {
-		Value v =  bindingSet.getValue(var);
+		Value v =  bindingSet.get(var);
 		if (v == null) {
 			return null;
 		} else { 
-			return v.stringValue();
+			return v.toString();
 		}
 	}
 

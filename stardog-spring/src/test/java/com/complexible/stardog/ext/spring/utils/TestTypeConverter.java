@@ -21,9 +21,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Date;
 
+import com.stardog.stark.Value;
 import org.junit.Before;
 import org.junit.Test;
-import org.openrdf.model.Value;
 import org.openrdf.model.impl.URIImpl;
 
 /**

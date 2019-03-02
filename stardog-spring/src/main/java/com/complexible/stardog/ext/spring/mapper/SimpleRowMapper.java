@@ -20,8 +20,8 @@ import com.complexible.stardog.ext.spring.RowMapper;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openrdf.query.Binding;
-import org.openrdf.query.BindingSet;
+import com.stardog.stark.query.Binding;
+import com.stardog.stark.query.BindingSet;
 
 /**
  * SimpleRowMapper
@@ -39,7 +39,7 @@ public class SimpleRowMapper implements RowMapper<Map<String, String>> {
 	public Map<String, String> mapRow(BindingSet bindingSet) {
 		Map<String, String> result = new HashMap<String, String>();
 		for (Binding b : bindingSet) {
-			result.put(b.getName(), b.getValue().stringValue());
+			result.put(b.name(), b.value().toString());
 		}
 		return result;
 	}
