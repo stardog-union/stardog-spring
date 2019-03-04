@@ -15,6 +15,9 @@
 */
 package com.complexible.stardog.ext.spring.utils;
 
+import com.stardog.stark.Value;
+import com.stardog.stark.Values;
+
 import java.net.URI;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -23,14 +26,6 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import com.complexible.common.rdf.model.Values;
-
-import org.openrdf.model.Value;
-import org.openrdf.model.impl.CalendarLiteral;
-import org.openrdf.model.impl.IntegerLiteral;
-import org.openrdf.model.impl.LiteralImpl;
-import org.openrdf.model.impl.NumericLiteral;
-import org.openrdf.model.impl.URIImpl;
 
 /**
  * TypeConverter

@@ -26,14 +26,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.stardog.stark.impl.IRIImpl;
+import com.stardog.stark.impl.StringLiteral;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openrdf.model.Statement;
-import org.openrdf.model.impl.LiteralImpl;
-import org.openrdf.model.impl.URIImpl;
-import org.openrdf.query.BindingSet;
+import com.stardog.stark.Statement;
+import com.stardog.stark.query.BindingSet;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
@@ -108,7 +108,7 @@ public class TestSpringBatch  {
 				String uriB = "urn:test:predicate";
 				
 				for (int i = 0; i < 20; i++) {
-					adder.statement(new URIImpl(uriA), new URIImpl(uriB), new LiteralImpl("lit" + i));
+					adder.statement(new IRIImpl(uriA), new IRIImpl(uriB), new StringLiteral("lit" + i));
 				}
 				return true;
 			} 		
@@ -134,7 +134,7 @@ public class TestSpringBatch  {
 		reader.setRowMapper(new RowMapper<String>() {
 			@Override
 			public String mapRow(BindingSet bindingSet) {
-				return (bindingSet.getValue("a").stringValue() + ":" + bindingSet.getValue("b").stringValue());
+				return (bindingSet.iri("a") + ":" + bindingSet.literal("b"));
 			} 
 		});
 		reader.setQuery(sparql);
@@ -182,7 +182,7 @@ public class TestSpringBatch  {
 				String uriA = "urn:test:test";
 				String uriB = "urn:test:property";
 				for (Object item : items) {
-					adder.statement(new URIImpl(uriA), new URIImpl(uriB), new LiteralImpl((String)item));
+					adder.statement(new IRIImpl(uriA), new IRIImpl(uriB), new StringLiteral((String)item));
 				}
 			} 
 			
@@ -205,7 +205,7 @@ public class TestSpringBatch  {
 		List<String> results = snarlTemplate.doWithGetter(null, "urn:test:property", new GetterCallback<String>() {
 			@Override
 			public String processStatement(Statement statement) {
-				return statement.getObject().stringValue();
+				return statement.object().toString();
 			} 
 		});
 		
@@ -237,7 +237,7 @@ public class TestSpringBatch  {
 		List<String> results = snarlTemplate.doWithGetter(null, "urn:test:propertyUpdate", new GetterCallback<String>() {
 			@Override
 			public String processStatement(Statement statement) {
-				return statement.getObject().stringValue();
+				return statement.object().toString();
 			} 
 		});
 		

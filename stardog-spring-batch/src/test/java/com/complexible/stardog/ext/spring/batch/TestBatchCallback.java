@@ -17,6 +17,8 @@ package com.complexible.stardog.ext.spring.batch;
 
 import java.util.List;
 
+import com.stardog.stark.impl.IRIImpl;
+import com.stardog.stark.impl.StringLiteral;
 import org.openrdf.model.impl.LiteralImpl;
 import org.openrdf.model.impl.URIImpl;
 
@@ -42,7 +44,7 @@ public class TestBatchCallback implements BatchAdderCallback<TestRecord> {
 			throws StardogException {
 		
 		for (TestRecord item : items) {
-			adder.statement(new URIImpl(item.getName()), new URIImpl("urn:test:propertyUpdate"), new LiteralImpl((String) item.getValue() + "update"));
+			adder.statement(new IRIImpl(item.getName()), new IRIImpl("urn:test:propertyUpdate"), new StringLiteral((String) item.getValue() + "update"));
 		}
 		
 	}

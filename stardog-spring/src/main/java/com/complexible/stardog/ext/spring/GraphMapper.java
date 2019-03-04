@@ -15,7 +15,7 @@
 */
 package com.complexible.stardog.ext.spring;
 
-import org.openrdf.model.Statement;
+import com.stardog.stark.Statement;
 
 /**
  * GraphMapper
