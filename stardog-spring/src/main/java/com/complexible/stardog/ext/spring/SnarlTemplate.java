@@ -357,8 +357,8 @@ public class SnarlTemplate {
 	}
 
 	/**
-	 *
-	 * @param reasoningBool
+	 * Creates a new pool with an updated reasoning type.
+	 * @param reasoningBool the new reasoning value
 	 */
 	public void setReasoning(boolean reasoningBool) {
 		dataSource.setConnectionReasoning(reasoningBool);

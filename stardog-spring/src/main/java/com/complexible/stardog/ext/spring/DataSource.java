@@ -95,7 +95,8 @@ public class DataSource {
 	public void releaseConnection(Connection connection) {
 		try {
 			if (pool != null)
-				pool.release(connection);
+				afterPropertiesSet();
+			pool.release(connection);
 		} catch (StardogException e) {
 			log.error("Error releasing connection from Stardog pool", e);
 			throw new RuntimeException(e);
@@ -105,7 +106,8 @@ public class DataSource {
 	public void destroyPool() {
 		try {
 			if (pool != null)
-				pool.shutdown();
+				afterPropertiesSet();
+			pool.shutdown();
 		} catch (StardogException e) {
 			log.error("Error shutting down Stardog pool", e);
 		}
