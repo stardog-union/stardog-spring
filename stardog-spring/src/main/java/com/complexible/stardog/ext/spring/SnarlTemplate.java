@@ -355,7 +355,15 @@ public class SnarlTemplate {
 	public Getter reasoning(boolean reasoningBool) {
 		return dataSource.getConnection().get().reasoning(reasoningBool);
 	}
- 	
+
+	/**
+	 * Creates a new pool with an updated reasoning type.
+	 * @param reasoningBool the new reasoning value
+	 */
+	public void setReasoning(boolean reasoningBool) {
+		dataSource.setConnectionReasoning(reasoningBool);
+	}
+
 	/**
 	 * <code>query</code>
 	 * Simple query call for a SPARQL Query and a RowMapper to

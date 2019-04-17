@@ -4,3 +4,6 @@ stardog-spring-batch/build
 taskArtifacts.bin
 stardog-spring-batch/.gradle
 stardog-spring-batch/classes
+stardog-spring/bin
+stardog-spring/.settings
+stardog-spring-batch

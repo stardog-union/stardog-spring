@@ -62,6 +62,12 @@ public class DataSource {
 		log.debug("Creating Stardog connection pool");
 		pool = poolConfig.create();
 	}
+
+	public void setConnectionReasoning(boolean reasoningType) {
+		this.releaseConnection(getConnection());
+		this.destroyPool();
+		connectionConfig = connectionConfig.reasoning(reasoningType);
+	}
 	
 	/**
 	 * <code>getConnection</code>
@@ -81,14 +87,14 @@ public class DataSource {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	/**
 	 * <code>releaseConnection</code>
 	 * @param connection Stardog Connection
 	 */
-	public void releaseConnection(Connection connection) { 
+	public void releaseConnection(Connection connection) {
 		try {
-			if (pool == null)
+			if (pool != null)
 				afterPropertiesSet();
 			pool.release(connection);
 		} catch (StardogException e) {
@@ -96,23 +102,26 @@ public class DataSource {
 			throw new RuntimeException(e);
 		}
 	}
-	
-	
-	/**
-	 * <code>destroy</code>
-	 * Called by Spring 
-	 */
-	public void destroy() { 
+
+	public void destroyPool() {
 		try {
-			if (pool == null)
+			if (pool != null)
 				afterPropertiesSet();
 			pool.shutdown();
 		} catch (StardogException e) {
 			log.error("Error shutting down Stardog pool", e);
 		}
+		pool = null;
+	}
+
+	/**
+	 * <code>destroy</code>
+	 * Called by Spring 
+	 */
+	public void destroy() {
+		this.destroyPool();
 		poolConfig = null;
 		connectionConfig = null;
-		pool = null;
 	}
 	
 }

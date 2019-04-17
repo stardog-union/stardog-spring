@@ -5,8 +5,8 @@ apply plugin:"signing"
 
 //apply from:'https://raw.github.com/breskeby/gradleplugins/master/emmaPlugin/emma.gradle'
 
-group = 'com.complexible.stardog'
-version = '6.1.0'
+group = 'com.stardog'
+version = '6.1.1'
 
 repositories {
     	maven { url "http://maven.stardog.com" } 
@@ -124,7 +124,7 @@ uploadArchives {
 // Used for "gradle install"
 configure(install.repositories.mavenInstaller) {
 	pom.project {
-		version '6.1.0'
+		version '6.1.1'
 		artifactId 'stardog-spring'
 		groupId 'com.stardog'
 	}

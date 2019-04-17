@@ -652,6 +652,14 @@ public class TestDataSourceFactory  {
 	}
 
 	@Test
+	public void testSetSnarlConnectionReasoning() {
+		snarlTemplate.setReasoning(false);
+		assertFalse(snarlTemplate.getDataSource().getConnection().isReasoningEnabled());
+		snarlTemplate.setReasoning(true);
+		assertTrue(snarlTemplate.getDataSource().getConnection().isReasoningEnabled());
+	}
+
+	@Test
 	public void testSnarlGetConnection() {
 		Getter getter = snarlTemplate.get();
 		assertNotNull(getter);
