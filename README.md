@@ -2,7 +2,7 @@ Stardog-Spring
 ==========
 
 Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
-_Current Version **5.2.3**_
+_Current Version **6.1.1**_
 
 This is [Spring Framework](http://springsource.org) integration for [Stardog RDF Database](http://stardog.com). These bindings
 provide Spring aware beans to provide an analogous feature set to Spring's
