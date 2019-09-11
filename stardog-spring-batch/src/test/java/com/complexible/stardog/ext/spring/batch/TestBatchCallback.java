@@ -19,8 +19,6 @@ import java.util.List;
 
 import com.stardog.stark.impl.IRIImpl;
 import com.stardog.stark.impl.StringLiteral;
-import org.openrdf.model.impl.LiteralImpl;
-import org.openrdf.model.impl.URIImpl;
 
 import com.complexible.stardog.StardogException;
 import com.complexible.stardog.api.Adder;
