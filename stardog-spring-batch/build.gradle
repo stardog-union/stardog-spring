@@ -6,7 +6,7 @@ apply plugin:"signing"
 //apply from:'https://raw.github.com/breskeby/gradleplugins/master/emmaPlugin/emma.gradle'
 
 group = 'com.stardog'
-version = '7.0.0'
+version = '7.1.0'
 
 repositories {
 	maven { url "http://maven.stardog.com" } 
@@ -36,9 +36,11 @@ dependencies {
 	compile ('org.springframework.batch:spring-batch-core:3.0.5.RELEASE') 
 	compile ('org.springframework.batch:spring-batch-infrastructure:3.0.5.RELEASE') 
 
-	compile ('com.complexible.stardog:client-http:7.0.0')
-	compile ('com.stardog:stardog-spring:7.0.0')
-	testCompile ('com.complexible.stardog:server:7.0.0')
+	compile ('com.complexible.stardog:client-http:7.1.0')
+	compile ('com.stardog:stardog-spring:7.1.0')
+	testCompile ('com.complexible.stardog:server:7.1.0') {
+		 exclude group: 'com.complexible.stardog.virtual'
+	 }	
 	
 	testCompile group: 'junit', name: 'junit', version: '4.8.2'
 	testCompile group: 'org.springframework', name:'spring-test', version:'3.0.5.RELEASE'
@@ -129,7 +131,7 @@ uploadArchives {
 
 configure(install.repositories.mavenInstaller) {
 	pom.project {
-		version '7.0.0'
+		version '7.1.0'
 		artifactId 'stardog-spring-batch'
 		groupId 'com.complexible.stardog'
 	}
