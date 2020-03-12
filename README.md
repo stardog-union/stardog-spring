@@ -34,9 +34,9 @@ The general build workflow for Stardog Spring is as follows:
 
 ## License
 
-Copyright 2012-2019 Stardog Union
+Copyright 2012-2020 Stardog Union
 
-Copyright 2012-2019 Al Baker
+Copyright 2012-2020 Al Baker
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

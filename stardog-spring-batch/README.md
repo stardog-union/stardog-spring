@@ -44,9 +44,9 @@ This framework is in continuous development, please check the [issues](https://g
 
 ## License
 
-Copyright 2012-2014 Clark & Parsia
+Copyright 2012-2020 Stardog Union
 
-Copyright 2012-2014 Al Baker
+Copyright 2012-2020 Al Baker
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
