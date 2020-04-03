@@ -11,7 +11,7 @@ import com.complexible.stardog.api.admin.AdminConnectionConfiguration;
 /**
  * Created by albaker on 3/4/14.
  */
-public class EmbeddedProvider implements Provider {
+public class ServerProvider implements Provider {
 
     private static Stardog stardog;
 
@@ -20,7 +20,7 @@ public class EmbeddedProvider implements Provider {
 
         try {
             stardog = Stardog.builder().create();
-            AdminConnection dbms = AdminConnectionConfiguration.toEmbeddedServer().credentials(user, pass).connect();
+            AdminConnection dbms = AdminConnectionConfiguration.toServer(url).credentials(user, pass).connect();
             if (dbms.list().contains(to)) {
                 dbms.drop(to);
                 dbms.newDatabase(to).create();
@@ -40,7 +40,7 @@ public class EmbeddedProvider implements Provider {
 
         try {
             stardog = Stardog.builder().create();
-            AdminConnection dbms = AdminConnectionConfiguration.toEmbeddedServer().credentialSupplier(supplier).connect();
+            AdminConnection dbms = AdminConnectionConfiguration.toServer(url).credentialSupplier(supplier).connect();
             if (dbms.list().contains(to)) {
                 dbms.drop(to);
                 dbms.newDatabase(to).create();

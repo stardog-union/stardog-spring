@@ -16,6 +16,7 @@
 package com.complexible.stardog.ext.spring;
 
 import com.complexible.common.base.Pair;
+import com.complexible.stardog.api.ConnectionCredentials;
 import com.complexible.stardog.api.ConnectionConfiguration;
 import com.complexible.stardog.api.ConnectionPoolConfig;
 import org.slf4j.Logger;
@@ -28,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 /**
  * StardogConnectionFactoryBean
@@ -63,6 +65,8 @@ public class DataSourceFactoryBean implements FactoryBean<DataSource>, Initializ
 	private boolean reasoningType = false;
 	
 	private String to;
+
+	private Supplier<ConnectionCredentials> supplier;
 	
 	private Properties connectionProperties;
 	
@@ -126,7 +130,7 @@ public class DataSourceFactoryBean implements FactoryBean<DataSource>, Initializ
 		dataSource.destroy();
 		dataSource = null;
 	}
-	
+
 	/**
 	 * <code>afterProperiesSet</code>
 	 * 
@@ -155,10 +159,13 @@ public class DataSourceFactoryBean implements FactoryBean<DataSource>, Initializ
 
 
         if (provider != null) {
-            provider.execute(to, url, username, password);
+			if (supplier != null) {
+				provider.execute(to, url, supplier);
+			} else {
+				provider.execute(to, url, username, password);
+			}
         }
 
-		
 		if (connectionProperties != null) {
 			List<Pair<String, String>> aOptionsList = new ArrayList<Pair<String, String>>();
 			for (String key : connectionProperties.stringPropertyNames()) {
@@ -166,12 +173,14 @@ public class DataSourceFactoryBean implements FactoryBean<DataSource>, Initializ
 			}
 			connectionConfig = connectionConfig.with((new OptionParser()).getOptions(aOptionsList));
 		}
-		
 
+		if (supplier != null) {
+			connectionConfig = connectionConfig.credentialSupplier(supplier);
+		} else {
+			connectionConfig = connectionConfig.credentials(username, password);
+		}
+		
 		connectionConfig = connectionConfig.reasoning(reasoningType);
-
-		
-		connectionConfig = connectionConfig.credentials(username, password);
 		
 		poolConfig = ConnectionPoolConfig
 				.using(connectionConfig) 
@@ -421,5 +430,13 @@ public class DataSourceFactoryBean implements FactoryBean<DataSource>, Initializ
 
     public void setProvider(Provider provider) {
         this.provider = provider;
-    }
+	}
+	
+	public Supplier<ConnectionCredentials> getSupplier() {
+		return supplier;
+	}
+
+	public void setSupplier(Supplier<ConnectionCredentials> supplier) {
+		this.supplier = supplier;
+	}
 }

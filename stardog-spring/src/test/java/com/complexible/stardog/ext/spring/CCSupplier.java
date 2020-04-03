@@ -15,21 +15,14 @@
 */
 package com.complexible.stardog.ext.spring;
 
-import java.util.function.Supplier;
-
 import com.complexible.stardog.api.ConnectionCredentials;
 
-/**
- * Provider Interface
- *
- * Callback used in the DataSourceFactoryBean, used for providing a custom
- * Stardog factory, i.e. for an embedded environment
- *
- * @author Al Baker
- * @since 2.1.2
- */
-public interface Provider {
+import java.util.function.Supplier;
 
-    public void execute (String to, String url, Supplier<ConnectionCredentials> supplier);
-    public void execute (String to, String url, String user, String pass);
+public class CCSupplier
+{
+    public static Supplier<ConnectionCredentials> getSupplier()
+    {
+        return () -> ConnectionCredentials.getUsernamePasswordCredential("admin", "admin");
+    }
 }
