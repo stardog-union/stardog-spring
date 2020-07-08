@@ -9,3 +9,4 @@ stardog-spring/.settings
 stardog-spring-batch
 stardog-spring/.classpath
 stardog-spring/.project
+.idea/*

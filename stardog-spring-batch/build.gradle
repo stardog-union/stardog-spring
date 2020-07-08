@@ -6,10 +6,10 @@ apply plugin:"signing"
 //apply from:'https://raw.github.com/breskeby/gradleplugins/master/emmaPlugin/emma.gradle'
 
 group = 'com.stardog'
-version = '7.2.1'
+version = '1.0.0'
 
 repositories {
-	maven { url "http://maven.stardog.com" } 
+	maven { url "http://maven.stardog.com" }
 	mavenLocal()
 	mavenCentral()
 	
@@ -36,9 +36,9 @@ dependencies {
 	compile ('org.springframework.batch:spring-batch-core:3.0.5.RELEASE') 
 	compile ('org.springframework.batch:spring-batch-infrastructure:3.0.5.RELEASE') 
 
-	compile ('com.complexible.stardog:client-http:7.2.1')
-	compile ('com.stardog:stardog-spring:7.2.1')
-	testCompile ('com.complexible.stardog:server:7.2.1') {
+	compile ('com.complexible.stardog:client-http:7.3.2')
+	compile ('com.stardog.ext:stardog-spring:1.0.0')
+	testCompile ('com.complexible.stardog:server:7.3.2') {
 		 exclude group: 'com.complexible.stardog.virtual'
 	 }	
 	
@@ -57,7 +57,7 @@ emma {
 
 tasks.withType(Test) {
 	println "**********************"
-	println "As of Stardog 7.0.0, for the tests to work you need to set the enivoronment variable"
+	println "As of Stardog 7.0.0, for the tests to work you need to set the environment variable"
 	println "STARDOG_LIB to the lib directory of your Stardog 7.X installation directory"
 	println "Your current STARDOG_LIB is " + System.getenv( 'STARDOG_LIB' )
 	println "**********************"
@@ -85,58 +85,58 @@ signing {
 	required { gradle.taskGraph.hasTask(uploadArchives) }
 }
 
-uploadArchives {
-	repositories {
-		mavenDeployer {
-			beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+// uploadArchives {
+// 	repositories {
+// 		mavenDeployer {
+// 			beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-			repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-				authentication(userName: sonatypeUsername, password: sonatypePassword)
-			}
+// 			repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+// 				authentication(userName: sonatypeUsername, password: sonatypePassword)
+// 			}
 
-			pom.project {
-				name 'stardog-spring-batch'
-				packaging 'jar'
-				description 'Stardog Spring bindings for using Stardog with the Springframework Batch subproject'
-				url 'https://github.com/clarkparsia/stardog-spring/stardog-spring-batch'
+// 			pom.project {
+// 				name 'stardog-spring-batch'
+// 				packaging 'jar'
+// 				description 'Stardog Spring bindings for using Stardog with the Springframework Batch subproject'
+// 				url 'https://github.com/clarkparsia/stardog-spring/stardog-spring-batch'
 
-				scm {
-					url 'scm:git://github.com/clarkparsia/stardog-spring.git'
-					connection 'scm:git://github.com/clarkparsia/stardog-spring.git'
-					developerConnection 'scm:git://github.com/clarkparsia/stardog-spring.git'
-				}
+// 				scm {
+// 					url 'scm:git://github.com/clarkparsia/stardog-spring.git'
+// 					connection 'scm:git://github.com/clarkparsia/stardog-spring.git'
+// 					developerConnection 'scm:git://github.com/clarkparsia/stardog-spring.git'
+// 				}
 
-				licenses {
-					license {
-						name 'The Apache Software License, Version 2.0'
-						url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-						distribution 'repo'
-					}
-				}
+// 				licenses {
+// 					license {
+// 						name 'The Apache Software License, Version 2.0'
+// 						url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+// 						distribution 'repo'
+// 					}
+// 				}
 
-				developers {
-					developer {
-						id 'albakercp'
-						name 'Al Baker'
-					}
-					developer {
-						id 'gcoluni'
-						name 'Gregory Coluni'
-					}
-				}
-			}
-		}
-	}
-}
+// 				developers {
+// 					developer {
+// 						id 'albakercp'
+// 						name 'Al Baker'
+// 					}
+// 					developer {
+// 						id 'gcoluni'
+// 						name 'Gregory Coluni'
+// 					}
+// 				}
+// 			}
+// 		}
+// 	}
+// }
 
-configure(install.repositories.mavenInstaller) {
-	pom.project {
-		version '7.2.1'
-		artifactId 'stardog-spring-batch'
-		groupId 'com.complexible.stardog'
-	}
-}
+// configure(install.repositories.mavenInstaller) {
+// 	pom.project {
+// 		version '1.0.0'
+// 		artifactId 'stardog-spring-batch'
+// 		groupId 'com.stardog.ext'
+// 	}
+// }
 
 wrapper {
-	gradleVersion = '1.7'
+	gradleVersion = '6.0.1'
 }

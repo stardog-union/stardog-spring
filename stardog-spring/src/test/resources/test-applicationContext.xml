@@ -7,11 +7,11 @@
      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
      http://www.springframework.org/schema/util  http://www.springframework.org/schema/util/spring-util.xsd">
 
-    <bean name="embeddedProvider" class="com.complexible.stardog.ext.spring.EmbeddedProvider" />
+    <bean name="embeddedProvider" class="com.stardog.ext.spring.EmbeddedProvider" />
 
-	<bean id="supplierFunc" class="com.complexible.stardog.ext.spring.CCSupplier" factory-method="getSupplier" />
+	<bean id="supplierFunc" class="com.stardog.ext.spring.CCSupplier" factory-method="getSupplier" />
 
-	<bean name="dataSource" class="com.complexible.stardog.ext.spring.DataSourceFactoryBean">
+	<bean name="dataSource" class="com.stardog.ext.spring.DataSourceFactoryBean">
 		<property name="to" value="testdb"/>
 		<property name="provider" ref="embeddedProvider"/>
 		<property name="supplier" ref="supplierFunc" />
@@ -19,11 +19,11 @@
 		<property name="password" value="admin"/>
 	</bean>
 
-	<bean name="template" class="com.complexible.stardog.ext.spring.SnarlTemplate">
+	<bean name="template" class="com.stardog.ext.spring.SnarlTemplate">
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
 	
-	<bean name="importer" class="com.complexible.stardog.ext.spring.DataImporter">
+	<bean name="importer" class="com.stardog.ext.spring.DataImporter">
 		<property name="snarlTemplate" ref="template"/>
 		<property name="format">
 			<util:constant static-field="com.stardog.stark.io.RDFFormats.N3"/>
