@@ -79,7 +79,7 @@ loading.  It can also be configured with a list of files to load at initializati
 a uniform set of file formats, so if there are many different types of files to load with different RDF formats,
 there would be different `DataImporter` beans configured in Spring 
 
-A sample `applicationContext` follows:
+A sample `ApplicationContext` follows:
 
 ```
 <bean name="dataSource" class="com.stardog.ext.spring.DataSourceFactoryBean">

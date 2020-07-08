@@ -124,7 +124,7 @@ public class TestSpringBatch  {
 	 * The below test validates the behavior of the ItemReader interface and integration of the 
 	 * SnarlTemplate and DataSource classes
 	 * 
-	 * Test method for {@link SnarlItemReader#read()}.
+	 * Test method for {@link com.stardog.ext.spring.batch.SnarlItemReader#read()}.
 	 */
 	@Test
 	public void testRead() {

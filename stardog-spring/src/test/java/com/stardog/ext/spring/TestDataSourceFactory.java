@@ -100,7 +100,7 @@ public class TestDataSourceFactory  {
 	}
 
 	/**
-	 * Test method for {@link DataSourceFactoryBean#getObject()}.
+	 * Test method for {@link com.stardog.ext.spring.DataSourceFactoryBean#getObject()}.
 	 * 
 	 * Validate retrieving the application context directly and the injected dataSource test 
 	 * fixture are both equivalent - i.e. singletons

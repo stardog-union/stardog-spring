@@ -35,7 +35,7 @@ import org.junit.Test;
 public class TestTypeConverter {
 
 	/**
-	 * Test method for {@link TypeConverter#asLiteral(java.lang.Object)}.
+	 * Test method for {@link com.stardog.ext.spring.utils.TypeConverter#asLiteral(java.lang.Object)}.
 	 */
 	@Test
 	public void testAsLiteralObject() {
@@ -69,7 +69,7 @@ public class TestTypeConverter {
 
 
 	/**
-	 * Test method for {@link TypeConverter#asResource(java.net.URI)}.
+	 * Test method for {@link com.stardog.ext.spring.utils.TypeConverter#asResource(java.net.URI)}.
 	 */
 	@Test
 	public void testAsResource() {
