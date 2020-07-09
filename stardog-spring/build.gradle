@@ -8,6 +8,14 @@ apply plugin:"signing"
 group = 'com.stardog.ext'
 version = '1.0.0'
 
+ext {
+	stardogVersion = "7.3.2"
+	springVersion = "4.1.2.RELEASE"
+	springTestVersion = "3.0.5.RELEASE"
+	junitVersion = "4.8.2"
+	slf4jVersion = "1.6.1"
+}
+
 repositories {
 	maven { url "http://maven.stardog.com" }
 	mavenLocal()
@@ -27,19 +35,19 @@ configurations {
 
 dependencies {
 	// Core Dependencies
-	compile ('org.springframework:spring-core:4.1.2.RELEASE')
-	compile ('org.springframework:spring-beans:4.1.2.RELEASE')
-	compile ('org.springframework:spring-context:4.1.2.RELEASE')
-	compile ('org.springframework:spring-tx:4.1.2.RELEASE')
-	compile ('org.slf4j:slf4j-api:1.6.1')
+	compile ("org.springframework:spring-core:${springVersion}")
+	compile ("org.springframework:spring-beans:${springVersion}")
+	compile ("org.springframework:spring-context:${springVersion}")
+	compile ("org.springframework:spring-tx:${springVersion}")
+	compile ("org.slf4j:slf4j-api:${slf4jVersion}")
 
-	compile ('com.complexible.stardog:client-http:7.3.2')
- 	testCompile ('com.complexible.stardog:server:7.3.2') {
+	compile ("com.complexible.stardog:client-http:${stardogVersion}")
+ 	testCompile ("com.complexible.stardog:server:${stardogVersion}") {
 		 exclude group: 'com.complexible.stardog.virtual'
 	 }	
 
-	testCompile group: 'junit', name: 'junit', version: '4.8.2'
-	testCompile group: 'org.springframework', name:'spring-test', version:'3.0.5.RELEASE'
+	testCompile group: 'junit', name: 'junit', version: "${junitVersion}"
+	testCompile group: 'org.springframework', name:'spring-test', version: "${springTestVersion}"
 	
 	//emma "emma:emma:2.0.5312"
 	//emma "emma:emma_ant:2.0.5312"
@@ -102,12 +110,12 @@ signing {
  				name 'stardog-spring'
  				packaging 'jar'
  				description 'Stardog Spring bindings for using Stardog with the Springframework'
- 				url 'https://github.com/clarkparsia/stardog-spring/stardog-spring'
+ 				url 'https://github.com/stardog-union/stardog-spring/stardog-spring'
 
  				scm {
- 					url 'scm:git://github.com/clarkparsia/stardog-spring.git'
- 					connection 'scm:git://github.com/clarkparsia/stardog-spring.git'
- 					developerConnection 'scm:git://github.com/clarkparsia/stardog-spring.git'
+ 					url 'scm:git://github.com/stardog-union/stardog-spring.git'
+ 					connection 'scm:git://github.com/stardog-union/stardog-spring.git'
+ 					developerConnection 'scm:git://github.com/stardog-union/stardog-spring.git'
  				}
 
  				licenses {
