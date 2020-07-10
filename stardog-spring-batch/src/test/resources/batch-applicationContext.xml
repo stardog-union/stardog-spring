@@ -10,16 +10,16 @@
 	//////////////////////   Basic Stardog-Spring configuration //////////////////////
 	-->
 
-    <bean name="embeddedProvider" class="com.complexible.stardog.ext.spring.EmbeddedProvider"></bean>
+    <bean name="embeddedProvider" class="com.stardog.ext.spring.EmbeddedProvider"></bean>
 
-    <bean name="dataSource" class="com.complexible.stardog.ext.spring.DataSourceFactoryBean">
+    <bean name="dataSource" class="com.stardog.ext.spring.DataSourceFactoryBean">
         <property name="to" value="testdb"/>
         <property name="provider" ref="embeddedProvider"/>
         <property name="username" value="admin"/>
         <property name="password" value="admin"/>
     </bean>
 
-	<bean name="template" class="com.complexible.stardog.ext.spring.SnarlTemplate">
+	<bean name="template" class="com.stardog.ext.spring.SnarlTemplate">
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
 	
@@ -51,21 +51,21 @@
 
 	<bean class="org.springframework.batch.core.scope.StepScope" />
 	
-	<bean id="testRowMapper" class="com.complexible.stardog.ext.spring.batch.TestRowMapper"/>
+	<bean id="testRowMapper" class="com.stardog.ext.spring.batch.TestRowMapper"/>
 	
-	<bean id="testBatchCallback" class="com.complexible.stardog.ext.spring.batch.TestBatchCallback"/>
+	<bean id="testBatchCallback" class="com.stardog.ext.spring.batch.TestBatchCallback"/>
 	
 	<!--  
 	//////////////////////   Batch job configuration for Stardog //////////////////////
 	-->
 	
-	<bean id="snarlReader" class="com.complexible.stardog.ext.spring.batch.SnarlItemReader" scope="step">
+	<bean id="snarlReader" class="com.stardog.ext.spring.batch.SnarlItemReader" scope="step">
 		<property name="dataSource" ref="dataSource"/>
 		<property name="query" value="SELECT ?a ?b WHERE { ?a &lt;urn:test:predicate> ?b }"/>
 		<property name="rowMapper" ref="testRowMapper"/>
 	</bean>
 	
-	<bean id="snarlWriter" class="com.complexible.stardog.ext.spring.batch.SnarlItemWriter" scope="step">
+	<bean id="snarlWriter" class="com.stardog.ext.spring.batch.SnarlItemWriter" scope="step">
 		<property name="dataSource" ref="dataSource"/>
 		<property name="callback" ref="testBatchCallback"/>
 	</bean>
