@@ -2,7 +2,7 @@ Stardog-Spring
 ==========
 
 Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
-_Current Version **7.2.1**_
+_Current Version **1.0.0**_
 
 This is [Spring Framework](http://springsource.org) integration for [Stardog RDF Database](http://stardog.com). These bindings
 provide Spring aware beans to provide an analogous feature set to Spring's
@@ -13,10 +13,7 @@ Current Stardog Spring support includes:
 * stardog-spring : Core Spring framework
 * stardog-spring-batch: Spring Batch support
 
-These projects are available in Maven central under the 'com.stardog' group id.
-
-
-![Stardog](http://stardog.com/img/stardog.png)
+These projects are available in Maven central under the 'com.stardog.ext' group id.
 
 
 ## Contributing ##
