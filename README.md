@@ -13,7 +13,7 @@ Current Stardog Spring support includes:
 * stardog-spring : Core Spring framework
 * stardog-spring-batch: Spring Batch support
 
-These projects are available in Maven central under the 'com.stardog.ext' group id.
+These projects are available in Maven central under the `com.stardog.ext` group id.
 
 
 ## Contributing ##
