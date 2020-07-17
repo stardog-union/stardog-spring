@@ -26,7 +26,7 @@ The framework is currently targeted to the core Spring Framework (Spring 3.1.2 a
 
 ## Usage ##
 
-To use Stardog Spring, simply add: com.complexible.stardog:stardog-spring:2.1.3 to your build dependencies.
+To use Stardog Spring, simply add: `com.complexible.stardog:stardog-spring:2.1.3` to your build dependencies.
 
 This does require the Stardog dependencies to be installed, e.g.:
 
