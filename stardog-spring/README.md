@@ -2,7 +2,7 @@ Stardog-Spring
 ==========
 
 Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
-_Current Version **4.2.1**_
+_Current Version **41.0.1**_
 
 This is [Spring Framework](http://springsource.org) integration for [Stardog RDF Database](http://stardog.com). This project
 provides the core Spring integration, with the SnarlTemplate and DataSource classes.  Other projects build on this as the basis for
@@ -16,17 +16,16 @@ This binding uses the native Stardog SNARL API and creates the appropriate Sprin
 
 The implementation requires the Stardog libraries to run, and therefore can run with:
 
-* Stardog SNARL client/server
 * Stardog HTTP client/server
-* Stardog embeddded, via DataSoure configuration
+* Stardog embeddded, via DataSource configuration
 
 For more information, go to the Stardog's [Spring Programming](http://stardog.com/docs/spring/) documentation.
 
-The framework is currently targeted to the core Spring Framework (Spring 3.1.2 as of Stardog 1.1.1).  It has been tested in parts of the larger Spring ecosystem including Spring Web MVC, Grails 1.3, Grails 2.0, Grails 2.2.  It should also work well with other related Spring projects, such as Spring Integration.
+The framework is currently targeted to the core Spring Framework (Spring 4.1.2.RELEASE as of Stardog 7.3.2).  It has been tested in parts of the larger Spring ecosystem including Spring Web MVC, Grails 1.3, Grails 2.0, Grails 2.2.  It should also work well with other related Spring projects, such as Spring Integration.
 
 ## Usage ##
 
-To use Stardog Spring, simply add: com.complexible.stardog:stardog-spring:2.1.3 to your build dependencies.
+To use Stardog Spring, simply add: com.stardog.ext:stardog-spring:1.0.1 to your build dependencies.
 
 This does require the Stardog dependencies to be installed, e.g.:
 
@@ -42,8 +41,8 @@ If desired, you can create a SnarlTemplate programmatically outside of Spring by
 ```groovy
 ConnectionConfiguration cc = ConnectionConfiguration
 	.to("myDB")
+    .server("http://localhost:5820")
 	.credentials("admin", "admin")
-	.url("snarl://localhost/")
 
 SnarlTemplate snarlTemplate = new SnarlTemplate()
 snarlTemplate.setDataSource(new DataSource(cc))
@@ -66,7 +65,7 @@ All tests should pass with a working Stardog download, including a license.  Com
 
 ## Contributing ##
 
-This framework is in continuous development, please check the [issues](https://github.com/complexible/stardog-spring/issues) page. You're welcome to contribute.
+This framework is in continuous development, please check the [issues](https://github.com/stardog-union/stardog-spring/issues) page. You're welcome to contribute.
 
 ## License
 

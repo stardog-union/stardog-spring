@@ -6,7 +6,6 @@ stardog-spring-batch/.gradle
 stardog-spring-batch/classes
 stardog-spring/bin
 stardog-spring/.settings
-stardog-spring-batch
 stardog-spring/.classpath
 stardog-spring/.project
 .idea/*
