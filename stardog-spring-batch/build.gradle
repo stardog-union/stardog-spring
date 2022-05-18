@@ -16,7 +16,6 @@ ext {
 	junitVersion = "4.13.2"
 	slf4jVersion = "1.6.1"
 	log4jVersion = "2.17.0"
-	springVersion = "5.3.18"
 }
 
 repositories {
