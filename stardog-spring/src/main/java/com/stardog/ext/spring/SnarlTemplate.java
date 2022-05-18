@@ -80,9 +80,8 @@ public class SnarlTemplate {
 	 * @return generic type
 	 */
 	public <T> T execute(ConnectionCallback<T> action) { 
-		Connection connection = dataSource.getConnection();
-		
-		try { 
+
+		try (Connection connection = dataSource.getConnection()) {
 			connection.begin();
 			T t =  action.doWithConnection(connection);
 			connection.commit();
@@ -90,13 +89,11 @@ public class SnarlTemplate {
 		} catch (StardogException e) {
 			log.error("Error executing ConnectionCallback", e);
 			throw new RuntimeException(e);
-		} finally { 
-			dataSource.releaseConnection(connection);
 		}
 	}
 	
 	public void remove(String subject, String predicate, Object object, String graphUri) { 
-		Connection connection = dataSource.getConnection();
+
 		IRI subjectResource = null;
 		IRI predicateResource = null;
 		Resource context = null;
@@ -117,15 +114,13 @@ public class SnarlTemplate {
 			objectValue = TypeConverter.asLiteral(object);
 		}
 		
-		try {
+		try (Connection connection = dataSource.getConnection()) {
 			connection.begin();
 			connection.remove().statements(subjectResource, predicateResource, objectValue, context);
 			connection.commit();
 		} catch (StardogException e) {
 			log.error("Error with remove statement", e);
 			throw new RuntimeException(e);
-		} finally { 
-			dataSource.releaseConnection(connection);
 		}
 	}
 	
@@ -135,23 +130,17 @@ public class SnarlTemplate {
      * {@link Contexts#DEFAULT}, this will remove the default graph (no context). 
 	 */
 	public void remove(String graphUri) {
-		Connection connection = dataSource.getConnection();
-		
-		try {
+		try (Connection connection = dataSource.getConnection()) {
 			connection.begin();
 			connection.remove().context(Values.iri(graphUri));
 			connection.commit();
 		} catch (StardogException e) {
 			log.error("Error removing graph from Stardog", e);
 			throw new RuntimeException(e);
-		} finally {
-			dataSource.releaseConnection(connection);
 		}
 	}
 	
 	public void singleton(String subject, String predicate, Object object, String graphUri) { 
-		Connection connection = dataSource.getConnection();
-		
 		IRI subjectResource = null;
 		IRI predicateResource = null;
 		Resource context = null;
@@ -168,8 +157,8 @@ public class SnarlTemplate {
 		}
 		
 		Value objectValue = TypeConverter.asLiteral(object);
-		
-		try {
+
+		try (Connection connection = dataSource.getConnection()) {
 			connection.begin();
 			connection.remove().statements(subjectResource, predicateResource, null, context);
 			connection.add().statement(subjectResource, predicateResource, objectValue, context);
@@ -177,8 +166,6 @@ public class SnarlTemplate {
 		} catch (StardogException e) {
 			log.error("Error with remove statement", e);
 			throw new RuntimeException(e);
-		} finally { 
-			dataSource.releaseConnection(connection);
 		}
 	}
 	
@@ -196,11 +183,9 @@ public class SnarlTemplate {
 		if (subject == null && predicate == null) { 
 			return list;
 		}
-		
-		Connection connection = dataSource.getConnection();
-		Getter getter = null;
-		try {
-			getter = connection.get();
+
+		try (Connection connection = dataSource.getConnection()) {
+			Getter getter = connection.get();
 			
 			if (subject != null) { 
 				getter.subject(Values.iri(subject));
@@ -220,9 +205,6 @@ public class SnarlTemplate {
 		} catch (StardogException e) {
 			log.error("Error with getter", e);
 			throw new RuntimeException(e);
-		} finally { 
-			getter = null;
-			dataSource.releaseConnection(connection);
 		}
 		
 	}
@@ -236,20 +218,15 @@ public class SnarlTemplate {
 	 * @return generic type T
 	 */
 	public <T> T doWithAdder(AdderCallback<T> action) {
-		Connection connection = dataSource.getConnection();
-		Adder adder = null;
-		try {
+		try (Connection connection = dataSource.getConnection()) {
 			connection.begin();
-			adder = connection.add();
+			Adder adder = connection.add();
 			T t = action.add(adder);
 			connection.commit();
 			return t;
 		} catch (StardogException e) {
 			log.error("Error with adder ", e);
 			throw new RuntimeException(e);
-		} finally { 
-			adder = null;
-			dataSource.releaseConnection(connection);
 		}
 	}
 	
@@ -262,20 +239,15 @@ public class SnarlTemplate {
 	 * @return generic type T
 	 */
 	public <T> T doWithRemover(RemoverCallback<T> action) {
-		Connection connection = dataSource.getConnection();
-		Remover remover = null;
-		try {
+		try (Connection connection = dataSource.getConnection()) {
 			connection.begin();
-			remover = connection.remove();
+			Remover remover = connection.remove();
 			T t = action.remove(remover);
 			connection.commit();
 			return t;
 		} catch (StardogException e) {
 			log.error("Error with remover ", e);
 			throw new RuntimeException(e);
-		} finally { 
-			remover = null;
-			dataSource.releaseConnection(connection);
 		}
 	}
 	
@@ -283,10 +255,9 @@ public class SnarlTemplate {
 		return construct(sparql, null, mapper);
 	}
 	
-	public <T> List<T> construct(String sparql,  Map<String, Object> args, GraphMapper<T> mapper) { 
-		Connection connection = dataSource.getConnection();
-		GraphQueryResult result = null;
-		try { 
+	public <T> List<T> construct(String sparql,  Map<String, Object> args, GraphMapper<T> mapper) {
+
+		try (Connection connection = dataSource.getConnection()) {
 			GraphQuery query = connection.graph(sparql);
 			
 			if (args != null) { 
@@ -296,33 +267,25 @@ public class SnarlTemplate {
 			}
 			
 			ArrayList<T> list = new ArrayList<T>();
-			
-			result = query.execute();
-			
-			// return empty lists for empty queries
-			if (result == null) { 
+
+			try (GraphQueryResult result = query.execute()) {
+				// return empty lists for empty queries
+				if (result == null) {
+					return list;
+				}
+
+				while (result.hasNext()) {
+					list.add(mapper.mapRow(result.next()));
+				}
+
 				return list;
 			}
-			
-			while (result.hasNext()) { 
-				list.add(mapper.mapRow(result.next()));
-			}
-
-			return list;
 		} catch (StardogException e) {
 			log.error("Error sending construct query to Stardog", e);
 			throw new RuntimeException(e);
 		} catch (QueryExecutionFailure e) {
 			log.error("Error evaluating SPARQL construct query", e);
 			throw new RuntimeException(e);
-		} finally { 
-			if (result != null) {
-				try {
-					result.close();
-				}
-				catch (QueryExecutionFailure e) { }
-			}
-			dataSource.releaseConnection(connection);
 		}
 	}
 
@@ -390,9 +353,7 @@ public class SnarlTemplate {
 	 * @return List of results from the RowMapper calls
 	 */
 	public <T> List<T> query(String sparql, Map<String, Object> args, RowMapper<T> mapper) {
-		Connection connection = dataSource.getConnection();
-		SelectQueryResult result = null;
-		try { 
+		try (Connection connection = dataSource.getConnection()) {
 			SelectQuery query = connection.select(sparql);
 			
 			if (args != null) { 
@@ -402,33 +363,25 @@ public class SnarlTemplate {
 			}
 			
 			ArrayList<T> list = new ArrayList<T>();
-			
-			result = query.execute();
-			
-			// return empty lists for empty queries
-			if (result == null) { 
+
+			try (SelectQueryResult result = query.execute()) {
+				// return empty lists for empty queries
+				if (result == null) {
+					return list;
+				}
+
+				while (result.hasNext()) {
+					list.add(mapper.mapRow(result.next()));
+				}
+
 				return list;
 			}
-			
-			while (result.hasNext()) { 
-				list.add(mapper.mapRow(result.next()));
-			}
-
-			return list;
 		} catch (StardogException e) {
 			log.error("Error sending query to Stardog", e);
 			throw new RuntimeException(e);
 		} catch (QueryExecutionFailure e) {
 			log.error("Error evaluating SPARQL query", e);
 			throw new RuntimeException(e);
-		} finally { 
-			if (result != null) {
-				try {
-					result.close();
-				}
-				catch (QueryExecutionFailure e) { }
-			}
-			dataSource.releaseConnection(connection);
 		}
 	}
 
@@ -458,9 +411,7 @@ public class SnarlTemplate {
 	 * @return single result of the RowMapper call
 	 */
 	public <T> T queryForObject(String sparql, Map<String, Object> args, RowMapper<T> mapper) {
-		Connection connection = dataSource.getConnection();
-		SelectQueryResult result = null;
-		try { 
+		try (Connection connection = dataSource.getConnection()) {
 			SelectQuery query = connection.select(sparql);
 			
 			if (args != null) { 
@@ -469,32 +420,25 @@ public class SnarlTemplate {
 				}
 			}
 			
-			result = query.execute();
-			T returnObject = null;
-			// return null; for empty queries
-			if (result == null) { 
+			try (SelectQueryResult result = query.execute()) {
+				T returnObject = null;
+				// return null; for empty queries
+				if (result == null) {
+					return returnObject;
+				}
+
+				if (result.hasNext()) {
+					returnObject = mapper.mapRow(result.next());
+				}
+
 				return returnObject;
 			}
-			
-			if (result.hasNext()) { 
-				returnObject = mapper.mapRow(result.next());
-			}
-
-			return returnObject;
 		} catch (StardogException e) {
 			log.error("Error sending query to Stardog", e);
 			throw new RuntimeException(e);
 		} catch (QueryExecutionFailure e) {
 			log.error("Error evaluating SPARQL query", e);
 			throw new RuntimeException(e);
-		} finally {
-			if (result != null) {
-				try {
-					result.close();
-				}
-				catch (QueryExecutionFailure e) { }
-			}
-			dataSource.releaseConnection(connection);
 		}
 	}
 
@@ -507,9 +451,7 @@ public class SnarlTemplate {
 	 * @return boolean if the query matches in the database
 	 */
 	public boolean ask(String sparql, Map<String, Object> args) {
-		Connection connection = dataSource.getConnection();
-		Boolean result = null;
-		try { 
+		try (Connection connection = dataSource.getConnection()) {
 			BooleanQuery query = connection.ask(sparql);
 			
 			if (args != null) { 
@@ -518,14 +460,11 @@ public class SnarlTemplate {
 				}
 			}
 
-			result = query.execute();
+			return query.execute();
 		} catch (StardogException e) {
 			log.error("Error sending query to Stardog", e);
 			throw new RuntimeException(e);
-		} finally { 
-			dataSource.releaseConnection(connection);
 		}
-		return result;
 	}
 	
 	/**
@@ -558,8 +497,7 @@ public class SnarlTemplate {
 	 *
 	 */
 	public void update(String sparql, Map<String, Object> args) {
-		Connection connection = dataSource.getConnection();
-		try { 
+		try (Connection connection = dataSource.getConnection()) {
 			UpdateQuery query = connection.update(sparql);
 			
 			if (args != null) { 
@@ -573,8 +511,6 @@ public class SnarlTemplate {
 		} catch (StardogException e) {
 			log.error("Error sending query to Stardog", e);
 			throw new RuntimeException(e);
-		} finally { 
-			dataSource.releaseConnection(connection);
 		}
 	}
 
@@ -591,8 +527,7 @@ public class SnarlTemplate {
 	@Deprecated
 	public void add(Collection<Statement> graph, String graphUri) {
 		Resource context = (graphUri == null ? null : Values.iri(graphUri));
-		Connection connection = dataSource.getConnection();
-		try {
+		try (Connection connection = dataSource.getConnection()) {
 			connection.begin();
 			if (context != null) { 
 				connection.add().graph(graph, context);
@@ -603,9 +538,6 @@ public class SnarlTemplate {
 		} catch (StardogException e) {
 			log.error("Error adding graph to Stardog", e);
 			throw new RuntimeException(e);
-		} finally { 
-			context = null;
-			dataSource.releaseConnection(connection);
 		}
 	}
 	

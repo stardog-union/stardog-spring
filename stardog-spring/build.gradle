@@ -6,13 +6,12 @@ apply plugin:"signing"
 //apply from:'https://raw.github.com/breskeby/gradleplugins/master/emmaPlugin/emma.gradle'
 
 group = 'com.stardog.ext'
-version = '1.0.1'
+version = '1.1.0'
 
 ext {
-	stardogVersion = "7.3.2"
-	springVersion = "4.1.2.RELEASE"
-	springTestVersion = "3.0.5.RELEASE"
-	junitVersion = "4.8.2"
+	stardogVersion = "7.9.1"
+	springVersion = "5.3.18"
+	junitVersion = "4.13.2"
 	slf4jVersion = "1.6.1"
 	log4jVersion = "2.17.0"
 }
@@ -36,19 +35,20 @@ configurations {
 
 dependencies {
 	// Core Dependencies
-	compile ("org.springframework:spring-core:${springVersion}")
-	compile ("org.springframework:spring-beans:${springVersion}")
-	compile ("org.springframework:spring-context:${springVersion}")
-	compile ("org.springframework:spring-tx:${springVersion}")
-	compile ("org.slf4j:slf4j-api:${slf4jVersion}")
+	implementation ("org.springframework:spring-core:${springVersion}")
+	implementation ("org.springframework:spring-beans:${springVersion}")
+	implementation ("org.springframework:spring-context:${springVersion}")
+	implementation ("org.springframework:spring-tx:${springVersion}")
+	implementation ("org.slf4j:slf4j-api:${slf4jVersion}")
+	implementation ("org.slf4j:slf4j-log4j12:${slf4jVersion}")
 
-	compile ("com.complexible.stardog:client-http:${stardogVersion}")
- 	testCompile ("com.complexible.stardog:server:${stardogVersion}") {
+	implementation ("com.complexible.stardog:client-http:${stardogVersion}")
+ 	testImplementation ("com.complexible.stardog:server:${stardogVersion}") {
 		 exclude group: 'com.complexible.stardog.virtual'
 	 }
 
-	testCompile group: 'junit', name: 'junit', version: "${junitVersion}"
-	testCompile group: 'org.springframework', name:'spring-test', version: "${springTestVersion}"
+	testImplementation group: 'junit', name: 'junit', version: "${junitVersion}"
+	testImplementation group: 'org.springframework', name:'spring-test', version: "${springVersion}"
 	
 	//emma "emma:emma:2.0.5312"
 	//emma "emma:emma_ant:2.0.5312"
@@ -158,7 +158,7 @@ signing {
  // Used for "gradle install"
  configure(install.repositories.mavenInstaller) {
  	pom.project {
- 		version '1.0.1'
+ 		version '1.1.0'
  		artifactId 'stardog-spring'
  		groupId 'com.stardog.ext'
  	}

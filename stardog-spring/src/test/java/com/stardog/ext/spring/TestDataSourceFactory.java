@@ -21,6 +21,7 @@ import com.complexible.stardog.api.Adder;
 import com.complexible.stardog.api.Connection;
 import com.complexible.stardog.api.Getter;
 import com.complexible.stardog.api.Remover;
+import com.complexible.stardog.api.admin.AdminConnection;
 import com.stardog.ext.spring.mapper.SimpleRowMapper;
 import com.stardog.ext.spring.mapper.SingleMapper;
 import com.google.common.collect.ImmutableSet;
@@ -60,7 +61,7 @@ import org.slf4j.LoggerFactory;
 @ContextConfiguration(locations={"/test-applicationContext.xml"})
 public class TestDataSourceFactory  {
 
-	private static Logger log = LoggerFactory.getLogger("TestDataSourceFactory.class");
+	private static Logger log = LoggerFactory.getLogger(TestDataSourceFactory.class);
 
 	@Autowired
 	DataSource dataSource;
@@ -70,7 +71,7 @@ public class TestDataSourceFactory  {
 
 	@Autowired
 	private SnarlTemplate snarlTemplate;
-	
+
 	private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 	private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
 
@@ -91,10 +92,10 @@ public class TestDataSourceFactory  {
 	    System.setOut(new PrintStream(outContent));
 	    System.setErr(new PrintStream(errContent));
 		assertNotNull(dataSource);
-		SnarlTemplate tmp = new SnarlTemplate();
-		tmp.setDataSource(dataSource);
+		snarlTemplate = new SnarlTemplate();
+		snarlTemplate.setDataSource(dataSource);
 		DataImporter importer = new DataImporter();
-		importer.setSnarlTemplate(tmp);
+		importer.setSnarlTemplate(snarlTemplate);
 		importer.inputFile(RDFFormats.N3, applicationContext.getResource("classpath:sp2b_10k.n3"));
 		
 	}
@@ -118,17 +119,16 @@ public class TestDataSourceFactory  {
 	 */
 	@Test
 	public void testBasicSnarl() {
-		Connection con = dataSource.getConnection();
-		assertNotNull(con);
+		try (Connection con = dataSource.getConnection()) {
+			assertNotNull(con);
+		}
 	}
 	
 	@Test
-	public void testSnarlTemplate() { 
-		SnarlTemplate tmp = new SnarlTemplate();
-		tmp.setDataSource(dataSource);
+	public void testSnarlTemplate() {
 		String sparql = "SELECT ?a ?b WHERE { ?a  <http://purl.org/dc/elements/1.1/title> ?b } LIMIT 5";
 		
-		List<Map<String,String>> results = tmp.query(sparql, new RowMapper<Map<String,String>>() {
+		List<Map<String,String>> results = snarlTemplate.query(sparql, new RowMapper<Map<String,String>>() {
 
 			@Override
 			public Map<String,String> mapRow(BindingSet bindingSet) {
@@ -145,12 +145,10 @@ public class TestDataSourceFactory  {
 	}
 
 	@Test
-	public void testSimpleRowMapper() { 
-		SnarlTemplate tmp = new SnarlTemplate();
-		tmp.setDataSource(dataSource);
+	public void testSimpleRowMapper() {
 		String sparql = "SELECT ?a ?b WHERE { ?a  <http://purl.org/dc/elements/1.1/title> ?b } LIMIT 5";
 		
-		List<Map<String,String>> results = tmp.query(sparql, new SimpleRowMapper());
+		List<Map<String,String>> results = snarlTemplate.query(sparql, new SimpleRowMapper());
 		
 		assertNotNull(results);
 		assertEquals(results.size(), 5);
@@ -158,41 +156,34 @@ public class TestDataSourceFactory  {
 	
 		
 	@Test
-	public void testSingleMapper() { 
-		SnarlTemplate tmp = new SnarlTemplate();
-		tmp.setDataSource(dataSource);
+	public void testSingleMapper() {
 		String sparql = "SELECT ?b WHERE { ?a  <http://purl.org/dc/elements/1.1/title> ?b } LIMIT 1";
 		
-		String result = tmp.queryForObject(sparql, new SingleMapper("b"));
+		String result = snarlTemplate.queryForObject(sparql, new SingleMapper("b"));
 		
 		assertNotNull(result);
 	}
 	
 	@Test
-	public void testNullSingleMapper() { 
-		SnarlTemplate tmp = new SnarlTemplate();
-		tmp.setDataSource(dataSource);
+	public void testNullSingleMapper() {
 		String sparql = "SELECT ?b WHERE { ?a  <http://purl.org/dc/elements/1.1/title> ?b } LIMIT 1";
 		// unlike previous test, a is not bound, therefore should find null in Sesame API 
-		String result = tmp.queryForObject(sparql, new SingleMapper("a"));
+		String result = snarlTemplate.queryForObject(sparql, new SingleMapper("a"));
 		
 		assertNull(result);
 	}
 	
 	@Test
 	public void testRemoveGraph() {
-		SnarlTemplate tmp = new SnarlTemplate();
-		tmp.setDataSource(dataSource);
-
 		Set<Statement> g2 = ImmutableSet.of(Values.statement(Values.iri("urn:s2"),
 				Values.iri("urn:p2"),
 				Values.iri("urn:o2")));
 
-		tmp.add(g2, "http://example.org/aGraph");
+		snarlTemplate.add(g2, "http://example.org/aGraph");
 
 		
 		String sparql = "SELECT ?a WHERE { GRAPH <http://example.org/aGraph> { ?a ?b ?c } }";
-		List<Map<String,String>> results = tmp.query(sparql, new RowMapper<Map<String,String>>()  {
+		List<Map<String,String>> results = snarlTemplate.query(sparql, new RowMapper<Map<String,String>>()  {
 
 			@Override
 			public Map<String,String> mapRow(BindingSet bindingSet) {
@@ -204,10 +195,10 @@ public class TestDataSourceFactory  {
 		});
 		assertEquals(results.size(), 1);
 
-		tmp.remove("http://example.org/aGraph");
+		snarlTemplate.remove("http://example.org/aGraph");
 
 		sparql = "SELECT ?a WHERE { GRAPH <http://example.org/aGraph> { ?a ?b ?c } }";
-		results = tmp.query(sparql, new RowMapper<Map<String,String>>() {
+		results = snarlTemplate.query(sparql, new RowMapper<Map<String,String>>() {
 
 			@Override
 			public Map<String,String> mapRow(BindingSet bindingSet) {
@@ -221,7 +212,7 @@ public class TestDataSourceFactory  {
 		
 		// Test remove of default graph
 		sparql = "SELECT ?a WHERE { ?a ?b ?c } LIMIT 5";
-		results = tmp.query(sparql, new RowMapper<Map<String,String>>() {
+		results = snarlTemplate.query(sparql, new RowMapper<Map<String,String>>() {
 
 			@Override
 			public Map<String,String> mapRow(BindingSet bindingSet) {
@@ -232,11 +223,11 @@ public class TestDataSourceFactory  {
 			
 		});
 		assertEquals(results.size(), 5);
-		
-		tmp.remove(Contexts.DEFAULT.toString());
+
+		snarlTemplate.remove(Contexts.DEFAULT.toString());
 		
 		sparql = "SELECT ?a WHERE { ?a ?b ?c } LIMIT 5";
-		results = tmp.query(sparql, new RowMapper<Map<String,String>>() {
+		results = snarlTemplate.query(sparql, new RowMapper<Map<String,String>>() {
 
 			@Override
 			public Map<String,String> mapRow(BindingSet bindingSet) {
@@ -251,18 +242,16 @@ public class TestDataSourceFactory  {
 	
 	@Test
 	public void testQueryForObject() throws URISyntaxException {
-		SnarlTemplate tmp = new SnarlTemplate();
-		tmp.setDataSource(dataSource);
 
 		String uriA = "urn:test:a";
 		String uriB = "urn:test:b";
 		String litA = "hello world";
 
-		tmp.add(uriA, uriB, litA);
+		snarlTemplate.add(uriA, uriB, litA);
 
 		String sparql = "SELECT ?a ?b WHERE { ?a  <urn:test:b> ?b }";
 
-		Map<String, Value> result = tmp.queryForObject(sparql, new RowMapper<Map<String, Value>>() {
+		Map<String, Value> result = snarlTemplate.queryForObject(sparql, new RowMapper<Map<String, Value>>() {
 
 			@Override
 			public Map<String, Value> mapRow(BindingSet bindingSet) {
@@ -282,16 +271,14 @@ public class TestDataSourceFactory  {
 	
 	@Test
 	public void testQueryWithParams() throws URISyntaxException {
-		
-		SnarlTemplate tmp = new SnarlTemplate();
-		tmp.setDataSource(dataSource);
+
 		String sparql = "SELECT ?a ?b WHERE { ?a ?c ?b } LIMIT 5";
 		
 		Map<String, Object> params = new HashMap<String, Object>() {{ 
 			put("c", Values.iri("http://purl.org/dc/elements/1.1/title"));
 		}};
 		
-		List<Map<String,String>> results = tmp.query(sparql, params, new RowMapper<Map<String,String>>() {
+		List<Map<String,String>> results = snarlTemplate.query(sparql, params, new RowMapper<Map<String,String>>() {
 
 			@Override
 			public Map<String,String> mapRow(BindingSet bindingSet) {
@@ -309,16 +296,14 @@ public class TestDataSourceFactory  {
 	
 	@Test
 	public void testLegacyQueryWithParams() throws URISyntaxException {
-		
-		SnarlTemplate tmp = new SnarlTemplate();
-		tmp.setDataSource(dataSource);
+
 		String sparql = "SELECT ?a ?b WHERE { ?a ?c ?b } LIMIT 5";
 		
 		Map<String, Object> params = new HashMap<String, Object>() {{ 
 			put("c", Values.iri("http://purl.org/dc/elements/1.1/title"));
 		}};
 		
-		List<Map<String,String>> results = tmp.query(sparql, params, new RowMapper<Map<String,String>>() {
+		List<Map<String,String>> results = snarlTemplate.query(sparql, params, new RowMapper<Map<String,String>>() {
 
 			@Override
 			public Map<String,String> mapRow(BindingSet bindingSet) {
@@ -336,20 +321,17 @@ public class TestDataSourceFactory  {
 	
 	@Test
 	public void testQueryForObjectWithParams() throws URISyntaxException {
-		SnarlTemplate tmp = new SnarlTemplate();
-		tmp.setDataSource(dataSource);
-		
 		String uriA = "urn:test:a";
 		String uriB = "urn:test:b";
 		String litA = "hello world";
 
-		tmp.add(uriA, uriB, litA);
+		snarlTemplate.add(uriA, uriB, litA);
 	
 		String sparql = "SELECT ?a ?b WHERE { ?a ?c ?b }";
 		Map<String, Object> params = new HashMap<String, Object>() {{
 			put("c", Values.iri("urn:test:b"));
 		}};
-		Map<String, Value> result = tmp.queryForObject(sparql, params, new RowMapper<Map<String, Value>>() {
+		Map<String, Value> result = snarlTemplate.queryForObject(sparql, params, new RowMapper<Map<String, Value>>() {
 
 			@Override
 			public Map<String, Value> mapRow(BindingSet bindingSet) {
@@ -370,30 +352,27 @@ public class TestDataSourceFactory  {
 	
 	@Test
 	public void testUpdateWithParams() {
-		
-		SnarlTemplate tmp = new SnarlTemplate();
-		tmp.setDataSource(dataSource);
-		
+
 		final String uriA1 = "urn:testUpdate:a1";
 		final String uriB = "urn:testUpdate:b";
 		final String litC1 = "aloha world";
-		tmp.add(uriA1, uriB, litC1);
+		snarlTemplate.add(uriA1, uriB, litC1);
 		
 		final String uriA2 = "urn:testUpdate:a2";
 		final String litC2 = "aloha world";
-		tmp.add(uriA2, uriB, litC2);
+		snarlTemplate.add(uriA2, uriB, litC2);
 		
 		String sparql = "DELETE { ?a ?b \"aloha world\" } INSERT { ?a ?b \"shalom world\" } WHERE { ?a ?b \"aloha world\" }";
 		
 		Map<String, Object> params = new HashMap<String, Object>() {{ 
 			put("b", Values.iri(uriB));
 		}};
-		
-		tmp.update(sparql, params);
+
+		snarlTemplate.update(sparql, params);
 		
 		sparql = "SELECT ?a WHERE { ?a ?b \"shalom world\" }";
 
-		List<Map<String, Value>> results = tmp.query(sparql, params, new RowMapper<Map<String, Value>>() {
+		List<Map<String, Value>> results = snarlTemplate.query(sparql, params, new RowMapper<Map<String, Value>>() {
 
 			@Override
 			public Map<String, Value> mapRow(BindingSet bindingSet) {
@@ -417,18 +396,15 @@ public class TestDataSourceFactory  {
 	
 	@Test
 	public void testAsk() {
-		
-		SnarlTemplate tmp = new SnarlTemplate();
-		tmp.setDataSource(dataSource);
-		
+
 		final String uriA1 = "urn:testAsk:a1";
 		final String uriB = "urn:testAsk:b";
 		final String litC1 = "hello world";
-		tmp.add(uriA1, uriB, litC1);
+		snarlTemplate.add(uriA1, uriB, litC1);
 		
 		final String uriA2 = "urn:testAsk:a2";
 		final String litC2 = "aloha world";
-		tmp.add(uriA2, uriB, litC2);
+		snarlTemplate.add(uriA2, uriB, litC2);
 		
 		String sparql = "ASK { ?a ?b \"aloha world\" }";
 		
@@ -436,19 +412,19 @@ public class TestDataSourceFactory  {
 			put("b", Values.iri(uriB));
 		}};
 		
-		boolean result = tmp.ask(sparql, params);
+		boolean result = snarlTemplate.ask(sparql, params);
 		
 		assert(result);
 		
 		sparql = "ASK { ?a <urn:testAsk:b> ?c }";
 		
-		result = tmp.ask(sparql);
+		result = snarlTemplate.ask(sparql);
 
 		assert(result);
 		
 		sparql = "ASK { ?a <urn:testAsk:c> ?c }";
 		
-		result = tmp.ask(sparql);
+		result = snarlTemplate.ask(sparql);
 
 		assert(!result);
 	}
@@ -654,9 +630,13 @@ public class TestDataSourceFactory  {
 	@Test
 	public void testSetSnarlConnectionReasoning() {
 		snarlTemplate.setReasoning(false);
-		assertFalse(snarlTemplate.getDataSource().getConnection().isReasoningEnabled());
+		try (Connection c = snarlTemplate.getDataSource().getConnection()) {
+			assertFalse(c.isReasoningEnabled());
+		}
 		snarlTemplate.setReasoning(true);
-		assertTrue(snarlTemplate.getDataSource().getConnection().isReasoningEnabled());
+		try (Connection c = snarlTemplate.getDataSource().getConnection()) {
+			assertTrue(c.isReasoningEnabled());
+		}
 	}
 
 	@Test
@@ -690,44 +670,5 @@ public class TestDataSourceFactory  {
 			fail("Caught exception");
 		}
 	}
-	
-	@Test
-	public void testLifecycle() {
-		// run through the getter/setters
-		DataSourceFactoryBean dfb = new DataSourceFactoryBean();
-		dfb.setBlockCapacityTime(0L);
-		dfb.setExpirationTime(0L);
-		dfb.setFailAtCapacity(true);
-		dfb.setMaxIdle(100);
-		dfb.setGrowAtCapacity(true);
-		dfb.setNoExpiration(false);
-		dfb.setMaxPool(1);
-		dfb.setMinPool(1);
-		dfb.setPassword("test");
-		dfb.setUsername("test");
-		dfb.setUrl("http://test.com");
-		dfb.setReasoningType(false);
-		dfb.setTo("testdb");
-		
-		dfb.getUsername();
-		dfb.getBlockCapacityTime();
-		dfb.getExpirationTime();
-		dfb.isFailAtCapacity();
-		dfb.getMaxIdle();
-		dfb.isGrowAtCapacity();
-		dfb.isNoExpiration();
-		dfb.getMaxPool();
-		dfb.getMinPool();
-		dfb.getPassword();
-		dfb.getUsername();
-		dfb.getUrl();
-		assertEquals(dfb.getReasoningType(), false);
-		dfb.getTo();
-		dfb.getUsername();
-		
-		DataSource ds = new DataSource();
-		dataSource.destroy();
-	}
-	
 }
 

@@ -169,9 +169,9 @@ public class DataSourceFactoryBean implements FactoryBean<DataSource>, Initializ
 		if (connectionProperties != null) {
 			List<Pair<String, String>> aOptionsList = new ArrayList<Pair<String, String>>();
 			for (String key : connectionProperties.stringPropertyNames()) {
-				aOptionsList.add(Pair.create((String) key, (String) connectionProperties.getProperty(key)));
+				aOptionsList.add(Pair.create(key, connectionProperties.getProperty(key)));
 			}
-			connectionConfig = connectionConfig.with((new OptionParser()).getOptions(aOptionsList));
+			connectionConfig.with((new OptionParser()).getOptions(aOptionsList));
 		}
 
 		if (supplier != null) {
@@ -179,9 +179,9 @@ public class DataSourceFactoryBean implements FactoryBean<DataSource>, Initializ
 		} else {
 			connectionConfig = connectionConfig.credentials(username, password);
 		}
-		
-		connectionConfig = connectionConfig.reasoning(reasoningType);
-		
+
+		connectionConfig.reasoning(reasoningType);
+
 		poolConfig = ConnectionPoolConfig
 				.using(connectionConfig) 
 				.minPool(minPool) 
