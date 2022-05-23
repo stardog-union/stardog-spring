@@ -21,7 +21,7 @@ The implementation requires the Stardog libraries to run, and therefore can run 
 
 For more information, go to the Stardog's [Spring Programming](http://stardog.com/docs/spring/) documentation.
 
-The framework is currently targeted to the core Spring Framework (Spring 5.3.18 as of Stardog 7.9.1).  It has been tested in parts of the larger Spring ecosystem including Spring Web MVC, Grails 1.3, Grails 2.0, Grails 2.2.  It should also work well with other related Spring projects, such as Spring Integration.
+The framework is currently targeted to the core Spring Framework (Spring 5.3.18 as of Stardog 7.9.1).  It has been tested in parts of the larger Spring ecosystem including Spring Web MVC.  It should also work well with other related Spring projects, such as Spring Integration.
 
 ## Usage ##
 

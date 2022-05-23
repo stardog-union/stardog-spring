@@ -90,7 +90,6 @@ public class DataSource {
 				log.error("Stardog pool is null");
 				throw new RuntimeException("Stardog pool is null");
 			}
-//			afterPropertiesSet();
 			return pool.obtain();
 		} catch (StardogException e) {
 			log.error("Error obtaining connection from Stardog pool", e);
