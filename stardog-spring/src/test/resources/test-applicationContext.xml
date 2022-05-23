@@ -8,13 +8,12 @@
      http://www.springframework.org/schema/util  http://www.springframework.org/schema/util/spring-util.xsd">
 
     <bean name="embeddedProvider" class="com.stardog.ext.spring.EmbeddedProvider" />
-
-	<bean id="supplierFunc" class="com.stardog.ext.spring.CCSupplier" factory-method="getSupplier" />
+	<bean name="serverProvider" class="com.stardog.ext.spring.ServerProvider" />
 
 	<bean name="dataSource" class="com.stardog.ext.spring.DataSourceFactoryBean">
 		<property name="to" value="testdb"/>
-		<property name="provider" ref="embeddedProvider"/>
-		<property name="supplier" ref="supplierFunc" />
+		<property name="url" value="http://localhost:5820"/>
+		<property name="provider" ref="serverProvider"/>
 		<property name="username" value="admin"/>
 		<property name="password" value="admin"/>
 	</bean>

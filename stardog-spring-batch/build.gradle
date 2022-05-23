@@ -6,15 +6,14 @@ apply plugin:"signing"
 //apply from:'https://raw.github.com/breskeby/gradleplugins/master/emmaPlugin/emma.gradle'
 
 group = 'com.stardog.ext'
-version = '1.0.1'
+version = '1.1.0'
 
 ext {
-	stardogVersion = "7.3.2"
-	stardogSpringVersion = "1.0.1"
-	springVersion = "4.1.2.RELEASE"
-	springBatchVersion = "3.0.5.RELEASE"
-	springTestVersion = "3.0.5.RELEASE"
-	junitVersion = "4.8.2"
+	stardogVersion = "7.9.1"
+	stardogSpringVersion = "1.1.0"
+	springVersion = "5.3.18"
+	springBatchVersion = "4.3.5"
+	junitVersion = "4.13.2"
 	slf4jVersion = "1.6.1"
 	log4jVersion = "2.17.0"
 }
@@ -54,7 +53,7 @@ dependencies {
 	 }	
 	
 	testCompile group: 'junit', name: 'junit', version: "${junitVersion}"
-	testCompile group: 'org.springframework', name:'spring-test', version:"${springTestVersion}"
+	testCompile group: 'org.springframework', name:'spring-test', version:"${springVersion}"
 
 	constraints {
 		implementation ("org.apache.logging.log4j:log4j-core:${log4jVersion}") {
@@ -155,7 +154,7 @@ signing {
 
  configure(install.repositories.mavenInstaller) {
  	pom.project {
- 		version '1.0.1'
+ 		version '1.1.0'
  		artifactId 'stardog-spring-batch'
  		groupId 'com.stardog.ext'
  	}

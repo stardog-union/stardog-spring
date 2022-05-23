@@ -15,6 +15,8 @@
 */
 package com.stardog.ext.spring;
 
+import java.util.Arrays;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,13 +62,18 @@ public class DataSource {
 	
 	public void afterPropertiesSet() { 
 		log.debug("Creating Stardog connection pool");
+		if (poolConfig == null) {
+			poolConfig = ConnectionPoolConfig.using(connectionConfig);
+		}
 		pool = poolConfig.create();
 	}
 
 	public void setConnectionReasoning(boolean reasoningType) {
 		this.releaseConnection(getConnection());
 		this.destroyPool();
-		connectionConfig = connectionConfig.reasoning(reasoningType);
+		connectionConfig.reasoning(reasoningType);
+		poolConfig = ConnectionPoolConfig.using(connectionConfig);
+		pool = poolConfig.create();
 	}
 	
 	/**
@@ -79,8 +86,10 @@ public class DataSource {
 	 */
 	public Connection getConnection() { 
 		try {
-			if (pool == null)
-				afterPropertiesSet();
+			if (pool == null) {
+				log.error("Stardog pool is null");
+				throw new RuntimeException("Stardog pool is null");
+			}
 			return pool.obtain();
 		} catch (StardogException e) {
 			log.error("Error obtaining connection from Stardog pool", e);
