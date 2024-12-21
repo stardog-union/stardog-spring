@@ -6,11 +6,11 @@ apply plugin:"signing"
 //apply from:'https://raw.github.com/breskeby/gradleplugins/master/emmaPlugin/emma.gradle'
 
 group = 'com.stardog.ext'
-version = '1.1.0'
+version = '1.2.0'
 
 ext {
-	stardogVersion = "7.9.1"
-	stardogSpringVersion = "1.1.0"
+	stardogVersion = "9.2.2"
+	stardogSpringVersion = "1.2.0"
 	springVersion = "5.3.18"
 	springBatchVersion = "4.3.5"
 	junitVersion = "4.13.2"
@@ -28,7 +28,8 @@ repositories {
 	maven { url "http://maven.springframework.org/release" } 
 	maven { url "http://maven.springframework.org/milestone" }
 	maven { url "http://maven.springframework.org/snapshot" } 
-	
+	// txtai
+	maven { url "https://repository.liferay.com/nexus/content/repositories/public" }
 }
 
 configurations { 
@@ -51,6 +52,7 @@ dependencies {
 	testCompile ("com.complexible.stardog:server:${stardogVersion}") {
 		 exclude group: 'com.complexible.stardog.virtual'
 	 }	
+	testImplementation ("com.complexible.stardog.search:stardog-search-shared:${stardogVersion}")
 	
 	testCompile group: 'junit', name: 'junit', version: "${junitVersion}"
 	testCompile group: 'org.springframework', name:'spring-test', version:"${springVersion}"
@@ -154,7 +156,7 @@ signing {
 
  configure(install.repositories.mavenInstaller) {
  	pom.project {
- 		version '1.1.0'
+ 		version '1.2.0'
  		artifactId 'stardog-spring-batch'
  		groupId 'com.stardog.ext'
  	}
