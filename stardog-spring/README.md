@@ -2,7 +2,7 @@ Stardog-Spring
 ==========
 
 Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
-_Current Version **1.1.0**_
+_Current Version **1.2.0**_
 
 This is [Spring Framework](http://springsource.org) integration for [Stardog RDF Database](http://stardog.com). This project
 provides the core Spring integration, with the SnarlTemplate and DataSource classes.  Other projects build on this as the basis for
@@ -14,18 +14,14 @@ communicating with the Stardog database server.
 
 This binding uses the native Stardog SNARL API and creates the appropriate Spring aware beans and template ease of use facilities for idiomatic Spring development.  Like a JDBC DataSource, and a JdbcTemplate, the Stardog Spring provides a DataSource abstraction and a SnarlTemplate abstraction.
 
-The implementation requires the Stardog libraries to run, and therefore can run with:
-
-* Stardog HTTP client/server
-* Stardog embeddded, via DataSource configuration
 
 For more information, go to the Stardog's [Spring Programming](http://stardog.com/docs/spring/) documentation.
 
-The framework is currently targeted to the core Spring Framework (Spring 5.3.18 as of Stardog 7.9.1).  It has been tested in parts of the larger Spring ecosystem including Spring Web MVC.  It should also work well with other related Spring projects, such as Spring Integration.
+The framework is currently targeted to the core Spring Framework (Spring 5.3.18 as of Stardog 9.2.2).  It has been tested in parts of the larger Spring ecosystem including Spring Web MVC.  It should also work well with other related Spring projects, such as Spring Integration.
 
 ## Usage ##
 
-To use Stardog Spring, simply add: com.stardog.ext:stardog-spring:1.1.0 to your build dependencies.
+To use Stardog Spring, simply add: com.stardog.ext:stardog-spring:1.2.0 to your build dependencies.
 
 This does require the Stardog dependencies to be installed, e.g.:
 
@@ -69,9 +65,9 @@ This framework is in continuous development, please check the [issues](https://g
 
 ## License
 
-Copyright 2012-2020 Stardog Union
+Copyright 2012-2025 Stardog Union
 
-Copyright 2012-2020 Al Baker
+Copyright 2012-2025 Al Baker
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

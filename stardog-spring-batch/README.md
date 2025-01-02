@@ -2,7 +2,7 @@ Stardog-Spring-Batch
 ==========
 
 Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
-_Current Version **1.1.0**_
+_Current Version **1.2.0**_
 
 This is [Spring Framework](http://springsource.org) integration for [Stardog RDF Database](http://stardog.com). This API provides Spring Batch readers/writers for building batch applications with Stardog.
 
@@ -13,7 +13,7 @@ This API uses the SnarlTemplate and implements the ItemReader and ItemWriter int
 
 ## Usage ##
 
-To use Stardog Spring, we recommend, simply add: `com.stardog.ext:stardog-spring-batch:1.1.0` to your build dependency.
+To use Stardog Spring, we recommend, simply add: `com.stardog.ext:stardog-spring-batch:1.2.0` to your build dependency.
 
 This does depend on installing the Stardog dependencies:
 
@@ -35,8 +35,8 @@ This project is built with Gradle, and can be easily imported into SpringSource 
     git clone https://github.com/stardog-union/stardog-spring.git
     ```
 
-2. As of Stardog 7, for the unit tests to work you need to set the environment variable
-   	`$STARDOG_LIB` to the `lib/` directory of your Stardog 7.X installation directory
+2. For the unit tests to work you need to set the environment variable
+   	`$STARDOG_LIB` to the `lib/` directory of your Stardog installation directory
 
 3. Run `gradle build` in `stardog-spring/` project
 4. Pick up the latest jar in `build/libs`, or alternatively run `gradle install` to install the built jar into your local M2 folder
@@ -49,9 +49,9 @@ This framework is in continuous development, please check the [issues](https://g
 
 ## License
 
-Copyright 2012-2020 Stardog Union
+Copyright 2012-2025 Stardog Union
 
-Copyright 2012-2020 Al Baker
+Copyright 2012-2025 Al Baker
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
