@@ -112,7 +112,7 @@ signing {
  			beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
  			repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
- 				authentication(userName: sonatypeUsername, password: sonatypePassword)
+                authentication(userName: sonatypeTokenUser, password: sonatypeTokenPassword)
  			}
 
  			pom.project {
